@@ -1,0 +1,293 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --isu-green: #065f2f;
+    --isu-green-hover: #054d25;
+    --isu-light: #e8f3ec;
+    --text-dark: #333333;
+    --text-muted: #666666;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #f5f8f5;
+    /* Links to your background image */
+    background-image: url('../images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Keeps the background static if you scroll */
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.main-container {
+    min-height: 100vh;
+    padding: 2rem 0;
+    position: relative;
+    z-index: 10;
+}
+
+/* --- Left Panel Branding --- */
+.logo {
+    width: 140px;
+    border-radius: 50%;
+    border: 4px solid #fbdc00; /* Yellow ring */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.brand-title {
+    color: var(--isu-green);
+    font-weight: 800;
+    font-size: 26px;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+}
+
+.brand-subtitle {
+    color: var(--text-dark);
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.system-title {
+    color: var(--isu-green);
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1.2;
+}
+
+.system-desc {
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+.feature-item h5 {
+    color: var(--isu-green);
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 3px;
+}
+
+.feature-item p {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 0;
+}
+
+.feature-icon {
+    width: 45px;
+    height: 45px;
+    background: var(--isu-light);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+    color: var(--isu-green);
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+/* --- Right Panel / Form Card --- */
+.signup-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.06);
+    max-width: 550px;
+}
+
+.top-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--isu-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--isu-green);
+    font-size: 32px;
+}
+
+.form-title {
+    color: var(--isu-green);
+    font-weight: 700;
+    font-size: 26px;
+}
+
+/* --- Role Selection Cards --- */
+.role-label {
+    cursor: pointer;
+}
+
+.role-card {
+    border: 1.5px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 15px;
+    transition: all 0.2s ease-in-out;
+    background: #fff;
+    height: 100%;
+}
+
+.text-isu-green {
+    color: var(--isu-green) !important;
+}
+
+.custom-radio {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    transition: 0.2s;
+}
+
+.custom-radio::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: var(--isu-green);
+    border-radius: 50%;
+    opacity: 0;
+    transition: 0.2s;
+}
+
+/* Checked State CSS */
+.peer:checked + .role-card {
+    border-color: var(--isu-green);
+    background: #f4fbf7;
+}
+
+.peer:checked + .role-card .custom-radio {
+    border-color: var(--isu-green);
+}
+
+.peer:checked + .role-card .custom-radio::after {
+    opacity: 1;
+}
+
+/* --- Inputs --- */
+.input-icon-wrapper {
+    position: relative;
+}
+
+.input-icon-wrapper .left-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 18px;
+    z-index: 5;
+}
+
+.custom-input {
+    height: 48px;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    padding-left: 45px; /* Room for icon */
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.custom-input:focus {
+    border-color: var(--isu-green);
+    box-shadow: 0 0 0 3px rgba(6, 95, 47, 0.1);
+}
+
+/* Password Eye Icons */
+.password-toggle-icon {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #999;
+    font-size: 18px;
+    z-index: 5;
+}
+
+/* --- Button --- */
+.submit-btn {
+    background: var(--isu-green);
+    border: none;
+    border-radius: 12px;
+    height: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.submit-btn:hover {
+    background: var(--isu-green-hover);
+    transform: translateY(-2px);
+}
+
+.form-footer a {
+    color: var(--isu-green);
+    text-decoration: none;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+@media(max-width: 991px) {
+    .signup-card {
+        padding: 30px 20px;
+    }
+}
+
+/* --- Beautified Role Assignment Box --- */
+.role-assignment-box {
+    background-color: #f4fbf7; /* Soft light green matching the theme */
+    border: 1px solid #cce8d6;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(6, 95, 47, 0.03);
+}
+
+.border-success-subtle {
+    border-color: #cce8d6 !important;
+}
+
+.role-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 8px;
+    min-width: 110px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+/* Specific Badge Colors */
+.badge-super-admin {
+    background-color: var(--isu-green);
+    color: #ffffff;
+    border: 1px solid var(--isu-green);
+}
+
+.badge-admin {
+    background-color: #ffffff;
+    color: var(--isu-green);
+    border: 1px solid var(--isu-green);
+}
+
+.badge-viewer {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}

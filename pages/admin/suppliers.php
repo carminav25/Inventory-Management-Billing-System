@@ -1,0 +1,984 @@
+<?php
+$pageTitle = "Supplier Management";
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once "../../config/database.php";
+require_once "../../includes/admin_auth.php";
+require_once "../../includes/activity_log.php";
+
+requireAdmin();
+
+// --- HANDLE GET ACTIONS (DELETE) ---
+if (isset($_GET['action_type']) && $_GET['action_type'] === 'delete') {
+    $supplier_id = (int)($_GET['id'] ?? 0);
+
+    if ($supplier_id > 0) {
+        // Verify that the deletion was authorized by a Super Admin in the last 5 minutes
+        if (isset($_SESSION['delete_authorized']) && $_SESSION['delete_authorized'] === true && (time() - $_SESSION['delete_auth_time'] < 300)) {
+            
+            // Before deleting, check if the supplier is linked to any products.
+            $supplierNameQuery = mysqli_query($conn, "SELECT supplier_name FROM suppliers WHERE id = $supplier_id");
+            $supplierData = mysqli_fetch_assoc($supplierNameQuery);
+            $supplierName = $supplierData['supplier_name'] ?? '';
+
+            $checkQuery = mysqli_prepare($conn, "SELECT COUNT(*) as count FROM products WHERE supplier = ?");
+            mysqli_stmt_bind_param($checkQuery, "s", $supplierName);
+            mysqli_stmt_execute($checkQuery);
+            $checkResult = mysqli_fetch_assoc(mysqli_stmt_get_result($checkQuery));
+
+            if ($checkResult['count'] > 0) {
+                $_SESSION['error_message'] = "Cannot delete supplier. It is linked to {$checkResult['count']} product(s). Please reassign products before deleting.";
+            } else {
+                $delQuery = mysqli_query($conn, "DELETE FROM suppliers WHERE id = $supplier_id");
+                if ($delQuery) {
+                    logActivity($conn, $_SESSION['user_id'], $_SESSION['fullname'], $_SESSION['username'], $_SESSION['role'], "Deleted Supplier #{$supplier_id} ({$supplierName}). Reason: " . ($_SESSION['delete_auth_reason'] ?? 'N/A'));
+                    $_SESSION['success_message'] = "Supplier record deleted successfully.";
+                } else {
+                    $_SESSION['error_message'] = "Failed to delete supplier record.";
+                }
+            }
+            unset($_SESSION['delete_authorized'], $_SESSION['delete_auth_time'], $_SESSION['delete_auth_reason']);
+        } else {
+            $_SESSION['error_message'] = "Unauthorized deletion attempt. Please re-authenticate.";
+        }
+    }
+    header("Location: suppliers.php");
+    exit();
+}
+
+// --- 1. HANDLE POST ACTIONS (ADD / EDIT) ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action_type = $_POST['action_type'] ?? '';
+
+    if ($action_type === 'add') {
+        $supplier_name  = trim($_POST['supplier_name'] ?? '');
+        $contact_person = trim($_POST['contact_person'] ?? '');
+        $contact_number = trim($_POST['contact_number'] ?? ''); // Keep this for re-population on error
+        $email          = trim($_POST['email'] ?? '');
+        $address        = trim($_POST['address'] ?? '');
+        $status         = trim($_POST['status'] ?? 'Active');
+        $user_id        = $_SESSION['user_id'] ?? 1;
+
+        // Server-side validation for contact number
+        $isValidContact = empty($contact_number) || preg_match('/^(09\d{9}|\+639\d{9})$/', $contact_number);
+
+        if (!$isValidContact) {
+            $_SESSION['error_message'] = "Invalid contact number format. Use 09xxxxxxxxx or +639xxxxxxxxxx.";
+            header("Location: suppliers.php");
+            exit();
+        } elseif (empty($supplier_name)) {
+            $_SESSION['error_message'] = "Supplier name is required.";
+            header("Location: suppliers.php");
+            exit();
+        }
+
+        // Check for duplicate supplier name before inserting
+        $checkStmt = mysqli_prepare($conn, "SELECT id FROM suppliers WHERE supplier_name = ?");
+        mysqli_stmt_bind_param($checkStmt, "s", $supplier_name);
+        mysqli_stmt_execute($checkStmt);
+        mysqli_stmt_store_result($checkStmt);
+        if (mysqli_stmt_num_rows($checkStmt) > 0) {
+            $_SESSION['error_message'] = "Supplier '{$supplier_name}' already exists.";
+            header("Location: suppliers.php");
+            exit();
+        }
+
+        $stmt = mysqli_prepare($conn, "INSERT INTO suppliers (supplier_name, contact_person, contact_number, email, address, status, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+        mysqli_stmt_bind_param($stmt, "ssssss", $supplier_name, $contact_person, $contact_number, $email, $address, $status);
+        
+        if (mysqli_stmt_execute($stmt)) {
+            logActivity($conn, $user_id, $_SESSION['fullname'], $_SESSION['username'], $_SESSION['role'], "Added new supplier: {$supplier_name}");
+            $_SESSION['success_message'] = "Supplier successfully added!";
+        } else {
+            $_SESSION['error_message'] = "Database error: " . mysqli_error($conn);
+        }
+        header("Location: suppliers.php");
+        exit();
+    }
+
+    if ($action_type === 'edit') {
+        $supplier_id    = (int)($_POST['supplier_id'] ?? 0);
+        $supplier_name  = trim($_POST['supplier_name'] ?? '');
+        $contact_person = trim($_POST['contact_person'] ?? ''); 
+        $contact_number = trim($_POST['contact_number'] ?? ''); // Keep for re-population
+        $email          = trim($_POST['email'] ?? '');
+        $address        = trim($_POST['address'] ?? '');
+        $status         = trim($_POST['status'] ?? 'Active');
+        $user_id        = $_SESSION['user_id'] ?? 1;
+
+        // Server-side validation for contact number
+        $isValidContact = empty($contact_number) || preg_match('/^(09\d{9}|\+639\d{9})$/', $contact_number);
+
+        if (!$isValidContact) {
+            $_SESSION['error_message'] = "Invalid contact number format. Use 09xxxxxxxxx or +639xxxxxxxxxx.";
+            header("Location: suppliers.php");
+            exit();
+        } elseif ($supplier_id <= 0 || empty($supplier_name)) {
+            $_SESSION['error_message'] = "Invalid supplier details.";
+            header("Location: suppliers.php");
+            exit();
+        }
+
+        $stmt = mysqli_prepare($conn, "UPDATE suppliers SET supplier_name = ?, contact_person = ?, contact_number = ?, email = ?, address = ?, status = ? WHERE id = ?");
+        mysqli_stmt_bind_param($stmt, "ssssssi", $supplier_name, $contact_person, $contact_number, $email, $address, $status, $supplier_id);
+        
+        if (mysqli_stmt_execute($stmt)) {
+            logActivity($conn, $user_id, $_SESSION['fullname'], $_SESSION['username'], $_SESSION['role'], "Updated supplier details for: {$supplier_name}");
+            $_SESSION['success_message'] = "Supplier successfully updated!";
+        } else {
+            $_SESSION['error_message'] = "Database error: " . mysqli_error($conn);
+        }
+        header("Location: suppliers.php");
+        exit();
+    }
+}
+
+// --- 2. METRICS & STATISTICS ---
+$totalSuppliers = 0;
+$activeSuppliersCount = 0;
+$inactiveSuppliersCount = 0;
+
+$resStats = mysqli_query($conn, "
+    SELECT 
+        COUNT(*) AS total,
+        SUM(CASE WHEN status = 'Active' THEN 1 ELSE 0 END) AS active_count,
+        SUM(CASE WHEN status = 'Inactive' THEN 1 ELSE 0 END) AS inactive_count
+    FROM suppliers
+");
+if ($resStats && $row = mysqli_fetch_assoc($resStats)) {
+    $totalSuppliers = (int)$row['total'];
+    $activeSuppliersCount = (int)$row['active_count'];
+    $inactiveSuppliersCount = (int)$row['inactive_count'];
+}
+
+// --- 3. SEARCH & FETCH SUPPLIERS ---
+$search = trim($_GET['search'] ?? '');
+$searchQuery = "";
+
+if (!empty($search)) {
+    $safeSearch = mysqli_real_escape_string($conn, $search);
+    $searchQuery = " WHERE supplier_name LIKE '%$safeSearch%' OR contact_person LIKE '%$safeSearch%' OR email LIKE '%$safeSearch%' ";
+}
+
+$suppliers = [];
+$query = "SELECT * FROM suppliers $searchQuery ORDER BY id DESC";
+$result = mysqli_query($conn, $query);
+if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $suppliers[] = $row;
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= htmlspecialchars($pageTitle); ?></title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap CSS for Modal Compatibility -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        a { text-decoration: none !important; }
+        .modal-backdrop { z-index: 1040 !important; }
+        .modal { z-index: 1050 !important; }
+    </style>
+</head>
+
+<body class="bg-slate-50 font-sans text-slate-800">
+
+<?php include "sidebar.php"; ?> 
+
+<main class="ml-0 md:ml-[270px] min-h-screen p-6 transition-all duration-300">
+
+    <div class="space-y-6 max-w-7xl mx-auto">
+        
+        <!-- NOTIFICATIONS -->
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl text-sm flex items-center justify-between">
+                <span><i class="fa-solid fa-circle-check mr-2"></i> <?= htmlspecialchars($_SESSION['success_message']); unset($_SESSION['success_message']); ?></span>
+                <button onclick="this.parentElement.remove();" class="text-emerald-500 hover:text-emerald-700"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        <?php endif; ?>
+        <?php if (isset($_SESSION['error_message'])): ?>
+            <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl text-sm flex items-center justify-between">
+                <span><i class="fa-solid fa-circle-exclamation mr-2"></i> <?= htmlspecialchars($_SESSION['error_message']); unset($_SESSION['error_message']); ?></span>
+                <button onclick="this.parentElement.remove();" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        <?php endif; ?>
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Supplier Management</h1>
+                <p class="text-sm text-slate-500 mt-0.5">Manage partner vendors, contact persons, and delivery sources.</p>
+            </div> 
+        </div>
+
+        <!-- KPI CARDS -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
+                <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Total Suppliers</p>
+                <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?= number_format($totalSuppliers); ?></h2>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
+                <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Active Suppliers</p>
+                <h2 class="text-3xl font-extrabold text-emerald-600 mt-1"><?= number_format($activeSuppliersCount); ?></h2>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-slate-400">
+                <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Inactive Suppliers</p>
+                <h2 class="text-3xl font-extrabold text-slate-600 mt-1"><?= number_format($inactiveSuppliersCount); ?></h2>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
+            <form method="GET"
+                  action=""
+                  class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+        
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 flex-1">
+        
+                    <!-- Search -->
+                    <div class="relative">
+        
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 text-sm">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                        </span>
+        
+                        <input
+                            type="text"
+                            name="search"
+                            value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                            placeholder="Search supplier name..."
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+        
+                    </div>
+        
+                    <!-- Contact -->
+                    <select
+                        name="contact"
+                        class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+        
+                        <option value="">All Contact Persons</option>
+        
+                        <?php
+                        $contacts = mysqli_query($conn,"SELECT DISTINCT contact_person
+                                                        FROM suppliers
+                                                        WHERE contact_person <> ''
+                                                        ORDER BY contact_person");
+        
+                        while($row=mysqli_fetch_assoc($contacts)):
+                        ?>
+        
+                        <option
+                            value="<?= htmlspecialchars($row['contact_person']) ?>"
+                            <?= (($_GET['contact'] ?? '')==$row['contact_person'])?'selected':''; ?>>
+        
+                            <?= htmlspecialchars($row['contact_person']) ?>
+        
+                        </option>
+        
+                        <?php endwhile; ?>
+        
+                    </select>
+        
+                    <!-- Status -->
+                    <select
+                        name="status"
+                        class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+        
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+        
+                    </select>
+        
+                    <!-- Filter -->
+                    <button
+                        type="submit"
+                        class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition shadow-sm flex items-center justify-center gap-2">
+        
+                        <i class="fa-solid fa-filter"></i>
+        
+                        Filter
+        
+                    </button>
+        
+                </div>
+        
+            </form>
+        
+            <div class="flex flex-wrap items-center justify-end gap-3 mt-4 pt-4 border-t border-slate-100">
+        
+                <button
+                    type="button"
+                    onclick="openAddSupplierModal()"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2">
+        
+                    <i class="fa-solid fa-plus"></i>
+        
+                    Add Supplier
+        
+                </button>
+        
+            </div>
+        </div>
+
+        <!-- SUPPLIERS TABLE -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h2 class="text-base font-bold text-slate-800">Registered Suppliers List</h2>
+                <?php if (!empty($_GET['search']) || !empty($_GET['contact']) || !empty($_GET['status'])): ?>
+                    <a href="suppliers.php" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-medium transition" title="Reset Filters">
+                        <i class="fa-solid fa-arrows-rotate mr-2"></i> Reset Filters
+                    </a>
+                <?php endif; ?>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-left border-collapse">
+                    <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                        <tr>
+                            <th class="px-6 py-3 font-semibold">Supplier Name</th>
+                            <th class="px-6 py-3 font-semibold">Contact Person</th>
+                            <th class="px-6 py-3 font-semibold">Contact Number</th>
+                            <th class="px-6 py-3 font-semibold">Email</th>
+                            <th class="px-6 py-3 font-semibold">Address</th>
+                            <th class="px-6 py-3 font-semibold text-center">Status</th>
+                            <th class="px-6 py-3 font-semibold text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-sm">
+                        <?php if (empty($suppliers)): ?>
+                            <tr>
+                                <td colspan="7" class="text-center py-12 text-slate-400">
+                                    <div class="flex flex-col items-center justify-center">
+                                        <i class="fa-solid fa-truck-field text-3xl mb-2 text-slate-300"></i>
+                                        <p class="font-medium text-slate-600">No suppliers found.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($suppliers as $sup): ?>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="px-6 py-4 font-bold text-slate-800"><?= htmlspecialchars($sup['supplier_name']); ?></td>
+                                    <td class="px-6 py-4 text-slate-700"><?= htmlspecialchars($sup['contact_person'] ?? 'N/A'); ?></td>
+                                    <td class="px-6 py-4 font-mono text-slate-600"><?= htmlspecialchars($sup['contact_number'] ?? 'N/A'); ?></td>
+                                    <td class="px-6 py-4 text-slate-600"><?= htmlspecialchars($sup['email'] ?? 'N/A'); ?></td>
+                                    <td class="px-6 py-4 text-slate-600"><?= htmlspecialchars($sup['address'] ?? 'N/A'); ?></td>
+                                    <td class="px-6 py-4 text-center">
+                                        <?php if ($sup['status'] === 'Active'): ?>
+                                            <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">Active</span>
+                                        <?php else: ?>
+                                            <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-xs font-bold">Inactive</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <div class="flex items-center justify-center gap-1.5">
+                                            <button type="button" onclick="openEditModal(<?= htmlspecialchars(json_encode($sup)); ?>)" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg transition text-sm" title="Edit">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </button>
+                                            <button type="button" onclick="confirmDeleteSupplier(<?= $sup['id']; ?>, '<?= htmlspecialchars($sup['supplier_name'], ENT_QUOTES); ?>')" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition text-sm" title="Delete">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<!-- ADD SUPPLIER MODAL -->
+<div class="modal fade" id="addSupplierModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-2xl border-0 shadow-xl overflow-hidden">
+            <div class="modal-header bg-slate-50 border-b border-slate-100 px-6 py-4">
+                <h5 class="modal-title font-bold text-slate-800">Add New Supplier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-6">
+                <form action="" method="POST">
+                    <input type="hidden" name="action_type" value="add">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Supplier Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="supplier_name" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Contact Person</label>
+                            <input type="text" name="contact_person" placeholder="e.g., Juan Dela Cruz" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Contact Number</label>
+                            <input type="text" name="contact_number" pattern="^(09\d{9}|\+639\d{9})$" title="Format: 09xxxxxxxxx or +639xxxxxxxxxx" placeholder="09xxxxxxxxx" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Email Address</label>
+                            <input type="email" name="email" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Status</label>
+                            <select name="status" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Address</label>
+                            <textarea name="address" rows="3" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium transition" data-bs-dismiss="modal"><i class="fa-solid fa-xmark mr-2"></i>Cancel</button>
+                        <button type="submit" class="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2"><i class="fa-solid fa-floppy-disk"></i>Save Supplier</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT SUPPLIER MODAL -->
+<div class="modal fade" id="editSupplierModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-2xl border-0 shadow-xl overflow-hidden">
+            <div class="modal-header bg-slate-50 border-b border-slate-100 px-6 py-4">
+                <h5 class="modal-title font-bold text-slate-800">Edit Supplier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-6">
+                <form action="" method="POST">
+                    <input type="hidden" name="action_type" value="edit">
+                    <input type="hidden" name="supplier_id" id="edit_supplier_id">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Supplier Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="supplier_name" id="edit_supplier_name" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Contact Person</label>
+                            <input type="text" name="contact_person" id="edit_contact_person" placeholder="e.g., Juan Dela Cruz" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Contact Number</label>
+                            <input type="text" name="contact_number" id="edit_contact_number" pattern="^(09\d{9}|\+639\d{9})$" title="Format: 09xxxxxxxxx or +639xxxxxxxxxx" placeholder="09xxxxxxxxx" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Email Address</label>
+                            <input type="email" name="email" id="edit_email" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Status</label>
+                            <select name="status" id="edit_status" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Address</label>
+                            <textarea name="address" id="edit_address" rows="3" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium transition" data-bs-dismiss="modal"><i class="fa-solid fa-xmark mr-2"></i>Cancel</button>
+                        <button type="submit" class="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2"><i class="fa-solid fa-floppy-disk"></i>Update Supplier</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SUPER ADMIN DELETE AUTHENTICATION MODAL -->
+<div class="modal fade" id="deleteSupplierAuthModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-xl overflow-hidden">
+            <div class="modal-header bg-red-600 text-white px-6 py-4">
+                <h5 class="modal-title font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Super Admin Delete Authorization
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="deleteSupplierAuthForm">
+                <div class="modal-body p-6 space-y-4">
+                    <input type="hidden" id="delete_supplier_id">
+                    
+                    <div class="bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl text-xs">
+                        <p><span class="font-bold">Warning:</span> You are about to delete the supplier <span id="delete_supplier_name_label" class="font-semibold underline"></span>. This action is irreversible.</p>
+                        <p class="mt-1"><span class="font-bold">Note:</span> Deletion will fail if the supplier is linked to any products.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Super Admin Username</label>
+                        <input type="text" id="delete_auth_username" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Password</label>
+                        <input type="password" id="delete_auth_password" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Reason for Deletion</label>
+                        <textarea id="delete_auth_reason" rows="3" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" required placeholder="e.g., Duplicate entry / No longer a partner"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-slate-50 border-t border-slate-100 px-6 py-3 flex justify-end gap-2">
+                    <button type="button" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium transition" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-trash"></i> Verify & Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openAddSupplierModal() {
+        new bootstrap.Modal(document.getElementById('addSupplierModal')).show();
+    }
+</script>
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function openEditModal(sup) {
+        document.getElementById('edit_supplier_id').value = sup.id;
+        document.getElementById('edit_supplier_name').value = sup.supplier_name || '';
+        document.getElementById('edit_contact_person').value = sup.contact_person || '';
+        document.getElementById('edit_contact_number').value = sup.contact_number || '';
+        document.getElementById('edit_email').value = sup.email || '';
+        document.getElementById('edit_address').value = sup.address || '';
+        document.getElementById('edit_status').value = sup.status || 'Active';
+
+        var editModal = new bootstrap.Modal(document.getElementById('editSupplierModal'));
+        editModal.show();
+    }
+
+    function confirmDeleteSupplier(supplierId, supplierName) {
+        document.getElementById('delete_supplier_id').value = supplierId;
+        document.getElementById('delete_supplier_name_label').innerText = supplierName;
+        
+        document.getElementById('delete_auth_username').value = '';
+        document.getElementById('delete_auth_password').value = '';
+        document.getElementById('delete_auth_reason').value = '';
+
+        var deleteModal = new bootstrap.Modal(document.getElementById('deleteSupplierAuthModal'));
+        deleteModal.show();
+    }
+
+    document.getElementById("deleteSupplierAuthForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        let supplierId = document.getElementById("delete_supplier_id").value;
+        fetch("../../includes/verify_delete_auth.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+                item_id: supplierId,
+                username: document.getElementById("delete_auth_username").value,
+                password: document.getElementById("delete_auth_password").value,
+                reason: document.getElementById("delete_auth_reason").value
+            })
+        }).then(res => res.json()).then(data => {
+            if (data.success) {
+                bootstrap.Modal.getInstance(document.getElementById("deleteSupplierAuthModal")).hide();
+                window.location.href = `suppliers.php?action_type=delete&id=${supplierId}`;
+            } else {
+                alert("Authorization Failed: " + data.message);
+            }
+        }).catch(err => alert("An error occurred during verification."));
+    });
+</script>
+
+</body>
+</html>
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+
+                        <input
+                            type="text"
+                            name="search"
+                            value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                            placeholder="Search supplier, contact, phone..."
+                            class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none">
+                    </div>
+                </div>
+
+                <!-- Contact Person -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">
+                        Contact Person
+                    </label>
+
+                    <select
+                        name="contact"
+                        class="w-full py-3 px-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-green-500">
+
+                        <option value="">All Contact Persons</option>
+
+                        <?php
+                        $contacts = mysqli_query($conn, "SELECT DISTINCT contact_person FROM suppliers WHERE contact_person IS NOT NULL AND contact_person != '' ORDER BY contact_person");
+
+                        while($row = mysqli_fetch_assoc($contacts)):
+                        ?>
+
+                            <option
+                                value="<?= $row['contact_person']; ?>"
+                                <?= (($_GET['contact'] ?? '') == $row['contact_person']) ? 'selected' : ''; ?>>
+
+                                <?= htmlspecialchars($row['contact_person']); ?>
+
+                            </option>
+
+                        <?php endwhile; ?>
+
+                    </select>
+                </div>
+
+                <!-- Status -->
+                <div>
+
+                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">
+                        Status
+                    </label>
+
+                    <select
+                        name="status"
+                        class="w-full py-3 px-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-green-500">
+
+                        <option value="">All Status</option>
+
+                        <option value="Active"
+                            <?= (($_GET['status'] ?? '') == 'Active') ? 'selected' : ''; ?>>
+                            Active
+                        </option>
+
+                        <option value="Inactive"
+                            <?= (($_GET['status'] ?? '') == 'Inactive') ? 'selected' : ''; ?>>
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- Filter Button -->
+                <div>
+
+                    <button
+                        type="submit"
+                        class="w-full bg-slate-800 hover:bg-slate-900 text-white rounded-xl py-3 font-semibold transition">
+
+                        <i class="fa-solid fa-filter mr-2"></i>
+
+                        Filter
+
+                    </button>
+
+                </div>
+
+                <!-- Add Button -->
+                <div class="flex justify-end">
+
+                    <button
+                        type="button"
+                        onclick="openAddSupplierModal()"
+                        class="bg-green-600 hover:bg-green-700 text-white rounded-xl px-6 py-3 font-semibold shadow">
+
+                        <i class="fa-solid fa-plus mr-2"></i>
+
+                        Add New Supplier
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- SUPPLIERS TABLE -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h2 class="text-base font-bold text-slate-800">Registered Suppliers List</h2>
+                <?php if (!empty($_GET['search']) || !empty($_GET['contact']) || !empty($_GET['status'])): ?>
+                    <a href="suppliers.php" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-medium transition" title="Reset Filters">
+                        <i class="fa-solid fa-arrows-rotate mr-2"></i> Reset Filters
+                    </a>
+                <?php endif; ?>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-left border-collapse">
+                    <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                        <tr>
+                            <th class="px-6 py-3 font-semibold">Supplier Name</th>
+                            <th class="px-6 py-3 font-semibold">Contact Person</th>
+                            <th class="px-6 py-3 font-semibold">Contact Number</th>
+                            <th class="px-6 py-3 font-semibold">Email</th>
+                            <th class="px-6 py-3 font-semibold">Address</th>
+                            <th class="px-6 py-3 font-semibold text-center">Status</th>
+                            <th class="px-6 py-3 font-semibold text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-sm">
+                        <?php if (empty($suppliers)): ?>
+                            <tr>
+                                <td colspan="7" class="text-center py-12 text-slate-400">
+                                    <div class="flex flex-col items-center justify-center">
+                                        <i class="fa-solid fa-truck-field text-3xl mb-2 text-slate-300"></i>
+                                        <p class="font-medium text-slate-600">No suppliers found.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($suppliers as $sup): ?>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="px-6 py-4 font-bold text-slate-800"><?= htmlspecialchars($sup['supplier_name']); ?></td>
+                                    <td class="px-6 py-4 text-slate-700"><?= htmlspecialchars($sup['contact_person'] ?? 'N/A'); ?></td>
+                                    <td class="px-6 py-4 font-mono text-slate-600"><?= htmlspecialchars($sup['contact_number'] ?? 'N/A'); ?></td>
+                                    <td class="px-6 py-4 text-slate-600"><?= htmlspecialchars($sup['email'] ?? 'N/A'); ?></td>
+                                    <td class="px-6 py-4 text-slate-600"><?= htmlspecialchars($sup['address'] ?? 'N/A'); ?></td>
+                                    <td class="px-6 py-4 text-center">
+                                        <?php if ($sup['status'] === 'Active'): ?>
+                                            <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">Active</span>
+                                        <?php else: ?>
+                                            <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-xs font-bold">Inactive</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <div class="flex items-center justify-center gap-1.5">
+                                            <button type="button" onclick="openEditModal(<?= htmlspecialchars(json_encode($sup)); ?>)" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg transition text-sm" title="Edit">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </button>
+                                            <button type="button" onclick="confirmDeleteSupplier(<?= $sup['id']; ?>, '<?= htmlspecialchars($sup['supplier_name'], ENT_QUOTES); ?>')" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition text-sm" title="Delete">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<!-- ADD SUPPLIER MODAL -->
+<div class="modal fade" id="addSupplierModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-2xl border-0 shadow-xl overflow-hidden">
+            <div class="modal-header bg-slate-50 border-b border-slate-100 px-6 py-4">
+                <h5 class="modal-title font-bold text-slate-800">Add New Supplier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-6">
+                <form action="" method="POST">
+                    <input type="hidden" name="action_type" value="add">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Supplier Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="supplier_name" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Contact Person</label>
+                            <input type="text" name="contact_person" placeholder="e.g., Juan Dela Cruz" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Contact Number</label>
+                            <input type="text" name="contact_number" pattern="^(09\d{9}|\+639\d{9})$" title="Format: 09xxxxxxxxx or +639xxxxxxxxxx" placeholder="09xxxxxxxxx" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Email Address</label>
+                            <input type="email" name="email" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Status</label>
+                            <select name="status" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Address</label>
+                            <textarea name="address" rows="3" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium transition" data-bs-dismiss="modal"><i class="fa-solid fa-xmark mr-2"></i>Cancel</button>
+                        <button type="submit" class="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2"><i class="fa-solid fa-floppy-disk"></i>Save Supplier</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT SUPPLIER MODAL -->
+<div class="modal fade" id="editSupplierModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-2xl border-0 shadow-xl overflow-hidden">
+            <div class="modal-header bg-slate-50 border-b border-slate-100 px-6 py-4">
+                <h5 class="modal-title font-bold text-slate-800">Edit Supplier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-6">
+                <form action="" method="POST">
+                    <input type="hidden" name="action_type" value="edit">
+                    <input type="hidden" name="supplier_id" id="edit_supplier_id">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Supplier Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="supplier_name" id="edit_supplier_name" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Contact Person</label>
+                            <input type="text" name="contact_person" id="edit_contact_person" placeholder="e.g., Juan Dela Cruz" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Contact Number</label>
+                            <input type="text" name="contact_number" id="edit_contact_number" pattern="^(09\d{9}|\+639\d{9})$" title="Format: 09xxxxxxxxx or +639xxxxxxxxxx" placeholder="09xxxxxxxxx" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Email Address</label>
+                            <input type="email" name="email" id="edit_email" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Status</label>
+                            <select name="status" id="edit_status" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Address</label>
+                            <textarea name="address" id="edit_address" rows="3" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-slate-100">
+                        <button type="button" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium transition" data-bs-dismiss="modal"><i class="fa-solid fa-xmark mr-2"></i>Cancel</button>
+                        <button type="submit" class="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2"><i class="fa-solid fa-floppy-disk"></i>Update Supplier</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SUPER ADMIN DELETE AUTHENTICATION MODAL -->
+<div class="modal fade" id="deleteSupplierAuthModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-xl overflow-hidden">
+            <div class="modal-header bg-red-600 text-white px-6 py-4">
+                <h5 class="modal-title font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Super Admin Delete Authorization
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="deleteSupplierAuthForm">
+                <div class="modal-body p-6 space-y-4">
+                    <input type="hidden" id="delete_supplier_id">
+                    
+                    <div class="bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl text-xs">
+                        <p><span class="font-bold">Warning:</span> You are about to delete the supplier <span id="delete_supplier_name_label" class="font-semibold underline"></span>. This action is irreversible.</p>
+                        <p class="mt-1"><span class="font-bold">Note:</span> Deletion will fail if the supplier is linked to any products.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Super Admin Username</label>
+                        <input type="text" id="delete_auth_username" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Password</label>
+                        <input type="password" id="delete_auth_password" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Reason for Deletion</label>
+                        <textarea id="delete_auth_reason" rows="3" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" required placeholder="e.g., Duplicate entry / No longer a partner"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-slate-50 border-t border-slate-100 px-6 py-3 flex justify-end gap-2">
+                    <button type="button" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium transition" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-trash"></i> Verify & Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openAddSupplierModal() {
+        new bootstrap.Modal(document.getElementById('addSupplierModal')).show();
+    }
+</script>
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function openEditModal(sup) {
+        document.getElementById('edit_supplier_id').value = sup.id;
+        document.getElementById('edit_supplier_name').value = sup.supplier_name || '';
+        document.getElementById('edit_contact_person').value = sup.contact_person || '';
+        document.getElementById('edit_contact_number').value = sup.contact_number || '';
+        document.getElementById('edit_email').value = sup.email || '';
+        document.getElementById('edit_address').value = sup.address || '';
+        document.getElementById('edit_status').value = sup.status || 'Active';
+
+        var editModal = new bootstrap.Modal(document.getElementById('editSupplierModal'));
+        editModal.show();
+    }
+
+    function confirmDeleteSupplier(supplierId, supplierName) {
+        document.getElementById('delete_supplier_id').value = supplierId;
+        document.getElementById('delete_supplier_name_label').innerText = supplierName;
+        
+        document.getElementById('delete_auth_username').value = '';
+        document.getElementById('delete_auth_password').value = '';
+        document.getElementById('delete_auth_reason').value = '';
+
+        var deleteModal = new bootstrap.Modal(document.getElementById('deleteSupplierAuthModal'));
+        deleteModal.show();
+    }
+
+    document.getElementById("deleteSupplierAuthForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        let supplierId = document.getElementById("delete_supplier_id").value;
+        fetch("../../includes/verify_delete_auth.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+                item_id: supplierId,
+                username: document.getElementById("delete_auth_username").value,
+                password: document.getElementById("delete_auth_password").value,
+                reason: document.getElementById("delete_auth_reason").value
+            })
+        }).then(res => res.json()).then(data => {
+            if (data.success) {
+                bootstrap.Modal.getInstance(document.getElementById("deleteSupplierAuthModal")).hide();
+                window.location.href = `suppliers.php?action_type=delete&id=${supplierId}`;
+            } else {
+                alert("Authorization Failed: " + data.message);
+            }
+        }).catch(err => alert("An error occurred during verification."));
+    });
+</script>
+
+</body>
+</html>
