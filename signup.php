@@ -145,13 +145,13 @@ $isSuperAdminSignup = ($userCount === 0);
 
                             <div class="col-sm-6">
 
-                                <div class="floating-field">
+                                <div class="input-icon-wrapper floating-field">
 
                                     <input
                                         type="text"
                                         id="firstname"
                                         name="firstname"
-                                        class="floating-input"
+                                        class="form-control custom-input floating-input"
                                         placeholder=" "
                                         value="<?php echo htmlspecialchars($oldInput['firstname'] ?? ''); ?>"
                                         required>
@@ -159,21 +159,19 @@ $isSuperAdminSignup = ($userCount === 0);
                                     <label for="firstname">
                                         First Name
                                     </label>
-
                                 </div>
-
                             </div>
 
 
                             <div class="col-sm-6">
 
-                                <div class="floating-field">
+                                <div class="input-icon-wrapper floating-field">
 
                                     <input
                                         type="text"
                                         id="lastname"
                                         name="lastname"
-                                        class="floating-input"
+                                        class="form-control custom-input floating-input"
                                         placeholder=" "
                                         value="<?php echo htmlspecialchars($oldInput['lastname'] ?? ''); ?>"
                                         required>
@@ -181,17 +179,15 @@ $isSuperAdminSignup = ($userCount === 0);
                                     <label for="lastname">
                                         Last Name
                                     </label>
-
                                 </div>
-
                             </div>
 
                         </div>
 
                         <!-- Username -->
-                        <div class="username-field-wrapper mb-3">
+                        <div class="mb-3">
 
-                            <div class="floating-field">
+                            <div class="input-icon-wrapper floating-field">
 
                                 <input
                                     type="text"
@@ -202,12 +198,11 @@ $isSuperAdminSignup = ($userCount === 0);
                                     placeholder=" "
                                     value="<?php echo htmlspecialchars($oldInput['username'] ?? ''); ?>"
                                     required
-                                    class="floating-input">
+                                    class="form-control custom-input floating-input">
 
                                 <label for="username">
                                     Username
                                 </label>
-
                             </div>
 
                             <small
@@ -219,116 +214,118 @@ $isSuperAdminSignup = ($userCount === 0);
                                 id="usernameSuggestion"
                                 class="username-suggestion d-none">
                             </small>
-
                         </div>
 
                         <div class="mb-3">
-
-                            <div class="floating-field">
-
+                            <div class="input-icon-wrapper floating-field">
                                 <input
                                     type="email"
-                                    id="email"
                                     name="email"
-                                    class="floating-input"
+                                    id="email"
+                                    class="form-control custom-input floating-input"
                                     placeholder=" "
-                                    autocomplete="off"
                                     value="<?php echo htmlspecialchars($oldInput['email'] ?? ''); ?>"
-                                    required>
-
-                                <label for="email">
-                                    Email Address
-                                </label>
-
+                                    required
+                                >
+                                <label for="email">Email Address</label>
+                            
+                                <i
+                                    id="emailStatus"
+                                    class="bi validation-status d-none"
+                                ></i>
                             </div>
-
-                            <small
+                            
+                            <div
                                 id="emailMessage"
-                                class="validation-message d-none">
-                            </small>
-
+                                class="password-message d-none"
+                            ></div>
                         </div>
 
                         <div class="mb-3">
-
-                            <div class="floating-field">
-
+                            <div class="input-icon-wrapper floating-field">
                                 <input
                                     type="tel"
-                                    id="mobile"
                                     name="mobile"
-                                    class="floating-input"
+                                    id="mobile"
+                                    class="form-control custom-input floating-input"
                                     placeholder=" "
-                                    autocomplete="off"
-                                    maxlength="11"
+                                    value="<?php echo htmlspecialchars($oldInput['mobile'] ?? ''); ?>"
                                     inputmode="numeric"
-                                    value="<?php echo htmlspecialchars($oldInput['mobile'] ?? ''); ?>">
-
-                                <label for="mobile">
-                                    Mobile Number (Optional)
-                                </label>
-
+                                >
+                                <label for="mobile">Mobile Number (Optional)</label>
+                            
+                                <i
+                                    id="mobileStatus"
+                                    class="bi validation-status d-none"
+                                ></i>
                             </div>
-
-                            <small
+                            
+                            <div
                                 id="mobileMessage"
-                                class="validation-message d-none">
-                            </small>
-
+                                class="password-message d-none"
+                            ></div>
                         </div>
 
                         <!-- Password -->
                         <div class="mb-3">
-
-                            <div class="floating-field">
-
+                            <div class="password-field floating-field">
                                 <input
                                     type="password"
-                                    id="password"
                                     name="password"
-                                    autocomplete="new-password"
+                                    id="password"
+                                    class="form-control custom-input floating-input"
                                     placeholder=" "
-                                    class="floating-input"
-                                    required>
+                                    autocomplete="new-password"
+                                    required
+                                >
 
-                                <label for="password">
-                                    Password
-                                </label>
+                                <label for="password">Password</label>
 
+                                <i
+                                    class="bi bi-eye-slash password-toggle-icon"
+                                    id="togglePassword"
+                                    role="button"
+                                    tabindex="0"
+                                    aria-label="Show password"
+                                    title="Show password"
+                                ></i>
                             </div>
 
                             <div
                                 id="passwordMessage"
                                 class="password-message d-none">
                             </div>
-
                         </div>
 
                         <!-- Confirm Password -->
                         <div class="mb-2">
-
-                            <div class="floating-field">
-
+                            <div class="confirm-password-field floating-field">
                                 <input
                                     type="password"
                                     id="confirm"
                                     name="confirm_password"
-                                    autocomplete="new-password"
+                                    class="form-control custom-input floating-input"
                                     placeholder=" "
-                                    class="floating-input"
-                                    required>
+                                    autocomplete="new-password"
+                                    required
+                                >
 
-                                <label for="confirm">
-                                    Confirm Password
-                                </label>
+                                <label for="confirm">Confirm Password</label>
 
+                                <i
+                                    class="bi bi-eye-slash password-toggle-icon"
+                                    id="toggleConfirmPassword"
+                                    role="button"
+                                    tabindex="0"
+                                    aria-label="Show password"
+                                    title="Show password"
+                                ></i>
                             </div>
 
                             <div
                                 id="confirmMessage"
                                 class="password-message d-none">
                             </div>
-
                         </div>
 
                         <?php if ($isSuperAdminSignup): ?>
@@ -338,18 +335,55 @@ $isSuperAdminSignup = ($userCount === 0);
                                 <i class="bi bi-key-fill text-warning fs-5 me-2"></i>
                                 <h6 class="mb-0 fw-bold text-warning" style="font-size: 15px;">Recovery Secret Password</h6>
                             </div>
-                            <p class="text-muted small mb-3">Create a recovery secret to regain access if you forget your login password. This is shown only during Super Admin signup.</p>
-                            <div class="mb-3">
-                                <div class="input-icon-wrapper">
-                                    <i class="bi bi-key left-icon"></i>
-                                    <input type="password" id="recovery_pass" name="recovery_secret_password" class="form-control custom-input" placeholder="Recovery Secret Password" required>
-                                </div>
+                            <p class="text-muted small mb-3">Create a recovery secret to regain access if you forget your login password. This is shown only during Super Admin signup.</p>                            
+                            <div class="recovery-password-field floating-field">
+                                <input
+                                    type="password"
+                                    name="recovery_secret_password"
+                                    id="recovery_pass"
+                                    class="form-control custom-input floating-input"
+                                    placeholder=" "
+                                    autocomplete="new-password"
+                                    required
+                                >
+
+                                <label for="recovery_pass">
+                                    Recovery Secret Password
+                                </label>
+
+                                <i
+                                    class="bi bi-eye-slash password-toggle-icon"
+                                    id="toggleRecoveryPassword"
+                                    role="button"
+                                    tabindex="0"
+                                    aria-label="Show password"
+                                    title="Show password"
+                                ></i>
                             </div>
-                            <div class="mb-3">
-                                <div class="input-icon-wrapper">
-                                    <i class="bi bi-key-fill left-icon"></i>
-                                    <input type="password" id="recovery_pass_confirm" name="recovery_secret_confirm" class="form-control custom-input" placeholder="Confirm Recovery Secret" required>
-                                </div>
+
+                            <div class="recovery-password-field floating-field">
+                                <input
+                                    type="password"
+                                    name="recovery_secret_confirm"
+                                    id="recovery_pass_confirm"
+                                    class="form-control custom-input floating-input"
+                                    placeholder=" "
+                                    autocomplete="new-password"
+                                    required
+                                >
+
+                                <label for="recovery_pass_confirm">
+                                    Confirm Recovery Secret
+                                </label>
+
+                                <i
+                                    class="bi bi-eye-slash password-toggle-icon"
+                                    id="toggleRecoveryConfirm"
+                                    role="button"
+                                    tabindex="0"
+                                    aria-label="Show password"
+                                    title="Show password"
+                                ></i>
                             </div>
                         </div>
                         <?php endif; ?>

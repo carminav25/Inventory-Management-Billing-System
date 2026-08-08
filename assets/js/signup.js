@@ -1,169 +1,594 @@
+/* =========================================================
+   INVENTORY MANAGEMENT SYSTEM
+   SIGNUP JAVASCRIPT
+   ========================================================= */
+
 document.addEventListener("DOMContentLoaded", function () {
 
-    /* =========================================================
+    /* =====================================================
        ELEMENTS
-       ========================================================= */
+       ===================================================== */
 
-    const form = document.getElementById("signupForm");
-
-    const password = document.getElementById("password");
-    const confirm = document.getElementById("confirm");
-
-    const recoveryPass = document.getElementById("recovery_pass");
-    const recoveryPassConfirm =
-        document.getElementById("recovery_pass_confirm");
+    const form = document.querySelector("form");
 
     const username = document.getElementById("username");
     const usernameMessage =
         document.getElementById("usernameMessage");
-    const usernameSuggestion =
-        document.getElementById("usernameSuggestion");
 
     const email = document.getElementById("email");
+    const emailStatus =
+        document.getElementById("emailStatus");
     const emailMessage =
         document.getElementById("emailMessage");
 
     const mobile = document.getElementById("mobile");
+    const mobileStatus =
+        document.getElementById("mobileStatus");
     const mobileMessage =
         document.getElementById("mobileMessage");
 
-    const showPassword =
-        document.getElementById("showPassword");
+    const password = document.getElementById("password");
+    const confirm = document.getElementById("confirm");
+
+    const passwordMessage =
+        document.getElementById("passwordMessage");
+
+    const confirmMessage =
+        document.getElementById("confirmMessage");
+
+    const recoveryPass =
+        document.getElementById("recovery_pass");
+
+    const recoveryPassConfirm =
+        document.getElementById("recovery_pass_confirm");
 
 
-    /* =========================================================
-       PASSWORD SHOW / HIDE
-       ========================================================= */
+    /* =====================================================
+       EMAIL VALIDATION
+       ===================================================== */
 
-    function addPasswordToggle(input) {
+    const emailRegex =
+        /^[A-Za-z0-9._%+-]+@(?:gmail\.com|yahoo\.com|outlook\.com|hotmail\.com|live\.com|icloud\.com|aol\.com|proton\.me|protonmail\.com|zoho\.com|gmx\.com|mail\.com|yandex\.com|isu\.edu\.ph)$/i;
 
-        if (!input) return;
 
-        const wrapper = input.parentElement;
+    /* =====================================================
+       PASSWORD EYE TOGGLE
+       IMPORTANT:
+       Uses EXISTING eye icons from HTML.
+       Does NOT create duplicate icons.
+       ===================================================== */
 
-        if (!wrapper) return;
+    function setupPasswordToggle(inputId, toggleId) {
 
-        wrapper.style.position = "relative";
+        const input = document.getElementById(inputId);
+        const toggle = document.getElementById(toggleId);
 
-        /* Prevent duplicate eye icons */
-        if (wrapper.querySelector(".password-toggle-icon")) {
+        if (!input || !toggle) {
             return;
         }
 
-        input.style.paddingRight = "45px";
+        /* Prevent duplicate event listeners */
+        if (toggle.dataset.toggleReady === "true") {
+            return;
+        }
 
-        const eye = document.createElement("i");
+        toggle.dataset.toggleReady = "true";
 
-        eye.className =
-            "bi bi-eye-slash password-toggle-icon";
+        /* Make sure eye is clickable */
+        toggle.style.cursor = "pointer";
+        toggle.style.pointerEvents = "auto";
 
-        wrapper.appendChild(eye);
+        /* Initial icon */
+        toggle.classList.remove("bi-eye");
+        toggle.classList.add("bi-eye-slash");
 
-        eye.addEventListener("click", function () {
+        toggle.setAttribute(
+            "role",
+            "button"
+        );
+
+        toggle.setAttribute(
+            "tabindex",
+            "0"
+        );
+
+        toggle.setAttribute(
+            "aria-label",
+            "Show password"
+        );
+
+        toggle.setAttribute(
+            "title",
+            "Show password"
+        );
+
+
+        /* =================================================
+           CLICK
+           ================================================= */
+
+        function togglePasswordVisibility() {
 
             if (input.type === "password") {
 
+                /* SHOW */
                 input.type = "text";
 
-                eye.className =
-                    "bi bi-eye password-toggle-icon";
+                toggle.classList.remove(
+                    "bi-eye-slash"
+                );
+
+                toggle.classList.add(
+                    "bi-eye"
+                );
+
+                toggle.setAttribute(
+                    "aria-label",
+                    "Hide password"
+                );
+
+                toggle.setAttribute(
+                    "title",
+                    "Hide password"
+                );
 
             } else {
 
+                /* HIDE */
                 input.type = "password";
 
-                eye.className =
-                    "bi bi-eye-slash password-toggle-icon";
+                toggle.classList.remove(
+                    "bi-eye"
+                );
 
+                toggle.classList.add(
+                    "bi-eye-slash"
+                );
+
+                toggle.setAttribute(
+                    "aria-label",
+                    "Show password"
+                );
+
+                toggle.setAttribute(
+                    "title",
+                    "Show password"
+                );
+            }
+        }
+
+
+        toggle.addEventListener(
+            "click",
+            togglePasswordVisibility
+        );
+
+
+        /* =================================================
+           KEYBOARD SUPPORT
+           ================================================= */
+
+        toggle.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                ) {
+
+                    event.preventDefault();
+
+                    togglePasswordVisibility();
+                }
+            }
+        );
+    }
+
+
+    /* =====================================================
+       CONNECT ALL FOUR EYES
+       ===================================================== */
+
+    setupPasswordToggle(
+        "password",
+        "togglePassword"
+    );
+
+    setupPasswordToggle(
+        "confirm",
+        "toggleConfirmPassword"
+    );
+
+    setupPasswordToggle(
+        "recovery_pass",
+        "toggleRecoveryPassword"
+    );
+
+    setupPasswordToggle(
+        "recovery_pass_confirm",
+        "toggleRecoveryConfirm"
+    );
+
+
+    /* =====================================================
+       USERNAME VALIDATION
+       ===================================================== */
+
+    function validateUsername() {
+
+        if (!username) {
+            return true;
+        }
+
+        username.value =
+            username.value.replace(
+                /[^A-Za-z0-9_]/g,
+                ""
+            );
+
+        const value =
+            username.value.trim();
+
+        if (value === "") {
+
+            username.classList.remove(
+                "is-valid",
+                "is-invalid"
+            );
+
+            if (usernameMessage) {
+                usernameMessage.className =
+                    "password-message d-none";
+
+                usernameMessage.innerHTML = "";
             }
 
-        });
-
-    }
-
-
-    addPasswordToggle(password);
-    addPasswordToggle(confirm);
-    addPasswordToggle(recoveryPass);
-    addPasswordToggle(recoveryPassConfirm);
-
-
-    /* =========================================================
-       PASSWORD STRENGTH MESSAGE
-       ========================================================= */
-
-    let passwordMessage =
-        document.getElementById("passwordMessage");
-
-
-    /*
-     * If passwordMessage does not exist in HTML,
-     * create it only ONCE.
-     */
-
-    if (password && !passwordMessage) {
-
-        passwordMessage =
-            document.createElement("div");
-
-        passwordMessage.id =
-            "passwordMessage";
-
-        passwordMessage.className =
-            "password-message";
-
-        password.parentElement.parentElement
-            .insertAdjacentElement(
-                "afterend",
-                passwordMessage
-            );
-    }
-
-
-    function checkPasswordStrength() {
-
-        if (!password || !passwordMessage) {
             return false;
         }
 
-        const pass = password.value;
+        const valid =
+            /^[A-Za-z0-9_]{4,20}$/.test(value);
+
+        if (valid) {
+
+            username.classList.remove(
+                "is-invalid"
+            );
+
+            username.classList.add(
+                "is-valid"
+            );
+
+            if (usernameMessage) {
+                usernameMessage.className =
+                    "password-message d-none";
+
+                usernameMessage.innerHTML = "";
+            }
+
+            return true;
+        }
+
+        username.classList.remove(
+            "is-valid"
+        );
+
+        username.classList.add(
+            "is-invalid"
+        );
+
+        if (usernameMessage) {
+
+            usernameMessage.className =
+                "password-message text-danger";
+
+            usernameMessage.innerHTML =
+                '<i class="bi bi-exclamation-circle me-1"></i>' +
+                "Username must contain 4–20 characters " +
+                "using only letters, numbers, or underscore.";
+        }
+
+        return false;
+    }
 
 
-        /* Nothing typed */
+    if (username) {
 
-        if (pass.length === 0) {
+        username.addEventListener(
+            "input",
+            validateUsername
+        );
+    }
 
-            passwordMessage.innerHTML = "";
 
-            passwordMessage.className =
-                "password-message d-none";
+    /* =====================================================
+       EMAIL VALIDATION
+       ===================================================== */
+
+    function validateEmail() {
+
+        if (!email) {
+            return true;
+        }
+
+        const value =
+            email.value.trim();
+
+        if (value === "") {
+
+            email.classList.remove(
+                "is-valid",
+                "is-invalid"
+            );
+
+            if (emailStatus) {
+                emailStatus.className =
+                    "bi validation-status d-none";
+            }
+
+            if (emailMessage) {
+                emailMessage.className =
+                    "password-message d-none";
+
+                emailMessage.innerHTML = "";
+            }
+
+            return false;
+        }
+
+        const valid =
+            emailRegex.test(value);
+
+        if (valid) {
+
+            email.classList.remove(
+                "is-invalid"
+            );
+
+            email.classList.add(
+                "is-valid"
+            );
+
+            if (emailStatus) {
+
+                emailStatus.className =
+                    "bi bi-check-circle-fill " +
+                    "validation-status valid-status";
+            }
+
+            if (emailMessage) {
+
+                emailMessage.className =
+                    "password-message d-none";
+
+                emailMessage.innerHTML = "";
+            }
+
+            return true;
+        }
+
+        email.classList.remove(
+            "is-valid"
+        );
+
+        email.classList.add(
+            "is-invalid"
+        );
+
+        if (emailStatus) {
+
+            emailStatus.className =
+                "bi bi-x-circle-fill " +
+                "validation-status invalid-status";
+        }
+
+        if (emailMessage) {
+
+            emailMessage.className =
+                "password-message text-danger";
+
+            emailMessage.innerHTML =
+                '<i class="bi bi-exclamation-circle me-1"></i>' +
+                "Enter a valid email address " +
+                "(Gmail, Yahoo, Outlook, Hotmail, " +
+                "Live, iCloud, Proton, or ISU).";
+        }
+
+        return false;
+    }
+
+
+    if (email) {
+
+        email.addEventListener(
+            "input",
+            validateEmail
+        );
+    }
+
+
+    /* =====================================================
+       MOBILE VALIDATION
+       ===================================================== */
+
+    function validateMobile() {
+
+        if (!mobile) {
+            return true;
+        }
+
+        let value =
+            mobile.value;
+
+        value =
+            value.replace(
+                /[^\d+]/g,
+                ""
+            );
+
+        if (value.includes("+")) {
+
+            value =
+                "+" +
+                value.replace(
+                    /\+/g,
+                    ""
+                );
+        }
+
+        mobile.value =
+            value;
+
+        if (value === "") {
+
+            mobile.classList.remove(
+                "is-valid",
+                "is-invalid"
+            );
+
+            if (mobileStatus) {
+                mobileStatus.className =
+                    "bi validation-status d-none";
+            }
+
+            if (mobileMessage) {
+
+                mobileMessage.className =
+                    "password-message d-none";
+
+                mobileMessage.innerHTML = "";
+            }
+
+            return false;
+        }
+
+        const localFormat =
+            /^09\d{9}$/;
+
+        const internationalFormat =
+            /^\+639\d{9}$/;
+
+        const valid =
+            localFormat.test(value) ||
+            internationalFormat.test(value);
+
+        if (valid) {
+
+            mobile.classList.remove(
+                "is-invalid"
+            );
+
+            mobile.classList.add(
+                "is-valid"
+            );
+
+            if (mobileStatus) {
+
+                mobileStatus.className =
+                    "bi bi-check-circle-fill " +
+                    "validation-status valid-status";
+            }
+
+            if (mobileMessage) {
+
+                mobileMessage.className =
+                    "password-message d-none";
+
+                mobileMessage.innerHTML = "";
+            }
+
+            return true;
+        }
+
+        mobile.classList.remove(
+            "is-valid"
+        );
+
+        mobile.classList.add(
+            "is-invalid"
+        );
+
+        if (mobileStatus) {
+
+            mobileStatus.className =
+                "bi bi-x-circle-fill " +
+                "validation-status invalid-status";
+        }
+
+        if (mobileMessage) {
+
+            mobileMessage.className =
+                "password-message text-danger";
+
+            mobileMessage.innerHTML =
+                '<i class="bi bi-exclamation-circle me-1"></i>' +
+                "Use 11 digits (09XXXXXXXXX) " +
+                "or +63 format (+639XXXXXXXXX).";
+        }
+
+        return false;
+    }
+
+
+    if (mobile) {
+
+        mobile.addEventListener(
+            "input",
+            validateMobile
+        );
+    }
+
+
+    /* =====================================================
+       PASSWORD STRENGTH
+       ===================================================== */
+
+    function checkPasswordStrength(
+        value = null
+    ) {
+
+        if (!password) {
+            return false;
+        }
+
+        if (value === null) {
+            value = password.value;
+        }
+
+        if (!passwordMessage) {
+            return false;
+        }
+
+        if (value.length === 0) {
 
             password.classList.remove(
                 "is-valid",
                 "is-invalid"
             );
 
+            passwordMessage.className =
+                "password-message d-none";
+
+            passwordMessage.innerHTML = "";
+
             return false;
         }
 
-
-        /* Individual requirements */
-
         const hasLength =
-            pass.length >= 8;
+            value.length >= 8;
 
         const hasUpper =
-            /[A-Z]/.test(pass);
+            /[A-Z]/.test(value);
 
         const hasLower =
-            /[a-z]/.test(pass);
+            /[a-z]/.test(value);
 
         const hasNumber =
-            /[0-9]/.test(pass);
+            /[0-9]/.test(value);
 
         const hasSpecial =
-            /[!@#$%^&*]/.test(pass);
-
+            /[^A-Za-z0-9]/.test(value);
 
         const score =
             Number(hasLength) +
@@ -172,68 +597,79 @@ document.addEventListener("DOMContentLoaded", function () {
             Number(hasNumber) +
             Number(hasSpecial);
 
+        passwordMessage.classList.remove(
+            "d-none"
+        );
 
-        /* =====================================================
-           WEAK
-           ===================================================== */
+
+        /* WEAK */
 
         if (
             !hasLength ||
             score <= 2
         ) {
 
-            password.classList.remove("is-valid");
+            password.classList.remove(
+                "is-valid"
+            );
 
-            password.classList.add("is-invalid");
+            password.classList.add(
+                "is-invalid"
+            );
 
             passwordMessage.className =
                 "password-message text-danger";
 
             passwordMessage.innerHTML =
-                '<i class="bi bi-exclamation-circle-fill me-1"></i>' +
-                'Weak Password — use at least 8 characters, ' +
-                'uppercase, lowercase, number, and special character.';
+                '<i class="bi bi-exclamation-circle me-1"></i>' +
+                "Weak Password — use at least 8 " +
+                "characters, uppercase, lowercase, " +
+                "number, and special character.";
 
             return false;
         }
 
 
-        /* =====================================================
-           GOOD
-           ===================================================== */
+        /* GOOD */
 
         if (score < 5) {
 
-            password.classList.remove("is-invalid");
+            password.classList.remove(
+                "is-invalid"
+            );
 
-            password.classList.add("is-valid");
+            password.classList.add(
+                "is-valid"
+            );
 
             passwordMessage.className =
                 "password-message text-warning";
 
             passwordMessage.innerHTML =
-                '<i class="bi bi-check-circle-fill me-1"></i>' +
-                'Good Password — add the missing requirements ' +
-                'to make it Strong.';
+                '<i class="bi bi-check-circle me-1"></i>' +
+                "Good Password — add more variety " +
+                "for a stronger password.";
 
             return false;
         }
 
 
-        /* =====================================================
-           STRONG
-           ===================================================== */
+        /* STRONG */
 
-        password.classList.remove("is-invalid");
+        password.classList.remove(
+            "is-invalid"
+        );
 
-        password.classList.add("is-valid");
+        password.classList.add(
+            "is-valid"
+        );
 
         passwordMessage.className =
             "password-message text-success";
 
         passwordMessage.innerHTML =
             '<i class="bi bi-check-circle-fill me-1"></i>' +
-            'Strong Password';
+            "Strong Password";
 
         return true;
     }
@@ -243,92 +679,109 @@ document.addEventListener("DOMContentLoaded", function () {
 
         password.addEventListener(
             "input",
-            checkPasswordStrength
+            function () {
+
+                checkPasswordStrength(
+                    password.value
+                );
+
+                if (
+                    confirm &&
+                    confirm.value !== ""
+                ) {
+
+                    validatePasswordMatch();
+                }
+            }
         );
-
     }
 
 
-    /* =========================================================
+    /* =====================================================
        CONFIRM PASSWORD
-       ========================================================= */
+       ===================================================== */
 
-    let confirmMessage =
-        document.getElementById("confirmMessage");
+    function validatePasswordMatch() {
 
+        if (
+            !password ||
+            !confirm
+        ) {
 
-    if (confirm && !confirmMessage) {
-
-        confirmMessage =
-            document.createElement("div");
-
-        confirmMessage.id =
-            "confirmMessage";
-
-        confirmMessage.className =
-            "password-message";
-
-        confirm.parentElement.parentElement
-            .insertAdjacentElement(
-                "afterend",
-                confirmMessage
-            );
-    }
-
-
-    function checkPasswordMatch() {
-
-        if (!confirm || !confirmMessage) {
             return false;
         }
 
-        if (confirm.value === "") {
+        if (
+            confirm.value === ""
+        ) {
 
             confirm.classList.remove(
                 "is-valid",
                 "is-invalid"
             );
 
-            confirmMessage.innerHTML = "";
+            if (confirmMessage) {
 
-            confirmMessage.className =
-                "password-message d-none";
+                confirmMessage.className =
+                    "password-message d-none";
+
+                confirmMessage.innerHTML = "";
+            }
 
             return false;
         }
 
 
-        if (password.value === confirm.value) {
+        /* MATCH */
 
-            confirm.classList.remove("is-invalid");
+        if (
+            confirm.value ===
+            password.value
+        ) {
 
-            confirm.classList.add("is-valid");
+            confirm.classList.remove(
+                "is-invalid"
+            );
 
-            confirmMessage.className =
-                "password-message text-success";
+            confirm.classList.add(
+                "is-valid"
+            );
 
-            confirmMessage.innerHTML =
-                '<i class="bi bi-check-circle-fill me-1"></i>' +
-                'Passwords match';
+            if (confirmMessage) {
+
+                confirmMessage.className =
+                    "password-message text-success";
+
+                confirmMessage.innerHTML =
+                    '<i class="bi bi-check-circle-fill me-1"></i>' +
+                    "Passwords match";
+            }
 
             return true;
+        }
 
-        } else {
 
-            confirm.classList.remove("is-valid");
+        /* NOT MATCHING */
 
-            confirm.classList.add("is-invalid");
+        confirm.classList.remove(
+            "is-valid"
+        );
+
+        confirm.classList.add(
+            "is-invalid"
+        );
+
+        if (confirmMessage) {
 
             confirmMessage.className =
                 "password-message text-danger";
 
             confirmMessage.innerHTML =
                 '<i class="bi bi-x-circle-fill me-1"></i>' +
-                'Passwords do not match';
-
-            return false;
+                "Passwords do not match";
         }
 
+        return false;
     }
 
 
@@ -336,510 +789,365 @@ document.addEventListener("DOMContentLoaded", function () {
 
         confirm.addEventListener(
             "input",
-            checkPasswordMatch
+            validatePasswordMatch
         );
-
     }
 
 
-    if (password) {
+    /* =====================================================
+       RECOVERY PASSWORD MESSAGE
+       ===================================================== */
 
-        password.addEventListener(
-            "input",
-            function () {
+    function getRecoveryMessage() {
 
-                if (confirm && confirm.value !== "") {
-                    checkPasswordMatch();
-                }
+        if (!recoveryPass) {
+            return null;
+        }
 
-            }
-        );
+        let message =
+            document.getElementById(
+                "recoveryPasswordMessage"
+            );
 
-    }
+        if (!message) {
 
-
-    /* =========================================================
-       SHOW PASSWORD CHECKBOX
-       ========================================================= */
-
-    if (showPassword) {
-
-        showPassword.addEventListener(
-            "change",
-            function () {
-
-                const type =
-                    this.checked
-                        ? "text"
-                        : "password";
-
-
-                if (password) {
-                    password.type = type;
-                }
-
-                if (confirm) {
-                    confirm.type = type;
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =========================================================
-       USERNAME VALIDATION
-       ========================================================= */
-
-    if (username) {
-
-        username.addEventListener(
-            "input",
-            function () {
-
-                this.value =
-                    this.value
-                        .replace(/\s/g, "")
-                        .replace(
-                            /[^a-zA-Z0-9_]/g,
-                            ""
-                        )
-                        .toLowerCase();
-
-
-                const value =
-                    this.value.trim();
-
-
-                if (value === "") {
-
-                    username.classList.remove(
-                        "is-valid",
-                        "is-invalid"
-                    );
-
-                    if (usernameMessage) {
-
-                        usernameMessage.classList.add(
-                            "d-none"
-                        );
-
-                    }
-
-                    if (usernameSuggestion) {
-
-                        usernameSuggestion.classList.add(
-                            "d-none"
-                        );
-
-                    }
-
-                    return;
-                }
-
-
-                const validFormat =
-                    /^[a-z0-9_]{4,20}$/.test(value);
-
-
-                if (!validFormat) {
-
-                    username.classList.remove(
-                        "is-valid"
-                    );
-
-                    username.classList.add(
-                        "is-invalid"
-                    );
-
-
-                    if (usernameMessage) {
-
-                        usernameMessage.classList.remove(
-                            "d-none"
-                        );
-
-                        usernameMessage.innerHTML =
-                            "Username must be 4-20 characters " +
-                            "and contain only letters, numbers, " +
-                            "and underscore.";
-
-                    }
-
-
-                    if (usernameSuggestion) {
-
-                        usernameSuggestion.classList.add(
-                            "d-none"
-                        );
-
-                    }
-
-                    return;
-                }
-
-
-                /*
-                 * Demo taken username.
-                 * Remove this condition when connecting
-                 * the AJAX database availability check.
-                 */
-
-                if (value === "carmina24") {
-
-                    username.classList.remove(
-                        "is-valid"
-                    );
-
-                    username.classList.add(
-                        "is-invalid"
-                    );
-
-
-                    if (usernameMessage) {
-
-                        usernameMessage.classList.remove(
-                            "d-none"
-                        );
-
-                        usernameMessage.innerHTML =
-                            '<i class="bi bi-exclamation-circle-fill me-1"></i>' +
-                            "That username is taken. Try another.";
-
-                    }
-
-
-                    if (usernameSuggestion) {
-
-                        usernameSuggestion.classList.remove(
-                            "d-none"
-                        );
-
-                        usernameSuggestion.innerHTML =
-                            "Available: <strong>c60836353</strong>";
-
-                    }
-
-                    return;
-                }
-
-
-                /* Valid */
-
-                username.classList.remove(
-                    "is-invalid"
+            message =
+                document.createElement(
+                    "div"
                 );
 
-                username.classList.add(
-                    "is-valid"
+            message.id =
+                "recoveryPasswordMessage";
+
+            message.className =
+                "password-message d-none";
+
+            const parent =
+                recoveryPass.parentElement;
+
+            if (parent) {
+
+                parent.insertAdjacentElement(
+                    "afterend",
+                    message
+                );
+            }
+        }
+
+        return message;
+    }
+
+
+    /* =====================================================
+       RECOVERY PASSWORD STRENGTH
+       ===================================================== */
+
+    function checkRecoveryPasswordStrength() {
+
+        if (!recoveryPass) {
+            return true;
+        }
+
+        const message =
+            getRecoveryMessage();
+
+        if (!message) {
+            return true;
+        }
+
+        const value =
+            recoveryPass.value;
+
+
+        if (value === "") {
+
+            recoveryPass.classList.remove(
+                "is-valid",
+                "is-invalid"
+            );
+
+            message.className =
+                "password-message d-none";
+
+            message.innerHTML = "";
+
+            return true;
+        }
+
+
+        const hasLength =
+            value.length >= 8;
+
+        const hasUpper =
+            /[A-Z]/.test(value);
+
+        const hasLower =
+            /[a-z]/.test(value);
+
+        const hasNumber =
+            /[0-9]/.test(value);
+
+        const hasSpecial =
+            /[^A-Za-z0-9]/.test(value);
+
+        const score =
+            Number(hasLength) +
+            Number(hasUpper) +
+            Number(hasLower) +
+            Number(hasNumber) +
+            Number(hasSpecial);
+
+
+        message.classList.remove(
+            "d-none"
+        );
+
+
+        /* WEAK */
+
+        if (
+            !hasLength ||
+            score <= 2
+        ) {
+
+            recoveryPass.classList.remove(
+                "is-valid"
+            );
+
+            recoveryPass.classList.add(
+                "is-invalid"
+            );
+
+            message.className =
+                "password-message text-danger";
+
+            message.innerHTML =
+                '<i class="bi bi-exclamation-circle me-1"></i>' +
+                "Weak Password — use at least 8 " +
+                "characters, uppercase, lowercase, " +
+                "number, and special character.";
+
+            return false;
+        }
+
+
+        /* GOOD */
+
+        if (score < 5) {
+
+            recoveryPass.classList.remove(
+                "is-invalid"
+            );
+
+            recoveryPass.classList.add(
+                "is-valid"
+            );
+
+            message.className =
+                "password-message text-warning";
+
+            message.innerHTML =
+                '<i class="bi bi-check-circle me-1"></i>' +
+                "Good Password — add more variety " +
+                "for a stronger password.";
+
+            return false;
+        }
+
+
+        /* STRONG */
+
+        recoveryPass.classList.remove(
+            "is-invalid"
+        );
+
+        recoveryPass.classList.add(
+            "is-valid"
+        );
+
+        message.className =
+            "password-message text-success";
+
+        message.innerHTML =
+            '<i class="bi bi-check-circle-fill me-1"></i>' +
+            "Strong Password";
+
+        return true;
+    }
+
+
+    if (recoveryPass) {
+
+        recoveryPass.addEventListener(
+            "input",
+            function () {
+
+                checkRecoveryPasswordStrength();
+
+                if (
+                    recoveryPassConfirm &&
+                    recoveryPassConfirm.value !== ""
+                ) {
+
+                    validateRecoveryMatch();
+                }
+            }
+        );
+    }
+
+
+    /* =====================================================
+       RECOVERY CONFIRM MESSAGE
+       ===================================================== */
+
+    let recoveryConfirmMessage = null;
+
+
+    function getRecoveryConfirmMessage() {
+
+        if (!recoveryPassConfirm) {
+            return null;
+        }
+
+        if (recoveryConfirmMessage) {
+            return recoveryConfirmMessage;
+        }
+
+        recoveryConfirmMessage =
+            document.getElementById(
+                "recoveryConfirmMessage"
+            );
+
+        if (!recoveryConfirmMessage) {
+
+            recoveryConfirmMessage =
+                document.createElement(
+                    "div"
                 );
 
+            recoveryConfirmMessage.id =
+                "recoveryConfirmMessage";
 
-                if (usernameMessage) {
+            recoveryConfirmMessage.className =
+                "password-message d-none";
 
-                    usernameMessage.classList.add(
-                        "d-none"
-                    );
+            const parent =
+                recoveryPassConfirm.parentElement;
 
-                }
+            if (parent) {
 
-
-                if (usernameSuggestion) {
-
-                    usernameSuggestion.classList.add(
-                        "d-none"
-                    );
-
-                }
-
+                parent.insertAdjacentElement(
+                    "afterend",
+                    recoveryConfirmMessage
+                );
             }
-        );
+        }
 
+        return recoveryConfirmMessage;
     }
 
 
-    /* =========================================================
-       EMAIL VALIDATION
-       ========================================================= */
+    /* =====================================================
+       RECOVERY CONFIRM PASSWORD
+       ===================================================== */
 
-    const emailRegex =
-        /^[A-Za-z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com|live\.com|isu\.edu\.ph)$/;
+    function validateRecoveryMatch() {
 
+        if (
+            !recoveryPass ||
+            !recoveryPassConfirm
+        ) {
 
-    if (email) {
+            return true;
+        }
 
-        email.addEventListener(
-            "input",
-            function () {
+        const message =
+            getRecoveryConfirmMessage();
 
-                const value =
-                    this.value.trim().toLowerCase();
-
-
-                if (value === "") {
-
-                    email.classList.remove(
-                        "is-valid",
-                        "is-invalid"
-                    );
-
-                    if (emailMessage) {
-
-                        emailMessage.classList.add(
-                            "d-none"
-                        );
-
-                    }
-
-                    return;
-                }
+        if (!message) {
+            return true;
+        }
 
 
-                if (emailRegex.test(value)) {
+        /* EMPTY */
 
-                    email.classList.remove(
-                        "is-invalid"
-                    );
+        if (
+            recoveryPassConfirm.value === ""
+        ) {
 
-                    email.classList.add(
-                        "is-valid"
-                    );
+            recoveryPassConfirm.classList.remove(
+                "is-valid",
+                "is-invalid"
+            );
 
-                    if (emailMessage) {
+            message.className =
+                "password-message d-none";
 
-                        emailMessage.classList.add(
-                            "d-none"
-                        );
+            message.innerHTML = "";
 
-                    }
+            return true;
+        }
 
-                } else {
 
-                    email.classList.remove(
-                        "is-valid"
-                    );
+        /* MATCH */
 
-                    email.classList.add(
-                        "is-invalid"
-                    );
+        if (
+            recoveryPass.value ===
+            recoveryPassConfirm.value
+        ) {
 
-                    if (emailMessage) {
+            recoveryPassConfirm.classList.remove(
+                "is-invalid"
+            );
 
-                        emailMessage.classList.remove(
-                            "d-none"
-                        );
+            recoveryPassConfirm.classList.add(
+                "is-valid"
+            );
 
-                        emailMessage.innerHTML =
-                            "Please use a valid Gmail, Yahoo, " +
-                            "Outlook, Hotmail, Live, or ISU email address.";
+            message.className =
+                "password-message text-success";
 
-                    }
+            message.innerHTML =
+                '<i class="bi bi-check-circle-fill me-1"></i>' +
+                "Recovery passwords match";
 
-                }
+            return true;
+        }
 
-            }
+
+        /* NOT MATCHING */
+
+        recoveryPassConfirm.classList.remove(
+            "is-valid"
         );
 
-    }
-
-
-    /* =========================================================
-       MOBILE NUMBER
-       ========================================================= */
-
-    if (mobile) {
-
-        mobile.addEventListener(
-            "input",
-            function () {
-
-                this.value =
-                    this.value.replace(
-                        /\D/g,
-                        ""
-                    );
-
-
-                const value =
-                    this.value;
-
-
-                if (value === "") {
-
-                    mobile.classList.remove(
-                        "is-valid",
-                        "is-invalid"
-                    );
-
-                    if (mobileMessage) {
-
-                        mobileMessage.classList.add(
-                            "d-none"
-                        );
-
-                    }
-
-                    return;
-                }
-
-
-                const valid =
-                    /^09\d{9}$/.test(value);
-
-
-                if (valid) {
-
-                    mobile.classList.remove(
-                        "is-invalid"
-                    );
-
-                    mobile.classList.add(
-                        "is-valid"
-                    );
-
-                    if (mobileMessage) {
-
-                        mobileMessage.classList.add(
-                            "d-none"
-                        );
-
-                    }
-
-                } else {
-
-                    mobile.classList.remove(
-                        "is-valid"
-                    );
-
-                    mobile.classList.add(
-                        "is-invalid"
-                    );
-
-                    if (mobileMessage) {
-
-                        mobileMessage.classList.remove(
-                            "d-none"
-                        );
-
-                        mobileMessage.innerHTML =
-                            "Enter a valid Philippine mobile " +
-                            "number (09XXXXXXXXX).";
-
-                    }
-
-                }
-
-            }
+        recoveryPassConfirm.classList.add(
+            "is-invalid"
         );
 
+        message.className =
+            "password-message text-danger";
+
+        message.innerHTML =
+            '<i class="bi bi-x-circle-fill me-1"></i>' +
+            "Recovery passwords do not match";
+
+        return false;
     }
-
-
-    /* =========================================================
-       RECOVERY PASSWORD MATCH
-       ========================================================= */
-
-    let recoveryMatch =
-        document.getElementById("recoveryMatch");
 
 
     if (recoveryPassConfirm) {
 
-        if (!recoveryMatch) {
-
-            recoveryMatch =
-                document.createElement("small");
-
-            recoveryMatch.id =
-                "recoveryMatch";
-
-            recoveryMatch.className =
-                "password-message";
-
-            recoveryPassConfirm
-                .parentElement.parentElement
-                .insertAdjacentElement(
-                    "afterend",
-                    recoveryMatch
-                );
-
-        }
-
-
-        function checkRecoveryMatch() {
-
-            if (recoveryPassConfirm.value === "") {
-
-                recoveryMatch.innerHTML = "";
-
-                recoveryMatch.className =
-                    "password-message d-none";
-
-                return false;
-            }
-
-
-            if (
-                recoveryPass.value ===
-                recoveryPassConfirm.value
-            ) {
-
-                recoveryMatch.className =
-                    "password-message text-success";
-
-                recoveryMatch.innerHTML =
-                    '<i class="bi bi-check-circle-fill me-1"></i>' +
-                    "Recovery secrets match";
-
-                return true;
-
-            } else {
-
-                recoveryMatch.className =
-                    "password-message text-danger";
-
-                recoveryMatch.innerHTML =
-                    '<i class="bi bi-x-circle-fill me-1"></i>' +
-                    "Recovery secrets do not match";
-
-                return false;
-            }
-
-        }
-
-
         recoveryPassConfirm.addEventListener(
             "input",
-            checkRecoveryMatch
+            validateRecoveryMatch
         );
-
-
-        if (recoveryPass) {
-
-            recoveryPass.addEventListener(
-                "input",
-                function () {
-
-                    if (
-                        recoveryPassConfirm.value !== ""
-                    ) {
-
-                        checkRecoveryMatch();
-
-                    }
-
-                }
-            );
-
-        }
-
     }
 
 
-    /* =========================================================
-       FORM SUBMIT
-       ========================================================= */
+    /* =====================================================
+       FORM SUBMISSION
+       ===================================================== */
 
     if (form) {
 
@@ -850,20 +1158,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 let valid = true;
 
 
-                /* Username */
+                /* USERNAME */
 
                 if (
                     username &&
-                    !/^[a-z0-9_]{4,20}$/.test(
-                        username.value
-                    )
+                    !validateUsername()
                 ) {
 
                     e.preventDefault();
-
-                    username.dispatchEvent(
-                        new Event("input")
-                    );
 
                     username.focus();
 
@@ -871,20 +1173,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
 
-                /* Email */
+                /* EMAIL */
 
                 if (
                     email &&
-                    !emailRegex.test(
-                        email.value.trim()
-                    )
+                    !validateEmail()
                 ) {
 
                     e.preventDefault();
-
-                    email.dispatchEvent(
-                        new Event("input")
-                    );
 
                     email.focus();
 
@@ -892,21 +1188,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
 
-                /* Mobile */
+                /* MOBILE */
 
                 if (
                     mobile &&
                     mobile.value !== "" &&
-                    !/^09\d{9}$/.test(
-                        mobile.value
-                    )
+                    !validateMobile()
                 ) {
 
                     e.preventDefault();
-
-                    mobile.dispatchEvent(
-                        new Event("input")
-                    );
 
                     mobile.focus();
 
@@ -914,13 +1204,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
 
-                /* Password */
+                /* PASSWORD */
 
-                const passwordStrong =
-                    checkPasswordStrength();
-
-
-                if (!passwordStrong) {
+                if (
+                    password &&
+                    !checkPasswordStrength(
+                        password.value
+                    )
+                ) {
 
                     e.preventDefault();
 
@@ -930,13 +1221,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
 
-                /* Confirm Password */
+                /* CONFIRM PASSWORD */
 
-                const passwordsMatch =
-                    checkPasswordMatch();
-
-
-                if (!passwordsMatch) {
+                if (
+                    password &&
+                    confirm &&
+                    !validatePasswordMatch()
+                ) {
 
                     e.preventDefault();
 
@@ -946,35 +1237,48 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
 
-                /* Recovery Password */
+                /* RECOVERY PASSWORD */
 
-                if (
-                    recoveryPass &&
-                    recoveryPassConfirm
-                ) {
+                if (recoveryPass) {
 
                     if (
-                        recoveryPass.value !==
-                        recoveryPassConfirm.value
+                        recoveryPass.value !== "" &&
+                        !checkRecoveryPasswordStrength()
                     ) {
 
                         e.preventDefault();
 
-                        checkRecoveryMatch();
+                        recoveryPass.focus();
+
+                        valid = false;
+                    }
+                }
+
+
+                /* CONFIRM RECOVERY PASSWORD */
+
+                if (
+                    recoveryPass &&
+                    recoveryPassConfirm &&
+                    recoveryPassConfirm.value !== ""
+                ) {
+
+                    if (
+                        !validateRecoveryMatch()
+                    ) {
+
+                        e.preventDefault();
 
                         recoveryPassConfirm.focus();
 
                         valid = false;
                     }
-
                 }
 
 
                 return valid;
-
             }
         );
-
     }
 
 });

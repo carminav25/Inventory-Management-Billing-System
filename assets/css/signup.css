@@ -11,12 +11,13 @@
     --danger: #dc3545;
     --success: #198754;
     --warning: #c58a00;
-}
 
+    --input-border: #d9d9d9;
+}
 
 /* =========================================================
    RESET
-   ========================================================= */
+========================================================= */
 
 * {
     margin: 0;
@@ -25,33 +26,20 @@
     font-family: 'Inter', sans-serif;
 }
 
-
 /* =========================================================
    BODY
-   ========================================================= */
+========================================================= */
 
 body {
     background-color: #f5f8f5;
-
-    /*
-    Optional background image.
-
-    background-image: url('../images/background.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    */
-
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
 }
 
-
 /* =========================================================
    MAIN CONTAINER
-   ========================================================= */
+========================================================= */
 
 .main-container {
     min-height: 100vh;
@@ -60,94 +48,64 @@ body {
     z-index: 10;
 }
 
-
 /* =========================================================
-   LEFT PANEL BRANDING
-   ========================================================= */
+   LEFT PANEL
+========================================================= */
 
 .logo {
     width: 140px;
     height: 140px;
     object-fit: contain;
-
     border-radius: 50%;
     border: 4px solid #fbdc00;
-
-    box-shadow:
-        0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
-
 
 .brand-title {
     color: var(--isu-green);
-
     font-weight: 800;
     font-size: 26px;
-
     margin-top: 10px;
-
     letter-spacing: 0.5px;
 }
 
-
 .brand-subtitle {
     color: var(--text-dark);
-
     font-weight: 500;
     font-size: 16px;
 }
 
-
 .system-title {
     color: var(--isu-green);
-
     font-weight: 700;
     font-size: 28px;
-
     line-height: 1.2;
 }
 
-
 .system-desc {
     color: var(--text-muted);
-
     font-size: 15px;
-
     line-height: 1.6;
 }
 
-
-/* =========================================================
-   FEATURES
-   ========================================================= */
-
 .feature-item h5 {
     color: var(--isu-green);
-
     font-weight: 600;
     font-size: 15px;
-
     margin-bottom: 3px;
 }
 
-
 .feature-item p {
     color: var(--text-muted);
-
     font-size: 13px;
-
     margin-bottom: 0;
-
     line-height: 1.5;
 }
-
 
 .feature-icon {
     width: 45px;
     height: 45px;
-
     background: var(--isu-light);
-
     border-radius: 50%;
 
     display: flex;
@@ -157,41 +115,33 @@ body {
     margin-right: 15px;
 
     color: var(--isu-green);
-
     font-size: 20px;
-
     flex-shrink: 0;
 }
 
-
 /* =========================================================
-   RIGHT PANEL / FORM CARD
-   ========================================================= */
+   SIGNUP CARD
+========================================================= */
 
 .signup-card {
     background: #ffffff;
-
     border-radius: 24px;
-
     padding: 40px;
-
-    box-shadow:
-        0 15px 45px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.06);
 
     max-width: 550px;
+    width: 100%;
 }
-
 
 /* =========================================================
    TOP ICON
-   ========================================================= */
+========================================================= */
 
 .top-icon {
     width: 70px;
     height: 70px;
 
     border-radius: 50%;
-
     background: var(--isu-light);
 
     display: flex;
@@ -199,62 +149,47 @@ body {
     align-items: center;
 
     color: var(--isu-green);
-
     font-size: 32px;
 }
 
-
 /* =========================================================
    FORM TITLE
-   ========================================================= */
+========================================================= */
 
 .form-title {
     color: var(--isu-green);
-
     font-weight: 700;
     font-size: 26px;
 }
 
-
 /* =========================================================
    ROLE ASSIGNMENT
-   ========================================================= */
+========================================================= */
 
 .role-label {
     cursor: pointer;
 }
 
-
 .role-card {
     border: 1.5px solid #e0e0e0;
-
     border-radius: 12px;
-
     padding: 15px;
 
     transition: all 0.2s ease-in-out;
 
     background: #ffffff;
-
     height: 100%;
 }
-
 
 .text-isu-green {
     color: var(--isu-green) !important;
 }
-
-
-/* =========================================================
-   CUSTOM RADIO
-   ========================================================= */
 
 .custom-radio {
     width: 18px;
     height: 18px;
 
     border: 2px solid #ccc;
-
     border-radius: 50%;
 
     display: flex;
@@ -265,7 +200,6 @@ body {
 
     transition: 0.2s;
 }
-
 
 .custom-radio::after {
     content: "";
@@ -282,497 +216,26 @@ body {
     transition: 0.2s;
 }
 
-
-/* =========================================================
-   CHECKED ROLE
-   ========================================================= */
-
 .peer:checked + .role-card {
     border-color: var(--isu-green);
-
     background: #f4fbf7;
 }
-
 
 .peer:checked + .role-card .custom-radio {
     border-color: var(--isu-green);
 }
 
-
 .peer:checked + .role-card .custom-radio::after {
     opacity: 1;
 }
 
-
-/* =========================================================
-   NORMAL INPUTS
-   ========================================================= */
-
-.input-icon-wrapper {
-    position: relative;
-}
-
-
-.input-icon-wrapper .left-icon {
-    position: absolute;
-
-    left: 16px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    color: #999;
-
-    font-size: 18px;
-
-    z-index: 5;
-
-    pointer-events: none;
-}
-
-
-.custom-input {
-    height: 48px;
-
-    border-radius: 12px;
-
-    border: 1px solid #e0e0e0;
-
-    padding-left: 45px;
-
-    font-size: 14px;
-
-    color: var(--text-dark);
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-.custom-input:focus {
-    border-color: var(--isu-green);
-
-    box-shadow:
-        0 0 0 3px rgba(6, 95, 47, 0.1);
-}
-
-
-/* =========================================================
-   VALID / INVALID NORMAL INPUTS
-   ========================================================= */
-
-.custom-input.is-valid {
-    border-color: var(--success) !important;
-
-    box-shadow:
-        0 0 0 1px var(--success) !important;
-
-    background-image: none !important;
-}
-
-
-.custom-input.is-invalid {
-    border-color: var(--danger) !important;
-
-    box-shadow:
-        0 0 0 1px var(--danger) !important;
-
-    background-image: none !important;
-}
-
-
-/* =========================================================
-   PASSWORD EYE ICON
-   ========================================================= */
-
-.password-toggle-icon {
-    position: absolute;
-
-    right: 16px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    cursor: pointer;
-
-    color: #999;
-
-    font-size: 18px;
-
-    z-index: 10;
-
-    transition: color 0.2s ease;
-}
-
-
-.password-toggle-icon:hover {
-    color: var(--isu-green);
-}
-
-
-/* =========================================================
-   FLOATING FIELD
-   Used by Username / Password / Confirm Password
-   ========================================================= */
-
-.floating-field {
-    position: relative;
-
-    width: 100%;
-}
-
-
-.floating-input {
-    width: 100%;
-
-    height: 55px;
-
-    border: 1px solid #b8b8b8;
-
-    border-radius: 6px;
-
-    background: #ffffff;
-
-    padding: 17px 45px 5px 15px;
-
-    font-size: 15px;
-
-    color: #222222;
-
-    outline: none;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-/* Hide native placeholder */
-
-.floating-input::placeholder {
-    color: transparent;
-}
-
-
-/* =========================================================
-   FLOATING LABEL
-   ========================================================= */
-
-.floating-field label {
-    position: absolute;
-
-    left: 10px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    padding: 0 5px;
-
-    background: #ffffff;
-
-    color: #777777;
-
-    font-size: 14px;
-
-    pointer-events: none;
-
-    transition:
-        top 0.15s ease,
-        font-size 0.15s ease,
-        color 0.15s ease;
-}
-
-
-/* Move label to border */
-
-.floating-input:focus + label,
-.floating-input:not(:placeholder-shown) + label {
-    top: 0;
-
-    transform: translateY(-50%);
-
-    font-size: 12px;
-
-    color: var(--isu-green);
-}
-
-
-/* =========================================================
-   FLOATING INPUT FOCUS
-   ========================================================= */
-
-.floating-input:focus {
-    border-color: var(--isu-green);
-
-    box-shadow:
-        0 0 0 1px var(--isu-green);
-}
-
-
-/* =========================================================
-   FLOATING INPUT VALID
-   ========================================================= */
-
-.floating-input.is-valid {
-    border-color: var(--success) !important;
-
-    box-shadow:
-        0 0 0 1px var(--success) !important;
-
-    background-image: none !important;
-}
-
-
-.floating-input.is-valid + label {
-    color: var(--success);
-}
-
-
-/* =========================================================
-   FLOATING INPUT INVALID
-   ========================================================= */
-
-.floating-input.is-invalid {
-    border-color: var(--danger) !important;
-
-    box-shadow:
-        0 0 0 1px var(--danger) !important;
-
-    background-image: none !important;
-}
-
-
-.floating-input.is-invalid + label {
-    color: var(--danger);
-}
-
-
-/* =========================================================
-   USERNAME
-   ========================================================= */
-
-.username-field-wrapper {
-    width: 100%;
-}
-
-
-.username-field-wrapper .floating-input {
-    padding-right: 15px;
-}
-
-
-/* Username validation icon */
-
-.username-field-wrapper .validation-icon {
-    position: absolute;
-
-    right: 14px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    font-size: 16px;
-
-    z-index: 5;
-
-    pointer-events: none;
-}
-
-
-.username-valid {
-    color: var(--success) !important;
-}
-
-
-.username-invalid {
-    color: var(--danger) !important;
-}
-
-
-/* =========================================================
-   VALIDATION MESSAGE
-   ========================================================= */
-
-.validation-message {
-    display: block;
-
-    margin-top: 5px;
-    margin-left: 2px;
-
-    font-size: 12px;
-
-    line-height: 1.4;
-
-    font-weight: 500;
-}
-
-
-.validation-message.d-none {
-    display: none !important;
-}
-
-
-/* =========================================================
-   USERNAME SUGGESTION
-   ========================================================= */
-
-.username-suggestion {
-    display: block;
-
-    margin-top: 5px;
-    margin-left: 2px;
-
-    color: var(--isu-green);
-
-    font-size: 12px;
-
-    font-weight: 500;
-}
-
-
-.username-suggestion.d-none {
-    display: none !important;
-}
-
-
-/* =========================================================
-   PASSWORD MESSAGE
-   ========================================================= */
-
-.password-message {
-    display: block;
-
-    margin-top: 5px;
-
-    padding-left: 4px;
-
-    font-size: 12px;
-
-    line-height: 1.4;
-
-    font-weight: 500;
-}
-
-
-.password-message.d-none {
-    display: none !important;
-}
-
-
-.password-message.text-danger {
-    color: var(--danger) !important;
-}
-
-
-.password-message.text-warning {
-    color: var(--warning) !important;
-}
-
-
-.password-message.text-success {
-    color: var(--success) !important;
-}
-
-
-/* =========================================================
-   SHOW PASSWORD
-   ========================================================= */
-
-.show-password-row {
-    margin-top: 8px;
-
-    margin-bottom: 18px;
-}
-
-
-.show-password-label {
-    display: flex;
-
-    align-items: center;
-
-    gap: 9px;
-
-    color: #222222;
-
-    font-size: 14px;
-
-    cursor: pointer;
-
-    user-select: none;
-}
-
-
-.show-password-label input {
-    width: 18px;
-    height: 18px;
-
-    accent-color: #1267d6;
-
-    cursor: pointer;
-}
-
-
-/* =========================================================
-   BUTTON
-   ========================================================= */
-
-.submit-btn {
-    background: var(--isu-green);
-
-    border: none;
-
-    border-radius: 12px;
-
-    height: 50px;
-
-    font-size: 16px;
-
-    font-weight: 600;
-
-    transition:
-        background 0.3s ease,
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
-}
-
-
-.submit-btn:hover {
-    background: var(--isu-green-hover);
-
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 5px 15px rgba(6, 95, 47, 0.2);
-}
-
-
-.submit-btn:active {
-    transform: translateY(0);
-}
-
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
-
-.form-footer a {
-    color: var(--isu-green);
-
-    text-decoration: none;
-}
-
-
-.form-footer a:hover {
-    text-decoration: underline;
-}
-
-
 /* =========================================================
    ROLE ASSIGNMENT BOX
-   ========================================================= */
+========================================================= */
 
 .role-assignment-box {
+    width: 100%;
+
     background-color: #f4fbf7;
 
     border: 1px solid #cce8d6;
@@ -781,23 +244,15 @@ body {
 
     padding: 20px;
 
-    box-shadow:
-        0 4px 15px rgba(6, 95, 47, 0.03);
+    box-shadow: 0 4px 15px rgba(6, 95, 47, 0.03);
 }
-
 
 .border-success-subtle {
     border-color: #cce8d6 !important;
 }
 
-
-/* =========================================================
-   ROLE BADGES
-   ========================================================= */
-
 .role-badge {
     font-size: 11px;
-
     font-weight: 600;
 
     padding: 6px 12px;
@@ -809,520 +264,640 @@ body {
     text-align: left;
 
     display: flex;
-
     align-items: center;
 }
 
-
-/* Super Admin */
-
 .badge-super-admin {
     background-color: var(--isu-green);
-
     color: #ffffff;
-
     border: 1px solid var(--isu-green);
 }
-
-
-/* Admin */
 
 .badge-admin {
     background-color: #ffffff;
-
     color: var(--isu-green);
-
     border: 1px solid var(--isu-green);
 }
 
-
-/* Viewer */
-
 .badge-viewer {
     background-color: #f8f9fa;
-
     color: #6c757d;
-
     border: 1px solid #dee2e6;
 }
 
+/* =========================================================
+   INPUT WRAPPER
+========================================================= */
+
+.input-icon-wrapper {
+    position: relative;
+    width: 100%;
+}
 
 /* =========================================================
-   ALERT
+   REMOVE LEFT ICONS
+========================================================= */
+
+.input-icon-wrapper .left-icon,
+.signup-card .left-icon,
+.role-assignment-box .left-icon {
+    display: none !important;
+}
+
+/* =========================================================
+   ALL NORMAL INPUTS
+========================================================= */
+
+.signup-card input.form-control,
+.signup-card input.custom-input,
+.signup-card input.floating-input {
+    width: 100%;
+
+    height: 48px;
+
+    border: 1px solid var(--input-border);
+
+    border-radius: 11px;
+
+    background: #ffffff;
+
+    color: var(--text-dark);
+
+    font-size: 14px;
+
+    padding: 0 16px !important;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+/* =========================================================
+   PLACEHOLDER
+========================================================= */
+
+.signup-card input::placeholder {
+    color: #718096;
+    opacity: 1;
+}
+
+/* =========================================================
+   NORMAL INPUT FOCUS
+========================================================= */
+
+.signup-card input.form-control:focus,
+.signup-card input.custom-input:focus,
+.signup-card input.floating-input:focus {
+    border-color: var(--isu-green) !important;
+
+    box-shadow:
+        0 0 0 2px rgba(6, 95, 47, 0.08);
+
+    background: #ffffff;
+}
+
+/* =========================================================
+   FLOATING FIELD
+========================================================= */
+
+.floating-field {
+    position: relative;
+    width: 100%;
+}
+
+.floating-input {
+    display: block;
+}
+
+.floating-field label {
+    position: absolute;
+
+    left: 14px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #718096;
+
+    background: transparent;
+
+    font-size: 14px;
+
+    padding: 0 4px;
+
+    pointer-events: none;
+
+    transition:
+        top 0.18s ease,
+        transform 0.18s ease,
+        color 0.18s ease,
+        font-size 0.18s ease;
+}
+
+.floating-input:focus + label,
+.floating-input:not(:placeholder-shown) + label {
+    top: 0;
+
+    transform: translateY(-50%);
+
+    background: #ffffff;
+
+    color: var(--isu-green);
+
+    font-size: 11px;
+
+    font-weight: 500;
+}
+
+/* =========================================================
+   VALIDATION STATUS
+========================================================= */
+
+.validation-status {
+    position: absolute;
+
+    right: 13px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-size: 14px;
+
+    pointer-events: none;
+
+    z-index: 5;
+}
+
+.valid-status {
+    color: var(--success) !important;
+}
+
+.invalid-status {
+    color: var(--danger) !important;
+}
+
+/* =========================================================
+   VALID INPUT
+========================================================= */
+
+.custom-input.is-valid,
+.floating-input.is-valid {
+    border-color: var(--success) !important;
+
+    background: #ffffff !important;
+
+    box-shadow: none !important;
+}
+
+/* =========================================================
+   INVALID INPUT
+========================================================= */
+
+.custom-input.is-invalid,
+.floating-input.is-invalid {
+    border-color: var(--danger) !important;
+
+    background: #ffffff !important;
+
+    box-shadow: none !important;
+}
+
+/* =========================================================
+   VALID FLOATING LABEL
+========================================================= */
+
+.floating-input.is-valid + label {
+    color: var(--success);
+    background: #ffffff;
+}
+
+/* =========================================================
+   PASSWORD FIELDS
+   FLOATING LABEL + EYE ICON INSIDE
    ========================================================= */
 
-.alert {
-    border-radius: 10px;
+.password-field,
+.confirm-password-field,
+.recovery-password-field {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
 
-    font-size: 13px;
+/* Password inputs */
+.password-field input,
+.confirm-password-field input,
+.recovery-password-field input {
+    width: 100% !important;
+    height: 48px !important;
+
+    border: 1px solid var(--input-border) !important;
+    border-radius: 11px !important;
+
+    background: #ffffff !important;
+    color: var(--text-dark);
+
+    font-size: 14px;
+
+    /* Space for the eye on the right */
+    padding: 0 45px 0 16px !important;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+
+    box-sizing: border-box;
+}
+
+/* Hide the native placeholder so the floating label is used */
+.password-field input::placeholder,
+.confirm-password-field input::placeholder,
+.recovery-password-field input::placeholder {
+    color: transparent !important;
+    opacity: 0 !important;
+}
+
+/* =========================================================
+   FLOATING PASSWORD LABEL
+   ========================================================= */
+
+.password-field label,
+.confirm-password-field label,
+.recovery-password-field label {
+    position: absolute;
+
+    left: 14px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #718096;
+    background: transparent;
+
+    font-size: 14px;
+    font-weight: 400;
+
+    padding: 0 4px;
+
+    pointer-events: none;
+
+    z-index: 2;
+
+    transition:
+        top 0.18s ease,
+        transform 0.18s ease,
+        color 0.18s ease,
+        font-size 0.18s ease,
+        background-color 0.18s ease;
+}
+
+/* Move label to border when focused or filled */
+.password-field input:focus + label,
+.password-field input:not(:placeholder-shown) + label,
+.confirm-password-field input:focus + label,
+.confirm-password-field input:not(:placeholder-shown) + label,
+.recovery-password-field input:focus + label,
+.recovery-password-field input:not(:placeholder-shown) + label {
+    top: 0;
+
+    transform: translateY(-50%);
+
+    background: #ffffff;
+
+    color: var(--isu-green);
+
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* =========================================================
+   PASSWORD FOCUS
+   ========================================================= */
+
+.password-field input:focus,
+.confirm-password-field input:focus,
+.recovery-password-field input:focus {
+    border-color: var(--isu-green) !important;
+
+    box-shadow:
+        0 0 0 2px rgba(6, 95, 47, 0.08) !important;
+}
+
+/* =========================================================
+   PASSWORD EYE ICON
+   ========================================================= */
+
+.password-toggle-icon {
+    position: absolute !important;
+
+    right: 14px !important;
+    top: 50% !important;
+
+    transform: translateY(-50%) !important;
+
+    width: 24px !important;
+    height: 24px !important;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: #8a99a8;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    z-index: 20;
+
+    background: transparent;
+
+    line-height: 1;
+}
+
+.password-toggle-icon:hover {
+    color: var(--isu-green);
+}
+
+/* =========================================================
+   VALID PASSWORD
+   ========================================================= */
+
+.password-field input.is-valid,
+.confirm-password-field input.is-valid,
+.recovery-password-field input.is-valid {
+    border-color: var(--success) !important;
+
+    background: #edf5ff !important;
+
+    box-shadow: none !important;
+}
+
+/* Keep floating label readable when valid */
+.password-field input.is-valid + label,
+.confirm-password-field input.is-valid + label,
+.recovery-password-field input.is-valid + label {
+    color: var(--success);
+    background: #edf5ff;
+}
+
+/* =========================================================
+   INVALID PASSWORD
+   ========================================================= */
+
+.password-field input.is-invalid,
+.confirm-password-field input.is-invalid,
+.recovery-password-field input.is-invalid {
+    border-color: var(--danger) !important;
+
+    background: #ffffff !important;
+
+    box-shadow: none !important;
+}
+
+/* Keep floating label readable when invalid */
+.password-field input.is-invalid + label,
+.confirm-password-field input.is-invalid + label,
+.recovery-password-field input.is-invalid + label {
+    color: var(--danger);
+    background: #ffffff;
+}
+
+/* =========================================================
+   PASSWORD MESSAGE
+   ========================================================= */
+
+.password-message {
+    display: block;
+
+    margin-top: 6px;
+    margin-bottom: 8px;
+
+    padding-left: 2px;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+
+    font-weight: 500;
+}
+
+.password-message.d-none {
+    display: none !important;
+}
+
+.password-message.text-danger {
+    color: var(--danger) !important;
+}
+
+.password-message.text-warning {
+    color: var(--warning) !important;
+}
+
+.password-message.text-success {
+    color: var(--success) !important;
+}
+
+/* =========================================================
+   REMOVE OLD LEFT PASSWORD ICONS
+   ========================================================= */
+
+.password-field > .left-icon,
+.confirm-password-field > .left-icon,
+.recovery-password-field > .left-icon {
+    display: none !important;
+}
+
+/* =========================================================
+   RECOVERY PASSWORD
+   ========================================================= */
+
+.recovery-password-field:last-child {
+    margin-bottom: 0;
+}
+
+/* =========================================================
+   PASSWORD AUTOFILL
+   ========================================================= */
+
+.signup-card .password-field input:-webkit-autofill,
+.signup-card .confirm-password-field input:-webkit-autofill,
+.signup-card .recovery-password-field input:-webkit-autofill,
+.signup-card .password-field input:-webkit-autofill:hover,
+.signup-card .confirm-password-field input:-webkit-autofill:hover,
+.signup-card .recovery-password-field input:-webkit-autofill:hover,
+.signup-card .password-field input:-webkit-autofill:focus,
+.signup-card .confirm-password-field input:-webkit-autofill:focus,
+.signup-card .recovery-password-field input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text-dark);
+
+    -webkit-box-shadow:
+        0 0 0 1000px #edf5ff inset !important;
+
+    transition:
+        background-color 5000s ease-in-out 0s;
+}
+
+/* =========================================================
+   PASSWORD INPUT AUTOFILL
+========================================================= */
+
+.signup-card input:-webkit-autofill,
+.signup-card input:-webkit-autofill:hover,
+.signup-card input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text-dark);
+
+    -webkit-box-shadow:
+        0 0 0 1000px #edf5ff inset !important;
+
+    transition:
+        background-color 5000s ease-in-out 0s;
+}
+
+/* =========================================================
+   FORM SPACING
+========================================================= */
+
+.signup-card .input-icon-wrapper {
+    margin-bottom: 0;
+}
+
+.signup-card .mb-3 {
+    margin-bottom: 14px !important;
+}
+
+.signup-card .row {
+    --bs-gutter-x: 14px;
+}
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.submit-btn {
+    background: var(--isu-green);
+
+    border: none;
+
+    border-radius: 11px;
+
+    height: 50px;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: var(--isu-green-hover);
+
+    transform: translateY(-2px);
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.form-footer a {
+    color: var(--isu-green);
+
+    text-decoration: none;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* =========================================================
+   REMOVE ANY OLD LEFT PASSWORD ICON
+========================================================= */
+
+.password-field > .left-icon,
+.confirm-password-field > .left-icon,
+.recovery-password-field > .left-icon {
+    display: none !important;
 }
 
 
 /* =========================================================
-   BOOTSTRAP VALIDATION ICON REMOVAL
+   PASSWORD FLOATING LABEL - FINAL OVERRIDES
    ========================================================= */
 
-.form-control.is-valid,
-.form-control.is-invalid,
-.was-validated .form-control:valid,
-.was-validated .form-control:invalid {
-    background-image: none !important;
+.signup-card .password-field input.floating-input,
+.signup-card .confirm-password-field input.floating-input,
+.signup-card .recovery-password-field input.floating-input {
+    padding: 0 45px 0 16px !important;
 }
 
+.signup-card .password-field input.floating-input:focus,
+.signup-card .confirm-password-field input.floating-input:focus,
+.signup-card .recovery-password-field input.floating-input:focus {
+    border-color: var(--isu-green) !important;
+}
 
 /* =========================================================
-   RESPONSIVE
-   ========================================================= */
+   MOBILE
+========================================================= */
 
 @media (max-width: 991px) {
 
     .signup-card {
         padding: 30px 20px;
     }
-
 }
 
-/* =========================================================
-   UNIFIED FLOATING / FOCUS FIELD DESIGN
-   ========================================================= */
-
-/* Make all form fields use the same visual style */
-.custom-input,
-.floating-input {
-    height: 48px;
-    border: 1px solid #d8d8d8;
-    border-radius: 10px;
-    background: #fff;
-    color: #333;
-    font-size: 14px;
-    outline: none;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-/* =========================================================
-   NORMAL INPUTS
-   ========================================================= */
-
-.custom-input {
-    padding-left: 45px;
-    padding-right: 42px;
-}
-
-
-/* =========================================================
-   FOCUSED NORMAL INPUT
-   ========================================================= */
-
-.custom-input:focus {
-    border-color: var(--isu-green) !important;
-
-    box-shadow:
-        0 0 0 1px var(--isu-green) !important;
-
-    outline: none !important;
-}
-
-
-/* =========================================================
-   FLOATING FIELD
-   ========================================================= */
-
-.floating-field {
-    position: relative;
-    width: 100%;
-}
-
-
-/* Floating input */
-
-.floating-field .floating-input {
-    width: 100%;
-    height: 48px;
-
-    padding: 12px 42px 8px 14px;
-
-    border: 1px solid #d8d8d8;
-    border-radius: 10px;
-
-    background: #fff;
-
-    font-size: 14px;
-    color: #333;
-
-    outline: none;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-/* =========================================================
-   FLOATING LABEL - NORMAL
-   ========================================================= */
-
-.floating-field label {
-    position: absolute;
-
-    left: 12px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    background: #fff;
-
-    padding: 0 4px;
-
-    color: #777;
-
-    font-size: 14px;
-
-    pointer-events: none;
-
-    z-index: 2;
-
-    transition:
-        top 0.2s ease,
-        transform 0.2s ease,
-        font-size 0.2s ease,
-        color 0.2s ease;
-}
-
-
-/* =========================================================
-   FLOATING LABEL - WHEN CLICKED / HAS VALUE
-   ========================================================= */
-
-.floating-field .floating-input:focus + label,
-.floating-field .floating-input:not(:placeholder-shown) + label {
-    top: 0;
-
-    transform: translateY(-50%);
-
-    font-size: 11px;
-
-    color: var(--isu-green);
-
-    background: #fff;
-}
-
-
-/* =========================================================
-   FLOATING INPUT - FOCUS
-   ========================================================= */
-
-.floating-field .floating-input:focus {
-    border-color: var(--isu-green) !important;
-
-    box-shadow:
-        0 0 0 1px var(--isu-green) !important;
-
-    outline: none !important;
-}
-
-
-/* =========================================================
-   VALID STATE
-   ========================================================= */
-
-.floating-field .floating-input.is-valid {
-    border-color: #198754 !important;
-
-    box-shadow:
-        0 0 0 1px #198754 !important;
-}
-
-
-/* Keep green focus border when valid AND focused */
-
-.floating-field .floating-input.is-valid:focus {
-    border-color: var(--isu-green) !important;
-
-    box-shadow:
-        0 0 0 1px var(--isu-green) !important;
-}
-
-
-/* =========================================================
-   INVALID STATE
-   ========================================================= */
-
-.floating-field .floating-input.is-invalid {
-    border-color: #dc3545 !important;
-
-    box-shadow:
-        0 0 0 1px #dc3545 !important;
-}
-
-
-/* =========================================================
-   LABEL COLOR WHEN INVALID
-   ========================================================= */
-
-.floating-field .floating-input.is-invalid + label {
-    color: #dc3545;
-}
-
-
-/* =========================================================
-   LABEL COLOR WHEN VALID
-   ========================================================= */
-
-.floating-field .floating-input.is-valid + label {
-    color: #198754;
-}
-
-
-/* =========================================================
-   FOCUS SHOULD TAKE PRIORITY
-   ========================================================= */
-
-.floating-field .floating-input.is-invalid:focus + label,
-.floating-field .floating-input.is-valid:focus + label {
-    color: var(--isu-green);
-}
-
-
-/* =========================================================
-   PASSWORD / CONFIRM PASSWORD EYE
-   ========================================================= */
-
-.floating-field .password-toggle-icon {
-    position: absolute;
-
-    right: 14px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    color: #999;
-
-    font-size: 16px;
-
-    cursor: pointer;
-
-    z-index: 5;
-
-    transition: color 0.2s ease;
-}
-
-
-.floating-field .password-toggle-icon:hover {
-    color: var(--isu-green);
-}
-
-
-/* =========================================================
-   REMOVE BOOTSTRAP DEFAULT VALIDATION BACKGROUND
-   ========================================================= */
-
-.floating-input.is-valid,
-.floating-input.is-invalid,
-.custom-input.is-valid,
-.custom-input.is-invalid {
-    background-image: none !important;
-}
-
-
-/* =========================================================
-   USERNAME
-   No check icon
-   ========================================================= */
-
-.username-field-wrapper .floating-input {
-    padding-right: 14px !important;
-}
-
-
-/* =========================================================
-   ERROR / SUCCESS MESSAGES
-   ========================================================= */
-
-.validation-message,
-.username-suggestion,
-.password-message {
-    font-size: 12px;
-    line-height: 1.4;
-    font-weight: 500;
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 575px) {
-
-    .custom-input,
-    .floating-field .floating-input {
-        height: 48px;
-    }
-
-}
-
-
-@media (max-width: 767px) {
+@media (max-width: 576px) {
 
     .main-container {
-        padding: 1rem;
+        padding: 15px 5px;
     }
 
     .signup-card {
-        max-width: 100%;
-
-        padding: 25px 20px;
+        padding: 24px 20px;
 
         border-radius: 18px;
     }
 
     .form-title {
-        font-size: 24px;
+        font-size: 23px;
+    }
+
+    .top-icon {
+        width: 60px;
+        height: 60px;
+
+        font-size: 27px;
     }
 
     .role-assignment-box {
-        padding: 15px;
-    }
-
-}
-
-
-@media (max-width: 575px) {
-
-    .signup-card {
-        padding: 25px 18px;
-    }
-
-    .floating-input {
-        height: 52px;
-    }
-
-    .custom-input {
-        height: 48px;
+        padding: 16px;
     }
 
     .role-badge {
-        min-width: 100px;
-
+        min-width: 95px;
         font-size: 10px;
     }
 
-}
+    .signup-card input.form-control,
+    .signup-card input.custom-input,
+    .signup-card input.floating-input {
+        height: 48px;
+    }
 
-/* =========================================================
-   LOGIN FLOATING FIELDS
-   ========================================================= */
-
-.floating-field {
-    position: relative;
-    width: 100%;
-}
-
-.floating-field .floating-input {
-    width: 100%;
-    height: 48px;
-
-    padding: 12px 45px 8px 14px;
-
-    border: 1px solid #d8d8d8;
-    border-radius: 10px;
-
-    background: #fff;
-
-    font-size: 14px;
-    color: #333;
-
-    outline: none;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.floating-field .floating-input::placeholder {
-    color: transparent;
-}
-
-.floating-field label {
-    position: absolute;
-
-    left: 12px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    background: #fff;
-
-    padding: 0 4px;
-
-    color: #777;
-
-    font-size: 14px;
-
-    pointer-events: none;
-
-    z-index: 2;
-
-    transition:
-        top 0.2s ease,
-        transform 0.2s ease,
-        font-size 0.2s ease,
-        color 0.2s ease;
-}
-
-
-/* Clicked / focused */
-
-.floating-field .floating-input:focus {
-    border-color: var(--isu-green) !important;
-
-    box-shadow:
-        0 0 0 1px var(--isu-green) !important;
-
-    outline: none !important;
-}
-
-
-/* Floating label */
-
-.floating-field .floating-input:focus + label,
-.floating-field .floating-input:not(:placeholder-shown) + label {
-    top: 0;
-
-    transform: translateY(-50%);
-
-    font-size: 11px;
-
-    color: var(--isu-green);
-
-    background: #fff;
-}
-
-
-/* Password eye */
-
-.floating-field .password-toggle-icon {
-    position: absolute;
-
-    right: 14px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    color: #999;
-
-    font-size: 16px;
-
-    cursor: pointer;
-
-    z-index: 10;
-
-    transition: color 0.2s ease;
-}
-
-.floating-field .password-toggle-icon:hover {
-    color: var(--isu-green);
+    .signup-card .row {
+        --bs-gutter-x: 10px;
+    }
 }
