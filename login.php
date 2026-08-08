@@ -1,4 +1,4 @@
-﻿<?php
+﻿﻿<?php
 session_start();
 
 $loginError = $_SESSION['login_error'] ?? '';
@@ -168,17 +168,54 @@ unset($_SESSION['login_error'], $_SESSION['old_input'], $_SESSION['login_locked'
                     <?php endif; ?>
 
                     <form action="process/login.php" method="POST">
-                        <div class="mb-3">
-                            <div class="input-icon-wrapper">
-                                <i class="bi bi-person left-icon"></i>
-                                <input type="text" name="identity" class="form-control custom-input" placeholder="Username or Email" value="<?php echo htmlspecialchars($oldInput['identity'] ?? ''); ?>" required>
-                            </div>
-                        </div>
+                        <!-- =================================================
+                             USERNAME / EMAIL
+                             ================================================= -->
 
                         <div class="mb-3">
-                            <div class="input-icon-wrapper">
-                                <i class="bi bi-lock left-icon"></i>
-                                <input type="password" id="login-password" name="password" class="form-control custom-input" placeholder="Password" required>
+
+                            <div class="floating-field">
+
+                                <input
+                                    type="text"
+                                    id="identity"
+                                    name="identity"
+                                    class="floating-input"
+                                    placeholder=" "
+                                    autocomplete="username"
+                                    value="<?php echo htmlspecialchars($oldInput['identity'] ?? ''); ?>"
+                                    required>
+
+                                <label for="identity">
+                                    Username or Email
+                                </label>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             PASSWORD
+                             ================================================= -->
+
+                        <div class="mb-3">
+
+                            <div class="floating-field">
+
+                                <input
+                                    type="password"
+                                    id="login-password"
+                                    name="password"
+                                    class="floating-input"
+                                    placeholder=" "
+                                    autocomplete="current-password"
+                                    required>
+
+                                <label for="login-password">
+                                    Password
+                                </label>
+
                             </div>
                         </div>
 
@@ -217,34 +254,47 @@ unset($_SESSION['login_error'], $_SESSION['old_input'], $_SESSION['login_locked'
 
     <!-- Script for Eye Toggle -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const passInput = document.getElementById("login-password");
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const passInput =
+                document.getElementById("login-password");
+
             if (passInput) {
-                const wrapper = passInput.parentElement;
-                const eye = document.createElement("i");
-                eye.className = "bi bi-eye-slash password-toggle-icon";
-                
-                // Uses the same toggle styling from your signup CSS
-                eye.style.position = "absolute";
-                eye.style.right = "16px";
-                eye.style.top = "50%";
-                eye.style.transform = "translateY(-50%)";
-                eye.style.cursor = "pointer";
-                eye.style.color = "#999";
-                eye.style.fontSize = "18px";
-                eye.style.zIndex = "5";
+
+                const wrapper =
+                    passInput.parentElement;
+
+                wrapper.style.position = "relative";
+
+                const eye =
+                    document.createElement("i");
+
+                eye.className =
+                    "bi bi-eye-slash password-toggle-icon";
 
                 wrapper.appendChild(eye);
 
-                eye.onclick = function() {
+
+                eye.addEventListener("click", function () {
+
                     if (passInput.type === "password") {
+
                         passInput.type = "text";
-                        eye.className = "bi bi-eye password-toggle-icon text-dark";
+
+                        eye.className =
+                            "bi bi-eye password-toggle-icon";
+
                     } else {
+
                         passInput.type = "password";
-                        eye.className = "bi bi-eye-slash password-toggle-icon";
+
+                        eye.className =
+                            "bi bi-eye-slash password-toggle-icon";
+
                     }
-                }
+
+                });
+
             }
         });
 
