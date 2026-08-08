@@ -14,10 +14,9 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
--- Dumping database structure for inventory_system
-CREATE DATABASE IF NOT EXISTS `inventory_system` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;
+CREATE DATABASE IF NOT EXISTS `inventory_system` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `inventory_system`;
+
 
 -- Dumping structure for table inventory_system.activity_logs
 CREATE TABLE IF NOT EXISTS `activity_logs` (
@@ -33,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `activity_logs` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.activity_logs: ~411 rows (approximately)
 BEGIN;
@@ -77,7 +76,7 @@ REPLACE INTO `activity_logs` (`id`, `user_id`, `fullname`, `username`, `role`, `
 	(39, 7, 'CARMINA VALLEJO', 'carmina25', 'Super Admin', 'Disabled user account: CARMINA VALLEJO (carriz125111@gmail.com)', '::1', '2026-07-17 02:14:16', NULL),
 	(40, 7, 'CARMINA VALLEJO', 'carmina25', 'Super Admin', 'Disabled user account: CARMINA VALLEJO (carriz12511@gmail.com)', '::1', '2026-07-17 02:29:33', NULL),
 	(41, 7, 'CARMINA VALLEJO', 'carmina25', 'Super Admin', 'Activated user account: CARMINA VALLEJO (carriz125111@gmail.com)', '::1', '2026-07-17 02:30:12', NULL),
-	(42, 7, 'CARMINA VALLEJO', 'carmina25', 'Super Admin', 'Activated user account: CARMINA VALLEJO (carriz12511@gmail.com)', '::1', '2026-07-17 02:30:14', NULL),
+	(42, 7, 'CARMINA VALLEJO', 'carmina25', 'Super Admin', 'Activated user account: CARMINA VALLEJO (carriz125111@gmail.com)', '::1', '2026-07-17 02:30:14', NULL),
 	(43, 7, 'CARMINA VALLEJO', 'carmina25', 'Super Admin', 'Disabled user account: CARMINA VALLEJO (carriz125111@gmail.com)', '::1', '2026-07-17 02:34:50', NULL),
 	(44, 7, 'CARMINA VALLEJO', 'carmina25', 'Super Admin', 'Logged in successfully', '::1', '2026-07-17 04:00:37', NULL),
 	(45, 7, 'CARMINA VALLEJO', 'carmina25', 'Super Admin', 'Logged in successfully', '::1', '2026-07-17 04:24:31', NULL),
@@ -463,7 +462,7 @@ CREATE TABLE IF NOT EXISTS `audit_trail` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `audit_trail_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.audit_trail: ~0 rows (approximately)
 BEGIN;
@@ -485,7 +484,7 @@ CREATE TABLE IF NOT EXISTS `backup_history` (
   PRIMARY KEY (`id`),
   KEY `created_by` (`created_by`),
   CONSTRAINT `backup_history_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.backup_history: ~5 rows (approximately)
 BEGIN;
@@ -505,7 +504,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `category_name` (`category_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.categories: ~0 rows (approximately)
 BEGIN;
@@ -526,7 +525,7 @@ CREATE TABLE IF NOT EXISTS `deliveries` (
   KEY `received_by` (`received_by`),
   CONSTRAINT `deliveries_ibfk_1` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`),
   CONSTRAINT `deliveries_ibfk_2` FOREIGN KEY (`received_by`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.deliveries: ~14 rows (approximately)
 BEGIN;
@@ -559,7 +558,7 @@ CREATE TABLE IF NOT EXISTS `delivery_items` (
   KEY `product_id` (`product_id`),
   CONSTRAINT `delivery_items_ibfk_1` FOREIGN KEY (`delivery_id`) REFERENCES `deliveries` (`id`),
   CONSTRAINT `delivery_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.delivery_items: ~29 rows (approximately)
 BEGIN;
@@ -613,7 +612,7 @@ CREATE TABLE IF NOT EXISTS `inventory_monthly_report_items` (
   PRIMARY KEY (`id`),
   KEY `report_id` (`report_id`),
   CONSTRAINT `inventory_monthly_report_items_ibfk_1` FOREIGN KEY (`report_id`) REFERENCES `inventory_monthly_reports` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.inventory_monthly_report_items: ~0 rows (approximately)
 BEGIN;
@@ -635,7 +634,7 @@ CREATE TABLE IF NOT EXISTS `inventory_monthly_reports` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `product_id` (`product_id`,`report_month`,`report_year`),
   CONSTRAINT `inventory_monthly_reports_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.inventory_monthly_reports: ~0 rows (approximately)
 BEGIN;
@@ -657,7 +656,7 @@ CREATE TABLE IF NOT EXISTS `inventory_stock_cards` (
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
   CONSTRAINT `inventory_stock_cards_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.inventory_stock_cards: ~22 rows (approximately)
 BEGIN;
@@ -703,7 +702,7 @@ CREATE TABLE IF NOT EXISTS `inventory_transactions` (
   KEY `performed_by` (`performed_by`),
   CONSTRAINT `inventory_transactions_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
   CONSTRAINT `inventory_transactions_ibfk_2` FOREIGN KEY (`performed_by`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.inventory_transactions: ~28 rows (approximately)
 BEGIN;
@@ -748,7 +747,7 @@ CREATE TABLE IF NOT EXISTS `inventory_yearly_reports` (
   `total_ending` int(11) DEFAULT NULL,
   `total_inventory_value` decimal(12,2) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.inventory_yearly_reports: ~0 rows (approximately)
 BEGIN;
@@ -760,13 +759,16 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   `user_id` int(11) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `message` text DEFAULT NULL,
-  `type` enum('Low Stock','Backup','Security','System') DEFAULT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `type` enum('Low Stock','Delivery','Sales','Backup','Security','System') DEFAULT NULL,
+  `priority` tinyint(4) NOT NULL DEFAULT 0,
   `is_read` tinyint(1) DEFAULT 0,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+  KEY `idx_user_read` (`user_id`,`is_read`),
+  CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.notifications: ~0 rows (approximately)
 BEGIN;
@@ -804,7 +806,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   CONSTRAINT `fk_product_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
   CONSTRAINT `fk_product_supplier` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`),
   CONSTRAINT `fk_product_updatedby` FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.products: ~30 rows (approximately)
 BEGIN;
@@ -905,7 +907,7 @@ CREATE TABLE IF NOT EXISTS `sale_items` (
   KEY `product_id` (`product_id`),
   CONSTRAINT `sale_items_ibfk_1` FOREIGN KEY (`sale_id`) REFERENCES `sales` (`id`),
   CONSTRAINT `sale_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.sale_items: ~18 rows (approximately)
 BEGIN;
@@ -945,7 +947,7 @@ CREATE TABLE IF NOT EXISTS `sales` (
   UNIQUE KEY `invoice_no` (`invoice_no`),
   KEY `created_by` (`created_by`),
   CONSTRAINT `sales_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.sales: ~16 rows (approximately)
 BEGIN;
@@ -980,7 +982,7 @@ CREATE TABLE IF NOT EXISTS `stock_adjustments` (
   `approved_at` timestamp NULL DEFAULT current_timestamp(),
   `status` enum('Pending','Approved','Rejected') DEFAULT 'Approved',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.stock_adjustments: ~2 rows (approximately)
 BEGIN;
@@ -1005,7 +1007,7 @@ CREATE TABLE IF NOT EXISTS `stock_movements` (
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
   CONSTRAINT `fk_stock_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.stock_movements: ~7 rows (approximately)
 BEGIN;
@@ -1030,7 +1032,7 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   `status` enum('Active','Inactive') DEFAULT 'Active',
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.suppliers: ~5 rows (approximately)
 BEGIN;
@@ -1050,7 +1052,7 @@ CREATE TABLE IF NOT EXISTS `system_settings` (
   `description` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `setting_name` (`setting_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.system_settings: ~0 rows (approximately)
 BEGIN;
@@ -1077,7 +1079,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table inventory_system.users: ~8 rows (approximately)
 BEGIN;

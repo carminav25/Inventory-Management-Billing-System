@@ -142,189 +142,51 @@ $isSuperAdminSignup = ($userCount === 0);
 
                         <!-- INPUTS -->
                         <div class="row g-3 mb-3">
-
-                            <div class="col-sm-6">
-
-                                <div class="input-icon-wrapper floating-field">
-
-                                    <input
-                                        type="text"
-                                        id="firstname"
-                                        name="firstname"
-                                        class="form-control custom-input floating-input"
-                                        placeholder=" "
-                                        value="<?php echo htmlspecialchars($oldInput['firstname'] ?? ''); ?>"
-                                        required>
-
-                                    <label for="firstname">
-                                        First Name
-                                    </label>
+                            <div class="col-sm-6 position-relative">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-person left-icon"></i>
+                                    <input type="text" name="firstname" class="form-control custom-input" placeholder="First Name" value="<?php echo htmlspecialchars($oldInput['firstname'] ?? ''); ?>" required>
                                 </div>
                             </div>
-
-
-                            <div class="col-sm-6">
-
-                                <div class="input-icon-wrapper floating-field">
-
-                                    <input
-                                        type="text"
-                                        id="lastname"
-                                        name="lastname"
-                                        class="form-control custom-input floating-input"
-                                        placeholder=" "
-                                        value="<?php echo htmlspecialchars($oldInput['lastname'] ?? ''); ?>"
-                                        required>
-
-                                    <label for="lastname">
-                                        Last Name
-                                    </label>
+                            <div class="col-sm-6 position-relative">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-person left-icon"></i>
+                                    <input type="text" name="lastname" class="form-control custom-input" placeholder="Last Name" value="<?php echo htmlspecialchars($oldInput['lastname'] ?? ''); ?>" required>
                                 </div>
                             </div>
-
                         </div>
 
-                        <!-- Username -->
-                        <div class="mb-3">
-
-                            <div class="input-icon-wrapper floating-field">
-
-                                <input
-                                    type="text"
-                                    id="username"
-                                    name="username"
-                                    maxlength="20"
-                                    autocomplete="username"
-                                    placeholder=" "
-                                    value="<?php echo htmlspecialchars($oldInput['username'] ?? ''); ?>"
-                                    required
-                                    class="form-control custom-input floating-input">
-
-                                <label for="username">
-                                    Username
-                                </label>
-                            </div>
-
-                            <small
-                                id="usernameMessage"
-                                class="validation-message d-none">
-                            </small>
-
-                            <small
-                                id="usernameSuggestion"
-                                class="username-suggestion d-none">
-                            </small>
+                        <div class="input-icon-wrapper mb-3">
+                            <i class="bi bi-envelope left-icon"></i>
+                            <input type="email" name="email" class="form-control custom-input" placeholder="Email Address" value="<?php echo htmlspecialchars($oldInput['email'] ?? ''); ?>" required>
                         </div>
 
+                        <!-- Mobile Number (Optional) -->
                         <div class="mb-3">
-                            <div class="input-icon-wrapper floating-field">
-                                <input
-                                    type="email"
-                                    name="email"
-                                    id="email"
-                                    class="form-control custom-input floating-input"
-                                    placeholder=" "
-                                    value="<?php echo htmlspecialchars($oldInput['email'] ?? ''); ?>"
-                                    required
-                                >
-                                <label for="email">Email Address</label>
-                            
-                                <i
-                                    id="emailStatus"
-                                    class="bi validation-status d-none"
-                                ></i>
+                            <div class="input-icon-wrapper">
+                                <i class="bi bi-telephone left-icon"></i>
+                                <input type="tel" id="mobile" name="mobile" class="form-control custom-input" placeholder="Mobile Number (Optional)" maxlength="13" value="<?php echo htmlspecialchars($oldInput['mobile'] ?? ''); ?>">
                             </div>
-                            
-                            <div
-                                id="emailMessage"
-                                class="password-message d-none"
-                            ></div>
                         </div>
 
-                        <div class="mb-3">
-                            <div class="input-icon-wrapper floating-field">
-                                <input
-                                    type="tel"
-                                    name="mobile"
-                                    id="mobile"
-                                    class="form-control custom-input floating-input"
-                                    placeholder=" "
-                                    value="<?php echo htmlspecialchars($oldInput['mobile'] ?? ''); ?>"
-                                    inputmode="numeric"
-                                >
-                                <label for="mobile">Mobile Number (Optional)</label>
-                            
-                                <i
-                                    id="mobileStatus"
-                                    class="bi validation-status d-none"
-                                ></i>
-                            </div>
-                            
-                            <div
-                                id="mobileMessage"
-                                class="password-message d-none"
-                            ></div>
+                        <div class="input-icon-wrapper mb-3">
+                            <i class="bi bi-person-badge left-icon"></i>
+                            <input type="text" name="username" class="form-control custom-input" placeholder="Username" value="<?php echo htmlspecialchars($oldInput['username'] ?? ''); ?>" required>
                         </div>
 
                         <!-- Password -->
                         <div class="mb-3">
-                            <div class="password-field floating-field">
-                                <input
-                                    type="password"
-                                    name="password"
-                                    id="password"
-                                    class="form-control custom-input floating-input"
-                                    placeholder=" "
-                                    autocomplete="new-password"
-                                    required
-                                >
-
-                                <label for="password">Password</label>
-
-                                <i
-                                    class="bi bi-eye-slash password-toggle-icon"
-                                    id="togglePassword"
-                                    role="button"
-                                    tabindex="0"
-                                    aria-label="Show password"
-                                    title="Show password"
-                                ></i>
-                            </div>
-
-                            <div
-                                id="passwordMessage"
-                                class="password-message d-none">
+                            <div class="input-icon-wrapper">
+                                <i class="bi bi-lock left-icon"></i>
+                                <input type="password" id="password" name="password" class="form-control custom-input" placeholder="Password" required>
                             </div>
                         </div>
 
                         <!-- Confirm Password -->
-                        <div class="mb-2">
-                            <div class="confirm-password-field floating-field">
-                                <input
-                                    type="password"
-                                    id="confirm"
-                                    name="confirm_password"
-                                    class="form-control custom-input floating-input"
-                                    placeholder=" "
-                                    autocomplete="new-password"
-                                    required
-                                >
-
-                                <label for="confirm">Confirm Password</label>
-
-                                <i
-                                    class="bi bi-eye-slash password-toggle-icon"
-                                    id="toggleConfirmPassword"
-                                    role="button"
-                                    tabindex="0"
-                                    aria-label="Show password"
-                                    title="Show password"
-                                ></i>
-                            </div>
-
-                            <div
-                                id="confirmMessage"
-                                class="password-message d-none">
+                        <div class="mb-4">
+                            <div class="input-icon-wrapper">
+                                <i class="bi bi-shield-lock left-icon"></i>
+                                <input type="password" id="confirm" name="confirm_password" class="form-control custom-input" placeholder="Confirm Password" required>
                             </div>
                         </div>
 
@@ -335,55 +197,18 @@ $isSuperAdminSignup = ($userCount === 0);
                                 <i class="bi bi-key-fill text-warning fs-5 me-2"></i>
                                 <h6 class="mb-0 fw-bold text-warning" style="font-size: 15px;">Recovery Secret Password</h6>
                             </div>
-                            <p class="text-muted small mb-3">Create a recovery secret to regain access if you forget your login password. This is shown only during Super Admin signup.</p>                            
-                            <div class="recovery-password-field floating-field">
-                                <input
-                                    type="password"
-                                    name="recovery_secret_password"
-                                    id="recovery_pass"
-                                    class="form-control custom-input floating-input"
-                                    placeholder=" "
-                                    autocomplete="new-password"
-                                    required
-                                >
-
-                                <label for="recovery_pass">
-                                    Recovery Secret Password
-                                </label>
-
-                                <i
-                                    class="bi bi-eye-slash password-toggle-icon"
-                                    id="toggleRecoveryPassword"
-                                    role="button"
-                                    tabindex="0"
-                                    aria-label="Show password"
-                                    title="Show password"
-                                ></i>
+                            <p class="text-muted small mb-3">Create a recovery secret to regain access if you forget your login password. This is shown only during Super Admin signup.</p>
+                            <div class="mb-3">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-key left-icon"></i>
+                                    <input type="password" id="recovery_pass" name="recovery_secret_password" class="form-control custom-input" placeholder="Recovery Secret Password" required>
+                                </div>
                             </div>
-
-                            <div class="recovery-password-field floating-field">
-                                <input
-                                    type="password"
-                                    name="recovery_secret_confirm"
-                                    id="recovery_pass_confirm"
-                                    class="form-control custom-input floating-input"
-                                    placeholder=" "
-                                    autocomplete="new-password"
-                                    required
-                                >
-
-                                <label for="recovery_pass_confirm">
-                                    Confirm Recovery Secret
-                                </label>
-
-                                <i
-                                    class="bi bi-eye-slash password-toggle-icon"
-                                    id="toggleRecoveryConfirm"
-                                    role="button"
-                                    tabindex="0"
-                                    aria-label="Show password"
-                                    title="Show password"
-                                ></i>
+                            <div class="mb-3">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-key-fill left-icon"></i>
+                                    <input type="password" id="recovery_pass_confirm" name="recovery_secret_confirm" class="form-control custom-input" placeholder="Confirm Recovery Secret" required>
+                                </div>
                             </div>
                         </div>
                         <?php endif; ?>

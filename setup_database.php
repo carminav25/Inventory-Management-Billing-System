@@ -438,6 +438,61 @@ try {
         $messages[] = "• backup_history table already exists";
     }
 
+    // ===================================================================
+    // NOTIFICATIONS TABLE (Notification System)
+    // ===================================================================
+    $notifTable = $conn->query("SHOW TABLES LIKE 'notifications'");
+    if (!$notifTable || $notifTable->num_rows === 0) {
+        $createNotificationsTable = "
+        CREATE TABLE notifications (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NULL,
+            title VARCHAR(255) NOT NULL,
+            message TEXT NULL,
+            link VARCHAR(255) DEFAULT NULL,
+            type ENUM('Low Stock','Delivery','Sales','Backup','Security','System') NOT NULL DEFAULT 'System',
+            priority TINYINT NOT NULL DEFAULT 0,
+            is_read TINYINT(1) NOT NULL DEFAULT 0,
+            created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_user (user_id),
+            INDEX idx_user_read (user_id, is_read),
+            INDEX idx_priority (priority),
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+        ";
+        $conn->query($createNotificationsTable);
+        $messages[] = "✓ Created notifications table";
+    } else {
+        $messages[] = "• notifications table already exists";
+
+        $existingNotifColumns = [];
+        $notifColumns = $conn->query("SHOW COLUMNS FROM notifications");
+        if ($notifColumns) {
+            while ($col = $notifColumns->fetch_assoc()) {
+                $existingNotifColumns[] = $col['Field'];
+            }
+        }
+
+        // Add missing columns for older installations
+        if (!in_array('link', $existingNotifColumns)) {
+            $conn->query("ALTER TABLE notifications ADD COLUMN link VARCHAR(255) DEFAULT NULL AFTER message");
+            $messages[] = "✓ Added link column to notifications";
+        }
+        if (!in_array('priority', $existingNotifColumns)) {
+            $conn->query("ALTER TABLE notifications ADD COLUMN priority TINYINT NOT NULL DEFAULT 0 AFTER type");
+            $messages[] = "✓ Added priority column to notifications";
+        }
+
+        // Extend type enum to support Delivery / Sales
+        $notifTypeCol = $conn->query("SHOW COLUMNS FROM notifications LIKE 'type'");
+        if ($notifTypeCol && $notifTypeRow = $notifTypeCol->fetch_assoc()) {
+            if (stripos($notifTypeRow['Type'], 'Delivery') === false) {
+                $conn->query("ALTER TABLE notifications MODIFY type ENUM('Low Stock','Delivery','Sales','Backup','Security','System') NOT NULL DEFAULT 'System'");
+                $messages[] = "✓ Extended notifications type enum";
+            }
+        }
+    }
+
     // Now that all checks are done, set session variables and redirect
     $_SESSION['setup_messages'] = $messages;
     $_SESSION['setup_errors'] = $errors;
