@@ -20,6 +20,42 @@ $productId = intval($_GET['id']);
 $product = getProductById($conn, $productId);
 
 if ($product) {
+    // Check Delivery Items
+    $stmt = $conn->prepare("
+        SELECT COUNT(*) AS total
+        FROM delivery_items
+        WHERE product_id = ?
+    ");
+    $stmt->bind_param("i", $productId);
+    $stmt->execute();
+    $deliveryCount = $stmt->get_result()->fetch_assoc()['total'];
+
+    // Check Sale Items
+    $stmt = $conn->prepare("
+        SELECT COUNT(*) AS total
+        FROM sale_items
+        WHERE product_id = ?
+    ");
+    $stmt->bind_param("i", $productId);
+    $stmt->execute();
+    $saleCount = $stmt->get_result()->fetch_assoc()['total'];
+
+    // Check Returns
+    $stmt = $conn->prepare("
+        SELECT COUNT(*) AS total
+        FROM returns
+        WHERE product_id = ?
+    ");
+    $stmt->bind_param("i", $productId);
+    $stmt->execute();
+    $returnCount = $stmt->get_result()->fetch_assoc()['total'];
+
+    if ($deliveryCount > 0 || $saleCount > 0 || $returnCount > 0) {
+        $_SESSION['error_message'] = "This product cannot be deleted because it has existing inventory transactions.";
+        header("Location: {$redirectURL}");
+        exit();
+    }
+
     $stmt = $conn->prepare("DELETE FROM products WHERE id = ?");
     $stmt->bind_param("i", $productId);
 

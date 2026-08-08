@@ -1,241 +1,980 @@
-// ============================
-// Password Show / Hide
-// ============================
+document.addEventListener("DOMContentLoaded", function () {
 
-const password = document.getElementById("password");
-const confirm = document.getElementById("confirm");
-const recoveryPass = document.getElementById("recovery_pass");
-const recoveryPassConfirm = document.getElementById("recovery_pass_confirm");
+    /* =========================================================
+       ELEMENTS
+       ========================================================= */
 
-function addToggle(inputElement) {
-    if (inputElement) {
-        const wrapper = inputElement.parentElement;
+    const form = document.getElementById("signupForm");
+
+    const password = document.getElementById("password");
+    const confirm = document.getElementById("confirm");
+
+    const recoveryPass = document.getElementById("recovery_pass");
+    const recoveryPassConfirm =
+        document.getElementById("recovery_pass_confirm");
+
+    const username = document.getElementById("username");
+    const usernameMessage =
+        document.getElementById("usernameMessage");
+    const usernameSuggestion =
+        document.getElementById("usernameSuggestion");
+
+    const email = document.getElementById("email");
+    const emailMessage =
+        document.getElementById("emailMessage");
+
+    const mobile = document.getElementById("mobile");
+    const mobileMessage =
+        document.getElementById("mobileMessage");
+
+    const showPassword =
+        document.getElementById("showPassword");
+
+
+    /* =========================================================
+       PASSWORD SHOW / HIDE
+       ========================================================= */
+
+    function addPasswordToggle(input) {
+
+        if (!input) return;
+
+        const wrapper = input.parentElement;
+
+        if (!wrapper) return;
+
+        wrapper.style.position = "relative";
+
+        /* Prevent duplicate eye icons */
+        if (wrapper.querySelector(".password-toggle-icon")) {
+            return;
+        }
+
+        input.style.paddingRight = "45px";
+
         const eye = document.createElement("i");
-        eye.className = "bi bi-eye-slash password-toggle-icon";
-        
+
+        eye.className =
+            "bi bi-eye-slash password-toggle-icon";
+
         wrapper.appendChild(eye);
 
-        eye.onclick = function() {
-            if (inputElement.type === "password") {
-                inputElement.type = "text";
-                eye.className = "bi bi-eye password-toggle-icon text-dark";
+        eye.addEventListener("click", function () {
+
+            if (input.type === "password") {
+
+                input.type = "text";
+
+                eye.className =
+                    "bi bi-eye password-toggle-icon";
+
             } else {
-                inputElement.type = "password";
-                eye.className = "bi bi-eye-slash password-toggle-icon";
+
+                input.type = "password";
+
+                eye.className =
+                    "bi bi-eye-slash password-toggle-icon";
+
             }
-        }
+
+        });
+
     }
-}
 
-addToggle(password);
-addToggle(confirm);
-addToggle(recoveryPass);
-addToggle(recoveryPassConfirm);
 
-// ============================
-// Password Strength
-// ============================
+    addPasswordToggle(password);
+    addPasswordToggle(confirm);
+    addPasswordToggle(recoveryPass);
+    addPasswordToggle(recoveryPassConfirm);
 
-const strength = document.createElement("small");
-strength.style.display = "block";
-strength.style.marginTop = "4px";
-strength.style.fontSize = "12px";
-strength.style.fontWeight = "600";
-strength.style.paddingLeft = "5px";
 
-if (password) {
-    // insert strength message after the input wrapper
-    password.parentElement.insertAdjacentElement("afterend", strength);
+    /* =========================================================
+       PASSWORD STRENGTH MESSAGE
+       ========================================================= */
 
-    password.addEventListener("keyup", function() {
-        let pass = password.value;
-        let score = 0;
+    let passwordMessage =
+        document.getElementById("passwordMessage");
 
-        if (pass.length >= 8) score++;
-        if (/[A-Z]/.test(pass)) score++;
-        if (/[a-z]/.test(pass)) score++;
-        if (/[0-9]/.test(pass)) score++;
-        if (/[!@#$%^&*]/.test(pass)) score++;
+
+    /*
+     * If passwordMessage does not exist in HTML,
+     * create it only ONCE.
+     */
+
+    if (password && !passwordMessage) {
+
+        passwordMessage =
+            document.createElement("div");
+
+        passwordMessage.id =
+            "passwordMessage";
+
+        passwordMessage.className =
+            "password-message";
+
+        password.parentElement.parentElement
+            .insertAdjacentElement(
+                "afterend",
+                passwordMessage
+            );
+    }
+
+
+    function checkPasswordStrength() {
+
+        if (!password || !passwordMessage) {
+            return false;
+        }
+
+        const pass = password.value;
+
+
+        /* Nothing typed */
 
         if (pass.length === 0) {
-            strength.innerHTML = "";
-            return;
+
+            passwordMessage.innerHTML = "";
+
+            passwordMessage.className =
+                "password-message d-none";
+
+            password.classList.remove(
+                "is-valid",
+                "is-invalid"
+            );
+
+            return false;
         }
 
-        switch(score) {
-            case 0:
-            case 1:
-                strength.innerHTML = "Weak Password";
-                strength.style.color = "red";
-                break;
-            case 2:
-                strength.innerHTML = "Fair Password";
-                strength.style.color = "orange";
-                break;
-            case 3:
-                strength.innerHTML = "Good Password";
-                strength.style.color = "#d4a000";
-                break;
-            case 4:
-                strength.innerHTML = "Strong Password";
-                strength.style.color = "#198754";
-                break;
-            case 5:
-                strength.innerHTML = "Very Strong Password";
-                strength.style.color = "#065f2f";
-                break;
+
+        /* Individual requirements */
+
+        const hasLength =
+            pass.length >= 8;
+
+        const hasUpper =
+            /[A-Z]/.test(pass);
+
+        const hasLower =
+            /[a-z]/.test(pass);
+
+        const hasNumber =
+            /[0-9]/.test(pass);
+
+        const hasSpecial =
+            /[!@#$%^&*]/.test(pass);
+
+
+        const score =
+            Number(hasLength) +
+            Number(hasUpper) +
+            Number(hasLower) +
+            Number(hasNumber) +
+            Number(hasSpecial);
+
+
+        /* =====================================================
+           WEAK
+           ===================================================== */
+
+        if (
+            !hasLength ||
+            score <= 2
+        ) {
+
+            password.classList.remove("is-valid");
+
+            password.classList.add("is-invalid");
+
+            passwordMessage.className =
+                "password-message text-danger";
+
+            passwordMessage.innerHTML =
+                '<i class="bi bi-exclamation-circle-fill me-1"></i>' +
+                'Weak Password — use at least 8 characters, ' +
+                'uppercase, lowercase, number, and special character.';
+
+            return false;
         }
-    });
-}
 
-// ============================
-// Password Match
-// ============================
 
-const match = document.createElement("small");
-match.style.display = "block";
-match.style.marginTop = "4px";
-match.style.fontSize = "12px";
-match.style.fontWeight = "600";
-match.style.paddingLeft = "5px";
+        /* =====================================================
+           GOOD
+           ===================================================== */
 
-if (confirm) {
-    // insert match message after the confirm input wrapper
-    confirm.parentElement.insertAdjacentElement("afterend", match);
+        if (score < 5) {
 
-    const validatePasswordMatch = () => {
-        // Only show a message if the user has started typing in the confirm field.
-        if (confirm.value !== "") {
-            if (password.value === confirm.value) {
-                match.innerHTML = "✔ Passwords match";
-                match.style.color = "#198754";
-            } else {
-                match.innerHTML = "✖ Passwords do not match";
-                match.style.color = "red";
-            }
-        } else {
-            // If the confirm field is empty, don't show any message.
-            match.innerHTML = "";
+            password.classList.remove("is-invalid");
+
+            password.classList.add("is-valid");
+
+            passwordMessage.className =
+                "password-message text-warning";
+
+            passwordMessage.innerHTML =
+                '<i class="bi bi-check-circle-fill me-1"></i>' +
+                'Good Password — add the missing requirements ' +
+                'to make it Strong.';
+
+            return false;
         }
-    };
+
+
+        /* =====================================================
+           STRONG
+           ===================================================== */
+
+        password.classList.remove("is-invalid");
+
+        password.classList.add("is-valid");
+
+        passwordMessage.className =
+            "password-message text-success";
+
+        passwordMessage.innerHTML =
+            '<i class="bi bi-check-circle-fill me-1"></i>' +
+            'Strong Password';
+
+        return true;
+    }
+
 
     if (password) {
-        password.addEventListener("keyup", validatePasswordMatch);
+
+        password.addEventListener(
+            "input",
+            checkPasswordStrength
+        );
+
     }
-    confirm.addEventListener("keyup", validatePasswordMatch);
-}
 
-// ============================
-// Recovery Secret Password Match
-// ============================
 
-const recoveryMatch = document.createElement("small");
-recoveryMatch.style.display = "block";
-recoveryMatch.style.marginTop = "4px";
-recoveryMatch.style.fontSize = "12px";
-recoveryMatch.style.fontWeight = "600";
-recoveryMatch.style.paddingLeft = "5px";
+    /* =========================================================
+       CONFIRM PASSWORD
+       ========================================================= */
 
-if (recoveryPassConfirm) {
-    recoveryPassConfirm.parentElement.insertAdjacentElement("afterend", recoveryMatch);
+    let confirmMessage =
+        document.getElementById("confirmMessage");
 
-    const validateRecoveryMatch = () => {
-        // Only show a message if the user has started typing in the confirm field.
-        if (recoveryPassConfirm.value !== "") {
-            if (recoveryPass.value === recoveryPassConfirm.value) {
-                recoveryMatch.innerHTML = "✔ Recovery secrets match";
-                recoveryMatch.style.color = "#198754";
+
+    if (confirm && !confirmMessage) {
+
+        confirmMessage =
+            document.createElement("div");
+
+        confirmMessage.id =
+            "confirmMessage";
+
+        confirmMessage.className =
+            "password-message";
+
+        confirm.parentElement.parentElement
+            .insertAdjacentElement(
+                "afterend",
+                confirmMessage
+            );
+    }
+
+
+    function checkPasswordMatch() {
+
+        if (!confirm || !confirmMessage) {
+            return false;
+        }
+
+        if (confirm.value === "") {
+
+            confirm.classList.remove(
+                "is-valid",
+                "is-invalid"
+            );
+
+            confirmMessage.innerHTML = "";
+
+            confirmMessage.className =
+                "password-message d-none";
+
+            return false;
+        }
+
+
+        if (password.value === confirm.value) {
+
+            confirm.classList.remove("is-invalid");
+
+            confirm.classList.add("is-valid");
+
+            confirmMessage.className =
+                "password-message text-success";
+
+            confirmMessage.innerHTML =
+                '<i class="bi bi-check-circle-fill me-1"></i>' +
+                'Passwords match';
+
+            return true;
+
+        } else {
+
+            confirm.classList.remove("is-valid");
+
+            confirm.classList.add("is-invalid");
+
+            confirmMessage.className =
+                "password-message text-danger";
+
+            confirmMessage.innerHTML =
+                '<i class="bi bi-x-circle-fill me-1"></i>' +
+                'Passwords do not match';
+
+            return false;
+        }
+
+    }
+
+
+    if (confirm) {
+
+        confirm.addEventListener(
+            "input",
+            checkPasswordMatch
+        );
+
+    }
+
+
+    if (password) {
+
+        password.addEventListener(
+            "input",
+            function () {
+
+                if (confirm && confirm.value !== "") {
+                    checkPasswordMatch();
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       SHOW PASSWORD CHECKBOX
+       ========================================================= */
+
+    if (showPassword) {
+
+        showPassword.addEventListener(
+            "change",
+            function () {
+
+                const type =
+                    this.checked
+                        ? "text"
+                        : "password";
+
+
+                if (password) {
+                    password.type = type;
+                }
+
+                if (confirm) {
+                    confirm.type = type;
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       USERNAME VALIDATION
+       ========================================================= */
+
+    if (username) {
+
+        username.addEventListener(
+            "input",
+            function () {
+
+                this.value =
+                    this.value
+                        .replace(/\s/g, "")
+                        .replace(
+                            /[^a-zA-Z0-9_]/g,
+                            ""
+                        )
+                        .toLowerCase();
+
+
+                const value =
+                    this.value.trim();
+
+
+                if (value === "") {
+
+                    username.classList.remove(
+                        "is-valid",
+                        "is-invalid"
+                    );
+
+                    if (usernameMessage) {
+
+                        usernameMessage.classList.add(
+                            "d-none"
+                        );
+
+                    }
+
+                    if (usernameSuggestion) {
+
+                        usernameSuggestion.classList.add(
+                            "d-none"
+                        );
+
+                    }
+
+                    return;
+                }
+
+
+                const validFormat =
+                    /^[a-z0-9_]{4,20}$/.test(value);
+
+
+                if (!validFormat) {
+
+                    username.classList.remove(
+                        "is-valid"
+                    );
+
+                    username.classList.add(
+                        "is-invalid"
+                    );
+
+
+                    if (usernameMessage) {
+
+                        usernameMessage.classList.remove(
+                            "d-none"
+                        );
+
+                        usernameMessage.innerHTML =
+                            "Username must be 4-20 characters " +
+                            "and contain only letters, numbers, " +
+                            "and underscore.";
+
+                    }
+
+
+                    if (usernameSuggestion) {
+
+                        usernameSuggestion.classList.add(
+                            "d-none"
+                        );
+
+                    }
+
+                    return;
+                }
+
+
+                /*
+                 * Demo taken username.
+                 * Remove this condition when connecting
+                 * the AJAX database availability check.
+                 */
+
+                if (value === "carmina24") {
+
+                    username.classList.remove(
+                        "is-valid"
+                    );
+
+                    username.classList.add(
+                        "is-invalid"
+                    );
+
+
+                    if (usernameMessage) {
+
+                        usernameMessage.classList.remove(
+                            "d-none"
+                        );
+
+                        usernameMessage.innerHTML =
+                            '<i class="bi bi-exclamation-circle-fill me-1"></i>' +
+                            "That username is taken. Try another.";
+
+                    }
+
+
+                    if (usernameSuggestion) {
+
+                        usernameSuggestion.classList.remove(
+                            "d-none"
+                        );
+
+                        usernameSuggestion.innerHTML =
+                            "Available: <strong>c60836353</strong>";
+
+                    }
+
+                    return;
+                }
+
+
+                /* Valid */
+
+                username.classList.remove(
+                    "is-invalid"
+                );
+
+                username.classList.add(
+                    "is-valid"
+                );
+
+
+                if (usernameMessage) {
+
+                    usernameMessage.classList.add(
+                        "d-none"
+                    );
+
+                }
+
+
+                if (usernameSuggestion) {
+
+                    usernameSuggestion.classList.add(
+                        "d-none"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       EMAIL VALIDATION
+       ========================================================= */
+
+    const emailRegex =
+        /^[A-Za-z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com|live\.com|isu\.edu\.ph)$/;
+
+
+    if (email) {
+
+        email.addEventListener(
+            "input",
+            function () {
+
+                const value =
+                    this.value.trim().toLowerCase();
+
+
+                if (value === "") {
+
+                    email.classList.remove(
+                        "is-valid",
+                        "is-invalid"
+                    );
+
+                    if (emailMessage) {
+
+                        emailMessage.classList.add(
+                            "d-none"
+                        );
+
+                    }
+
+                    return;
+                }
+
+
+                if (emailRegex.test(value)) {
+
+                    email.classList.remove(
+                        "is-invalid"
+                    );
+
+                    email.classList.add(
+                        "is-valid"
+                    );
+
+                    if (emailMessage) {
+
+                        emailMessage.classList.add(
+                            "d-none"
+                        );
+
+                    }
+
+                } else {
+
+                    email.classList.remove(
+                        "is-valid"
+                    );
+
+                    email.classList.add(
+                        "is-invalid"
+                    );
+
+                    if (emailMessage) {
+
+                        emailMessage.classList.remove(
+                            "d-none"
+                        );
+
+                        emailMessage.innerHTML =
+                            "Please use a valid Gmail, Yahoo, " +
+                            "Outlook, Hotmail, Live, or ISU email address.";
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       MOBILE NUMBER
+       ========================================================= */
+
+    if (mobile) {
+
+        mobile.addEventListener(
+            "input",
+            function () {
+
+                this.value =
+                    this.value.replace(
+                        /\D/g,
+                        ""
+                    );
+
+
+                const value =
+                    this.value;
+
+
+                if (value === "") {
+
+                    mobile.classList.remove(
+                        "is-valid",
+                        "is-invalid"
+                    );
+
+                    if (mobileMessage) {
+
+                        mobileMessage.classList.add(
+                            "d-none"
+                        );
+
+                    }
+
+                    return;
+                }
+
+
+                const valid =
+                    /^09\d{9}$/.test(value);
+
+
+                if (valid) {
+
+                    mobile.classList.remove(
+                        "is-invalid"
+                    );
+
+                    mobile.classList.add(
+                        "is-valid"
+                    );
+
+                    if (mobileMessage) {
+
+                        mobileMessage.classList.add(
+                            "d-none"
+                        );
+
+                    }
+
+                } else {
+
+                    mobile.classList.remove(
+                        "is-valid"
+                    );
+
+                    mobile.classList.add(
+                        "is-invalid"
+                    );
+
+                    if (mobileMessage) {
+
+                        mobileMessage.classList.remove(
+                            "d-none"
+                        );
+
+                        mobileMessage.innerHTML =
+                            "Enter a valid Philippine mobile " +
+                            "number (09XXXXXXXXX).";
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       RECOVERY PASSWORD MATCH
+       ========================================================= */
+
+    let recoveryMatch =
+        document.getElementById("recoveryMatch");
+
+
+    if (recoveryPassConfirm) {
+
+        if (!recoveryMatch) {
+
+            recoveryMatch =
+                document.createElement("small");
+
+            recoveryMatch.id =
+                "recoveryMatch";
+
+            recoveryMatch.className =
+                "password-message";
+
+            recoveryPassConfirm
+                .parentElement.parentElement
+                .insertAdjacentElement(
+                    "afterend",
+                    recoveryMatch
+                );
+
+        }
+
+
+        function checkRecoveryMatch() {
+
+            if (recoveryPassConfirm.value === "") {
+
+                recoveryMatch.innerHTML = "";
+
+                recoveryMatch.className =
+                    "password-message d-none";
+
+                return false;
+            }
+
+
+            if (
+                recoveryPass.value ===
+                recoveryPassConfirm.value
+            ) {
+
+                recoveryMatch.className =
+                    "password-message text-success";
+
+                recoveryMatch.innerHTML =
+                    '<i class="bi bi-check-circle-fill me-1"></i>' +
+                    "Recovery secrets match";
+
+                return true;
+
             } else {
-                recoveryMatch.innerHTML = "✖ Recovery secrets do not match";
-                recoveryMatch.style.color = "red";
-            }
-        } else {
-            recoveryMatch.innerHTML = "";
-        }
-    };
 
-    if (recoveryPass) {
-        recoveryPass.addEventListener("keyup", validateRecoveryMatch);
+                recoveryMatch.className =
+                    "password-message text-danger";
+
+                recoveryMatch.innerHTML =
+                    '<i class="bi bi-x-circle-fill me-1"></i>' +
+                    "Recovery secrets do not match";
+
+                return false;
+            }
+
+        }
+
+
+        recoveryPassConfirm.addEventListener(
+            "input",
+            checkRecoveryMatch
+        );
+
+
+        if (recoveryPass) {
+
+            recoveryPass.addEventListener(
+                "input",
+                function () {
+
+                    if (
+                        recoveryPassConfirm.value !== ""
+                    ) {
+
+                        checkRecoveryMatch();
+
+                    }
+
+                }
+            );
+
+        }
+
     }
-    recoveryPassConfirm.addEventListener("keyup", validateRecoveryMatch);
-}
 
-// ============================
-// Form Validation
-// ============================
 
-// ============================
-// Mobile Number Validation
-// ============================
-const mobileInput = document.getElementById("mobile");
-const mobileMatch = document.createElement("small");
-mobileMatch.style.display = "block";
-mobileMatch.style.marginTop = "4px";
-mobileMatch.style.fontSize = "12px";
-mobileMatch.style.fontWeight = "600";
-mobileMatch.style.paddingLeft = "5px";
+    /* =========================================================
+       FORM SUBMIT
+       ========================================================= */
 
-if (mobileInput) {
-    // Insert the validation message below the input wrapper
-    mobileInput.parentElement.insertAdjacentElement("afterend", mobileMatch);
+    if (form) {
 
-    mobileInput.addEventListener("input", function() {
-        // Automatically remove any letter or special character except '+'
-        this.value = this.value.replace(/[^\d+]/g, '');
+        form.addEventListener(
+            "submit",
+            function (e) {
 
-        let val = this.value;
-        
-        // If empty (since it's optional), remove validation text
-        if (val === "") {
-            mobileMatch.innerHTML = "";
-            return;
-        }
+                let valid = true;
 
-        // Regex pattern specifically for 09xxxxxxxxx or +639xxxxxxxxx
-        const phRegex = /^(09|\+639)\d{9}$/;
 
-        if (phRegex.test(val)) {
-            mobileMatch.innerHTML = "✔ Valid format";
-            mobileMatch.style.color = "#198754"; // Green
-        } else {
-            mobileMatch.innerHTML = "✖ Format must be 09... or +639...";
-            mobileMatch.style.color = "red";
-        }
-    });
-}
+                /* Username */
 
-// ============================
-// Form Validation
-// ============================
+                if (
+                    username &&
+                    !/^[a-z0-9_]{4,20}$/.test(
+                        username.value
+                    )
+                ) {
 
-const form = document.querySelector("form");
-if (form) {
-    form.addEventListener("submit", function(e) {
-        // Mobile format check (only if they typed something)
-        const mobileVal = mobileInput ? mobileInput.value : "";
-        if (mobileVal !== "" && !/^(09|\+639)\d{9}$/.test(mobileVal)) {
-            e.preventDefault();
-            alert("Please enter a valid mobile format (e.g. 09066794925 or +639066794925).");
-            mobileInput.focus();
-            return; // Stop the script here
-        }
+                    e.preventDefault();
 
-        // Password match check
-        if (password.value !== confirm.value) {
-            e.preventDefault();
-            alert("Passwords do not match. Please ensure both fields are identical.");
-            confirm.focus();
-            return;
-        }
+                    username.dispatchEvent(
+                        new Event("input")
+                    );
 
-        // Recovery secret match check (if Super Admin)
-        if (recoveryPass && recoveryPass.value !== "") {
-            if (recoveryPass.value !== recoveryPassConfirm.value) {
-                e.preventDefault();
-                alert("Recovery secrets do not match. Please ensure both fields are identical.");
-                recoveryPassConfirm.focus();
-                return;
+                    username.focus();
+
+                    valid = false;
+                }
+
+
+                /* Email */
+
+                if (
+                    email &&
+                    !emailRegex.test(
+                        email.value.trim()
+                    )
+                ) {
+
+                    e.preventDefault();
+
+                    email.dispatchEvent(
+                        new Event("input")
+                    );
+
+                    email.focus();
+
+                    valid = false;
+                }
+
+
+                /* Mobile */
+
+                if (
+                    mobile &&
+                    mobile.value !== "" &&
+                    !/^09\d{9}$/.test(
+                        mobile.value
+                    )
+                ) {
+
+                    e.preventDefault();
+
+                    mobile.dispatchEvent(
+                        new Event("input")
+                    );
+
+                    mobile.focus();
+
+                    valid = false;
+                }
+
+
+                /* Password */
+
+                const passwordStrong =
+                    checkPasswordStrength();
+
+
+                if (!passwordStrong) {
+
+                    e.preventDefault();
+
+                    password.focus();
+
+                    valid = false;
+                }
+
+
+                /* Confirm Password */
+
+                const passwordsMatch =
+                    checkPasswordMatch();
+
+
+                if (!passwordsMatch) {
+
+                    e.preventDefault();
+
+                    confirm.focus();
+
+                    valid = false;
+                }
+
+
+                /* Recovery Password */
+
+                if (
+                    recoveryPass &&
+                    recoveryPassConfirm
+                ) {
+
+                    if (
+                        recoveryPass.value !==
+                        recoveryPassConfirm.value
+                    ) {
+
+                        e.preventDefault();
+
+                        checkRecoveryMatch();
+
+                        recoveryPassConfirm.focus();
+
+                        valid = false;
+                    }
+
+                }
+
+
+                return valid;
+
             }
-        }
-    });
-}
+        );
+
+    }
+
+});

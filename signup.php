@@ -142,52 +142,193 @@ $isSuperAdminSignup = ($userCount === 0);
 
                         <!-- INPUTS -->
                         <div class="row g-3 mb-3">
-                            <div class="col-sm-6 position-relative">
-                                <div class="input-icon-wrapper">
-                                    <i class="bi bi-person left-icon"></i>
-                                    <input type="text" name="firstname" class="form-control custom-input" placeholder="First Name" value="<?php echo htmlspecialchars($oldInput['firstname'] ?? ''); ?>" required>
+
+                            <div class="col-sm-6">
+
+                                <div class="floating-field">
+
+                                    <input
+                                        type="text"
+                                        id="firstname"
+                                        name="firstname"
+                                        class="floating-input"
+                                        placeholder=" "
+                                        value="<?php echo htmlspecialchars($oldInput['firstname'] ?? ''); ?>"
+                                        required>
+
+                                    <label for="firstname">
+                                        First Name
+                                    </label>
+
                                 </div>
+
                             </div>
-                            <div class="col-sm-6 position-relative">
-                                <div class="input-icon-wrapper">
-                                    <i class="bi bi-person left-icon"></i>
-                                    <input type="text" name="lastname" class="form-control custom-input" placeholder="Last Name" value="<?php echo htmlspecialchars($oldInput['lastname'] ?? ''); ?>" required>
+
+
+                            <div class="col-sm-6">
+
+                                <div class="floating-field">
+
+                                    <input
+                                        type="text"
+                                        id="lastname"
+                                        name="lastname"
+                                        class="floating-input"
+                                        placeholder=" "
+                                        value="<?php echo htmlspecialchars($oldInput['lastname'] ?? ''); ?>"
+                                        required>
+
+                                    <label for="lastname">
+                                        Last Name
+                                    </label>
+
                                 </div>
+
                             </div>
+
                         </div>
 
-                        <div class="input-icon-wrapper mb-3">
-                            <i class="bi bi-envelope left-icon"></i>
-                            <input type="email" name="email" class="form-control custom-input" placeholder="Email Address" value="<?php echo htmlspecialchars($oldInput['email'] ?? ''); ?>" required>
+                        <!-- Username -->
+                        <div class="username-field-wrapper mb-3">
+
+                            <div class="floating-field">
+
+                                <input
+                                    type="text"
+                                    id="username"
+                                    name="username"
+                                    maxlength="20"
+                                    autocomplete="username"
+                                    placeholder=" "
+                                    value="<?php echo htmlspecialchars($oldInput['username'] ?? ''); ?>"
+                                    required
+                                    class="floating-input">
+
+                                <label for="username">
+                                    Username
+                                </label>
+
+                            </div>
+
+                            <small
+                                id="usernameMessage"
+                                class="validation-message d-none">
+                            </small>
+
+                            <small
+                                id="usernameSuggestion"
+                                class="username-suggestion d-none">
+                            </small>
+
                         </div>
 
-                        <!-- Mobile Number (Optional) -->
                         <div class="mb-3">
-                            <div class="input-icon-wrapper">
-                                <i class="bi bi-telephone left-icon"></i>
-                                <input type="tel" id="mobile" name="mobile" class="form-control custom-input" placeholder="Mobile Number (Optional)" maxlength="13" value="<?php echo htmlspecialchars($oldInput['mobile'] ?? ''); ?>">
+
+                            <div class="floating-field">
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    class="floating-input"
+                                    placeholder=" "
+                                    autocomplete="off"
+                                    value="<?php echo htmlspecialchars($oldInput['email'] ?? ''); ?>"
+                                    required>
+
+                                <label for="email">
+                                    Email Address
+                                </label>
+
                             </div>
+
+                            <small
+                                id="emailMessage"
+                                class="validation-message d-none">
+                            </small>
+
                         </div>
 
-                        <div class="input-icon-wrapper mb-3">
-                            <i class="bi bi-person-badge left-icon"></i>
-                            <input type="text" name="username" class="form-control custom-input" placeholder="Username" value="<?php echo htmlspecialchars($oldInput['username'] ?? ''); ?>" required>
+                        <div class="mb-3">
+
+                            <div class="floating-field">
+
+                                <input
+                                    type="tel"
+                                    id="mobile"
+                                    name="mobile"
+                                    class="floating-input"
+                                    placeholder=" "
+                                    autocomplete="off"
+                                    maxlength="11"
+                                    inputmode="numeric"
+                                    value="<?php echo htmlspecialchars($oldInput['mobile'] ?? ''); ?>">
+
+                                <label for="mobile">
+                                    Mobile Number (Optional)
+                                </label>
+
+                            </div>
+
+                            <small
+                                id="mobileMessage"
+                                class="validation-message d-none">
+                            </small>
+
                         </div>
 
                         <!-- Password -->
                         <div class="mb-3">
-                            <div class="input-icon-wrapper">
-                                <i class="bi bi-lock left-icon"></i>
-                                <input type="password" id="password" name="password" class="form-control custom-input" placeholder="Password" required>
+
+                            <div class="floating-field">
+
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    autocomplete="new-password"
+                                    placeholder=" "
+                                    class="floating-input"
+                                    required>
+
+                                <label for="password">
+                                    Password
+                                </label>
+
                             </div>
+
+                            <div
+                                id="passwordMessage"
+                                class="password-message d-none">
+                            </div>
+
                         </div>
 
                         <!-- Confirm Password -->
-                        <div class="mb-4">
-                            <div class="input-icon-wrapper">
-                                <i class="bi bi-shield-lock left-icon"></i>
-                                <input type="password" id="confirm" name="confirm_password" class="form-control custom-input" placeholder="Confirm Password" required>
+                        <div class="mb-2">
+
+                            <div class="floating-field">
+
+                                <input
+                                    type="password"
+                                    id="confirm"
+                                    name="confirm_password"
+                                    autocomplete="new-password"
+                                    placeholder=" "
+                                    class="floating-input"
+                                    required>
+
+                                <label for="confirm">
+                                    Confirm Password
+                                </label>
+
                             </div>
+
+                            <div
+                                id="confirmMessage"
+                                class="password-message d-none">
+                            </div>
+
                         </div>
 
                         <?php if ($isSuperAdminSignup): ?>

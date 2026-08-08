@@ -78,6 +78,8 @@ if ($userId > 0) {
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap Icons (for password toggle eyes & icons consistency) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         /* Custom brand colors */
         .bg-brand-dark { background-color: #064e3b; }
@@ -155,7 +157,7 @@ if ($userId > 0) {
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <?php if ($selectedUser['role'] === 'Super Admin' && $_SESSION['role'] === 'Super Admin' && $selectedUser['id'] !== $_SESSION['user_id']): ?>
-                                        <div>
+                                        <div class="md:col-span-2">
                                             <label for="recovery-secret" class="block text-sm font-medium text-red-700 mb-1">Recovery Secret *</label>
                                             <div class="relative">
                                                 <i class="fa-solid fa-shield-halved absolute left-3 top-1/2 transform -translate-y-1/2 text-red-400"></i>
@@ -163,15 +165,22 @@ if ($userId > 0) {
                                             </div>
                                             <p class="text-xs text-gray-500 mt-1">Required to reset another Super Admin's password.</p>
                                         </div>
-                                        <div></div> <!-- Spacer -->
                                     <?php endif; ?>
+                                    
+                                    <!-- New Password Field -->
                                     <div>
-                                        <label for="new-password" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-                                        <input type="password" name="new_password" id="new-password" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-brand-green focus:ring-brand-green text-sm" required>
+                                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                        <div class="relative">
+                                            <input type="password" name="new_password" id="password" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-brand-green focus:ring-brand-green text-sm" required placeholder="New Password">
+                                        </div>
                                     </div>
+                                    
+                                    <!-- Confirm Password Field -->
                                     <div>
-                                        <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                                        <input type="password" name="confirm_password" id="confirm-password" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-brand-green focus:ring-brand-green text-sm" required>
+                                        <label for="confirm" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                                        <div class="relative">
+                                            <input type="password" name="confirm_password" id="confirm" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg shadow-sm focus:border-brand-green focus:ring-brand-green text-sm" required placeholder="Confirm Password">
+                                        </div>
                                     </div>
                                 </div>
 
@@ -200,7 +209,7 @@ if ($userId > 0) {
     </main>
 
     <script>
-        // Basic sidebar toggle functionality for mobile
+        // Sidebar and UI Scripts
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebar-toggle');
         const sidebarOverlay = document.getElementById('sidebar-overlay');
@@ -237,8 +246,148 @@ if ($userId > 0) {
                     }
                 });
             }
-        });
 
+            // ============================
+            // Password Show / Hide & Strength Validation Integration
+            // ============================
+            const password = document.getElementById("password");
+            const confirm = document.getElementById("confirm");
+
+            function addToggle(inputElement) {
+                if (inputElement) {
+                    const wrapper = inputElement.parentElement;
+                    if (window.getComputedStyle(wrapper).position === "static") {
+                        wrapper.style.position = "relative";
+                    }
+                    
+                    inputElement.style.paddingRight = "40px";
+
+                    const eye = document.createElement("i");
+                    eye.className = "bi bi-eye-slash password-toggle-icon";
+                    
+                    eye.style.position = "absolute";
+                    eye.style.right = "15px";
+                    eye.style.top = "50%";
+                    eye.style.transform = "translateY(-50%)";
+                    eye.style.cursor = "pointer";
+                    eye.style.zIndex = "10";
+                    eye.style.color = "#6c757d";
+
+                    wrapper.appendChild(eye);
+
+                    eye.onclick = function() {
+                        if (inputElement.type === "password") {
+                            inputElement.type = "text";
+                            eye.className = "bi bi-eye password-toggle-icon text-dark";
+                        } else {
+                            inputElement.type = "password";
+                            eye.className = "bi bi-eye-slash password-toggle-icon";
+                        }
+                    }
+                }
+            }
+
+            addToggle(password);
+            addToggle(confirm);
+
+            // Password Strength & Guidelines
+            const strength = document.createElement("small");
+            strength.style.display = "block";
+            strength.style.marginTop = "6px";
+            strength.style.fontSize = "12px";
+            strength.style.fontWeight = "500";
+            strength.style.paddingLeft = "5px";
+
+            const defaultPasswordMsg = '<i class="bi bi-exclamation-circle me-1"></i> Must be at least 8 characters with 1 uppercase, 1 number, and 1 special character.';
+
+            if (password) {
+                password.parentElement.insertAdjacentElement("afterend", strength);
+
+                password.addEventListener("keyup", function() {
+                    let pass = password.value;
+
+                    if (pass.length === 0) {
+                        strength.innerHTML = "";
+                        return;
+                    }
+
+                    let score = 0;
+                    if (pass.length >= 8) score++;
+                    if (/[A-Z]/.test(pass)) score++;
+                    if (/[a-z]/.test(pass)) score++;
+                    if (/[0-9]/.test(pass)) score++;
+                    if (/[!@#$%^&*]/.test(pass)) score++;
+
+                    if (score < 4 || pass.length < 8) {
+                        strength.innerHTML = defaultPasswordMsg;
+                        strength.style.color = "red";
+                    } else if (score === 4) {
+                        strength.innerHTML = "✔ Good Password";
+                        strength.style.color = "#d4a000";
+                    } else {
+                        strength.innerHTML = "✔ Strong Password";
+                        strength.style.color = "#198754";
+                    }
+                });
+            }
+
+            // Password Match
+            const match = document.createElement("small");
+            match.style.display = "block";
+            match.style.marginTop = "4px";
+            match.style.fontSize = "12px";
+            match.style.fontWeight = "600";
+            match.style.paddingLeft = "5px";
+
+            if (confirm) {
+                confirm.parentElement.insertAdjacentElement("afterend", match);
+
+                const validatePasswordMatch = () => {
+                    if (confirm.value !== "") {
+                        if (password.value === confirm.value) {
+                            match.innerHTML = "✔ Passwords match";
+                            match.style.color = "#198754";
+                        } else {
+                            match.innerHTML = "✖ Passwords do not match";
+                            match.style.color = "red";
+                        }
+                    } else {
+                        match.innerHTML = "";
+                    }
+                };
+
+                if (password) {
+                    password.addEventListener("keyup", validatePasswordMatch);
+                }
+                confirm.addEventListener("keyup", validatePasswordMatch);
+            }
+
+            // Form Submit Interception Check
+            const resetForm = document.getElementById("user-reset-form");
+            if (resetForm) {
+                resetForm.addEventListener("submit", function(e) {
+                    let passVal = password.value;
+                    let isValidLength = passVal.length >= 8;
+                    let hasUpper = /[A-Z]/.test(passVal);
+                    let hasNumber = /[0-9]/.test(passVal);
+                    let hasSpecial = /[!@#$%^&*]/.test(passVal);
+
+                    if (!isValidLength || !hasUpper || !hasNumber || !hasSpecial) {
+                        e.preventDefault();
+                        alert("Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.");
+                        password.focus();
+                        return;
+                    }
+
+                    if (password.value !== confirm.value) {
+                        e.preventDefault();
+                        alert("Passwords do not match. Please ensure both fields are identical.");
+                        confirm.focus();
+                        return;
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>

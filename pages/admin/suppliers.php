@@ -156,11 +156,29 @@ if ($resStats && $row = mysqli_fetch_assoc($resStats)) {
 
 // --- 3. SEARCH & FETCH SUPPLIERS ---
 $search = trim($_GET['search'] ?? '');
-$searchQuery = "";
+$contactFilter = trim($_GET['contact'] ?? '');
+$statusFilter = trim($_GET['status'] ?? '');
+
+$whereClauses = [];
 
 if (!empty($search)) {
     $safeSearch = mysqli_real_escape_string($conn, $search);
-    $searchQuery = " WHERE supplier_name LIKE '%$safeSearch%' OR contact_person LIKE '%$safeSearch%' OR email LIKE '%$safeSearch%' ";
+    $whereClauses[] = "(supplier_name LIKE '%$safeSearch%' OR contact_person LIKE '%$safeSearch%' OR email LIKE '%$safeSearch%' OR contact_number LIKE '%$safeSearch%')";
+}
+
+if (!empty($contactFilter)) {
+    $safeContact = mysqli_real_escape_string($conn, $contactFilter);
+    $whereClauses[] = "contact_person = '$safeContact'";
+}
+
+if (!empty($statusFilter)) {
+    $safeStatus = mysqli_real_escape_string($conn, $statusFilter);
+    $whereClauses[] = "status = '$safeStatus'";
+}
+
+$searchQuery = "";
+if (!empty($whereClauses)) {
+    $searchQuery = " WHERE " . implode(" AND ", $whereClauses);
 }
 
 $suppliers = [];
@@ -214,6 +232,7 @@ if ($result) {
         <?php endif; ?>
 
         <!-- HEADER -->
+
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
             <div>
                 <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Supplier Management</h1>
@@ -222,126 +241,159 @@ if ($result) {
         </div>
 
         <!-- KPI CARDS -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
-                <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Total Suppliers</p>
-                <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?= number_format($totalSuppliers); ?></h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+
+            <!-- Total -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-600 flex justify-between items-center">
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase">
+                        Total Suppliers
+                    </p>
+                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1">
+                        <?= number_format($totalSuppliers); ?>
+                    </h2>
+                </div>
+                <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 text-2xl">
+                    <i class="fa-solid fa-truck"></i>
+                </div>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
-                <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Active Suppliers</p>
-                <h2 class="text-3xl font-extrabold text-emerald-600 mt-1"><?= number_format($activeSuppliersCount); ?></h2>
+
+            <!-- Active -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-600 flex justify-between items-center">
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase">
+                        Active Suppliers
+                    </p>
+                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1">
+                        <?= number_format($activeSuppliersCount); ?>
+                    </h2>
+                </div>
+                <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-2xl">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-slate-400">
-                <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Inactive Suppliers</p>
-                <h2 class="text-3xl font-extrabold text-slate-600 mt-1"><?= number_format($inactiveSuppliersCount); ?></h2>
+
+            <!-- Inactive -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-red-600 flex justify-between items-center">
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase">
+                        Inactive Suppliers
+                    </p>
+                    <h2 class="text-3xl font-extrabold text-red-600 mt-1">
+                        <?= number_format($inactiveSuppliersCount); ?>
+                    </h2>
+                </div>
+                <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-red-600 text-2xl">
+                    <i class="fa-solid fa-user-xmark"></i>
+                </div>
             </div>
         </div>
 
-        <!-- Filter Card -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
-            <form method="GET"
-                  action=""
+        <!-- ======================= SUPPLIER LIST CARD ======================= -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 mb-8">
+
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">
+                        Supplier List
+                    </h2>
+                    <p class="text-slate-500 text-sm mt-1">
+                        Search, filter and manage supplier records.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    onclick="openAddSupplierModal()"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2.5 rounded-xl font-semibold transition">
+                    <i class="fa-solid fa-plus mr-2"></i>
+                    Add Supplier
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <form method="GET" action=""
                   class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-        
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 flex-1">
-        
+
                     <!-- Search -->
                     <div class="relative">
-        
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 text-sm">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                             <i class="fa-solid fa-magnifying-glass text-xs"></i>
                         </span>
-        
                         <input
                             type="text"
                             name="search"
                             value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                            placeholder="Search supplier name..."
-                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-        
+                            placeholder="Search supplier..."
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm
+                            focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
-        
-                    <!-- Contact -->
+
+                    <!-- Contact Person -->
                     <select
                         name="contact"
-                        class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-        
+                        class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm
+                        focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         <option value="">All Contact Persons</option>
-        
                         <?php
-                        $contacts = mysqli_query($conn,"SELECT DISTINCT contact_person
-                                                        FROM suppliers
-                                                        WHERE contact_person <> ''
-                                                        ORDER BY contact_person");
-        
-                        while($row=mysqli_fetch_assoc($contacts)):
+                        $contacts = mysqli_query($conn,"
+                            SELECT DISTINCT contact_person
+                            FROM suppliers
+                            WHERE contact_person <> ''
+                            ORDER BY contact_person
+                        ");
+                        while($row = mysqli_fetch_assoc($contacts)):
                         ?>
-        
-                        <option
-                            value="<?= htmlspecialchars($row['contact_person']) ?>"
-                            <?= (($_GET['contact'] ?? '')==$row['contact_person'])?'selected':''; ?>>
-        
-                            <?= htmlspecialchars($row['contact_person']) ?>
-        
-                        </option>
-        
+                            <option
+                                value="<?= htmlspecialchars($row['contact_person']); ?>"
+                                <?= (($_GET['contact'] ?? '') == $row['contact_person']) ? 'selected' : '';?>>
+                                <?= htmlspecialchars($row['contact_person']); ?>
+                            </option>
                         <?php endwhile; ?>
-        
                     </select>
-        
-                    <!-- Status -->
+
+                    <!-- Supplier Status -->
                     <select
                         name="status"
-                        class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-        
-                        <option value="">All Status</option>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
-        
+                        class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm
+                        focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="">All Suppliers</option>
+                        <option value="Active" <?= (($_GET['status'] ?? '') == 'Active') ? 'selected' : '';?>>
+                            Active Suppliers
+                        </option>
+                        <option value="Inactive" <?= (($_GET['status'] ?? '') == 'Inactive') ? 'selected' : '';?>>
+                            Inactive Suppliers
+                        </option>
                     </select>
-        
-                    <!-- Filter -->
-                    <button
-                        type="submit"
-                        class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition shadow-sm flex items-center justify-center gap-2">
-        
-                        <i class="fa-solid fa-filter"></i>
-        
-                        Filter
-        
-                    </button>
-        
+
+                    <!-- Filter Button -->
+                    <div class="flex items-center gap-2">
+                        <button
+                            type="submit"
+                            class="flex-1 bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-xl
+                            text-sm font-medium transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-filter"></i>
+                            Filter
+                        </button>
+                        
+                        <?php if (!empty($_GET['search']) || !empty($_GET['contact']) || !empty($_GET['status'])): ?>
+                            <a href="suppliers.php" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3.5 py-2.5 rounded-xl text-sm font-medium transition flex items-center justify-center" title="Reset Filters">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+
                 </div>
-        
+
             </form>
-        
-            <div class="flex flex-wrap items-center justify-end gap-3 mt-4 pt-4 border-t border-slate-100">
-        
-                <button
-                    type="button"
-                    onclick="openAddSupplierModal()"
-                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2">
-        
-                    <i class="fa-solid fa-plus"></i>
-        
-                    Add Supplier
-        
-                </button>
-        
-            </div>
         </div>
 
         <!-- SUPPLIERS TABLE -->
+        <!-- ======================= TABLE ======================= -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                <h2 class="text-base font-bold text-slate-800">Registered Suppliers List</h2>
-                <?php if (!empty($_GET['search']) || !empty($_GET['contact']) || !empty($_GET['status'])): ?>
-                    <a href="suppliers.php" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-xl text-sm font-medium transition" title="Reset Filters">
-                        <i class="fa-solid fa-arrows-rotate mr-2"></i> Reset Filters
-                    </a>
-                <?php endif; ?>
-            </div>
-
             <div class="overflow-x-auto">
                 <table class="min-w-full text-left border-collapse">
                     <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
@@ -351,7 +403,7 @@ if ($result) {
                             <th class="px-6 py-3 font-semibold">Contact Number</th>
                             <th class="px-6 py-3 font-semibold">Email</th>
                             <th class="px-6 py-3 font-semibold">Address</th>
-                            <th class="px-6 py-3 font-semibold text-center">Status</th>
+                            <th class="px-6 py-3.5 text-center font-semibold">Supplier Status</th>
                             <th class="px-6 py-3 font-semibold text-center">Actions</th>
                         </tr>
                     </thead>
@@ -546,14 +598,13 @@ if ($result) {
     </div>
 </div>
 
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function openAddSupplierModal() {
         new bootstrap.Modal(document.getElementById('addSupplierModal')).show();
     }
-</script>
-<!-- Bootstrap JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+
     function openEditModal(sup) {
         document.getElementById('edit_supplier_id').value = sup.id;
         document.getElementById('edit_supplier_name').value = sup.supplier_name || '';

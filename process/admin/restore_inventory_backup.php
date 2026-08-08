@@ -25,6 +25,36 @@ if ($file['error'] !== UPLOAD_ERR_OK) {
     exit();
 }
 
+/* ------------------------------------------------------
+   File Size Validation
+------------------------------------------------------ */
+$maxSize = 50 * 1024 * 1024; // 50 MB
+
+if ($file['size'] > $maxSize) {
+    $_SESSION['error_message'] = "Backup file is too large. Maximum size is 50 MB.";
+    header("Location: {$redirectURL}");
+    exit();
+}
+
+/* ------------------------------------------------------
+   MIME Type Validation
+------------------------------------------------------ */
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+$mime = finfo_file($finfo, $file['tmp_name']);
+finfo_close($finfo);
+
+$allowedMime = [
+    "application/sql",
+    "text/plain",
+    "application/octet-stream"
+];
+
+if (!in_array($mime, $allowedMime)) {
+    $_SESSION['error_message'] = "Invalid backup file.";
+    header("Location: {$redirectURL}");
+    exit();
+}
+
 $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
 if (strtolower($fileExtension) !== 'sql') {
     $_SESSION['error_message'] = "Invalid file type. Please upload a .sql backup file.";
@@ -39,6 +69,115 @@ if (empty($sqlContent)) {
     exit();
 }
 
+/* ------------------------------------------------------
+   Verify Backup Signature
+------------------------------------------------------ */
+if (
+    strpos(
+        $sqlContent,
+        "ISU INVENTORY MANAGEMENT & BILLING SYSTEM"
+    ) === false
+) {
+    $_SESSION['error_message'] =
+        "Invalid backup file. This file was not created by the ISU Inventory Management & Billing System.";
+    header("Location: {$redirectURL}");
+    exit();
+}
+
+/* ------------------------------------------------------
+   Verify Backup Version
+------------------------------------------------------ */
+if (strpos($sqlContent, "Version: 1.0") === false) {
+    $_SESSION['error_message'] = "Unsupported backup version.";
+    header("Location: {$redirectURL}");
+    exit();
+}
+
+/* ------------------------------------------------------
+   Validate Inventory Tables
+------------------------------------------------------ */
+$requiredTables = [
+    "products",
+    "categories",
+    "suppliers",
+    "deliveries",
+    "delivery_items",
+    "sales",
+    "sale_items",
+    "returns",
+    "inventory_transactions",
+    "inventory_stock_cards"
+];
+
+$missingTables = [];
+
+foreach ($requiredTables as $table) {
+    $createTable =
+        stripos($sqlContent, "CREATE TABLE `$table`") !== false;
+
+    $insertTable =
+        stripos($sqlContent, "INSERT INTO `$table`") !== false;
+
+    if (!$createTable && !$insertTable) {
+        $missingTables[] = $table;
+    }
+}
+
+if (!empty($missingTables)) {
+    $_SESSION['error_message'] =
+        "Invalid inventory backup. Missing table(s): "
+        . implode(", ", $missingTables);
+    header("Location: {$redirectURL}");
+    exit();
+}
+
+/* ------------------------------------------------------
+   Check Every SQL Statement (Updated to allow standard dump features)
+------------------------------------------------------ */
+$allowedStatements = [
+    "CREATE TABLE",
+    "INSERT INTO",
+    "DROP TABLE IF EXISTS",
+    "DROP VIEW IF EXISTS",
+    "DROP VIEW",
+    "CREATE VIEW",
+    "CREATE ALGORITHM",
+    "LOCK TABLES",
+    "UNLOCK TABLES",
+    "ALTER TABLE",
+    "SET ",
+    "START TRANSACTION",
+    "COMMIT",
+    "USE ",
+    "/*!",
+    "DELIMITER"
+];
+
+$statements = explode(";", $sqlContent);
+
+foreach ($statements as $statement) {
+    $statement = trim($statement);
+
+    if ($statement === "" || strpos($statement, "--") === 0 || strpos($statement, "#") === 0) {
+        continue;
+    }
+
+    $allowed = false;
+
+    foreach ($allowedStatements as $keyword) {
+        if (stripos($statement, $keyword) === 0) {
+            $allowed = true;
+            break;
+        }
+    }
+
+    if (!$allowed) {
+        $_SESSION['error_message'] = "Unsupported SQL statement detected.";
+        header("Location: {$redirectURL}");
+        exit();
+    }
+}
+
 // 2. Define inventory tables to be affected (in reverse order of dependency for truncation)
 $inventoryTables = [
     'sale_items',
@@ -46,7 +185,10 @@ $inventoryTables = [
     'returns',
     'sales',
     'deliveries',
+    'inventory_stock_cards',
+    'inventory_transactions',
     'products',
+    'categories',
     'suppliers'
 ];
 
@@ -74,7 +216,7 @@ try {
     mysqli_commit($conn);
 
     logActivity($conn, $_SESSION['user_id'], $_SESSION['fullname'], $_SESSION['username'], $_SESSION['role'], "Restored inventory from backup file: " . $file['name']);
-    $_SESSION['success_message'] = "Inventory has been successfully restored from the backup file.";
+    $_SESSION['success_message'] = "Inventory backup restored successfully. Products, suppliers, deliveries, sales, and inventory records have been updated.";
 
 } catch (Exception $e) {
     mysqli_rollback($conn);

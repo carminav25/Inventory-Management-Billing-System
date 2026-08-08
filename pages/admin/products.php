@@ -86,8 +86,14 @@ if ($productsRes) {
 }
 
 // Fetch categories & suppliers for dropdown options
-$categoriesList = $conn->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category != ''");
-$suppliersList = $conn->query("SELECT DISTINCT supplier FROM products WHERE supplier IS NOT NULL AND supplier != ''");
+$categoriesList = $conn->query("SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category != '' ORDER BY category ASC");
+
+// Fetch Active Suppliers for Filter
+$suppliersList = $conn->query("
+    SELECT supplier_name
+    FROM suppliers
+    WHERE status = 'Active'
+    ORDER BY supplier_name ASC");
 
 // Fetch active suppliers for Add/Edit modals
 $activeSuppliers = [];
@@ -124,9 +130,10 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
 <body class="bg-[#f5f7fb] font-sans">
 
 <?php include "sidebar.php"; ?>
-<?php include "topbar.php"; ?>
 
-<main class="ml-0 md:ml-[270px] mt-[70px] min-h-screen bg-[#f5f7fb] p-6 pb-24 transition-all duration-300">
+<main class="ml-0 md:ml-[270px] min-h-screen bg-[#f5f7fb] p-6 transition-all duration-300">
+
+    <div class="space-y-6 max-w-7xl mx-auto">
 
     <!-- NOTIFICATION ALERTS -->
     <?php if (isset($_SESSION['error_message'])): ?>
@@ -144,6 +151,15 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
         </div>
         <?php unset($_SESSION['success_message']); ?>
     <?php endif; ?>
+
+    <!-- PAGE HEADER -->
+     
+     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+       <div>
+     <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Product Management</h1>
+         <p class="text-sm text-slate-500 mt-0.5">Manage inventory products, categories, suppliers, stock levels, QR codes, and pricing.</p>
+    </div>
+    </div>
 
     <!-- STAT CARDS -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -188,8 +204,31 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
         </div>
     </div>
 
-    <!-- FILTERS & ACTIONS CONTAINER -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 mb-8">
+
+        <div class="flex justify-between items-center mb-6">
+
+            <div>
+
+                <h2 class="text-2xl font-bold text-slate-800">
+                    Product List
+                </h2>
+
+                <p class="text-slate-500 text-sm">
+                    Search, filter and manage inventory products.
+                </p>
+
+            </div>
+
+            <button onclick="openAddProductModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2.5 rounded-xl font-semibold">
+
+                <i class="fa-solid fa-plus mr-2"></i>
+                Add Product
+
+            </button>
+
+        </div>
+
         <form method="GET" action="" class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
             
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 flex-1">
@@ -215,8 +254,8 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                 <!-- Supplier Dropdown -->
                 <select name="supplier" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
                     <option value="">All Suppliers</option>
-                    <?php if ($suppliersList): while($sup = $suppliersList->fetch_assoc()): ?>
-                        <option value="<?php echo htmlspecialchars($sup['supplier']); ?>" <?php echo ($supplierFilter == $sup['supplier']) ? 'selected' : ''; ?>>
+                    <?php if ($suppliersList): while ($sup = $suppliersList->fetch_assoc()): ?>
+                        <option value="<?= htmlspecialchars($sup['supplier_name']); ?>" <?= ($supplierFilter == $sup['supplier_name']) ? 'selected' : ''; ?>>
                             <?php echo htmlspecialchars($sup['supplier']); ?>
                         </option>
                     <?php endwhile; endif; ?>
@@ -243,13 +282,6 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                 <?php endif; ?>
             </div>
         </form>
-
-        <!-- Secondary Global Triggers (Scan & Add Product) -->
-        <div class="flex flex-wrap items-center justify-end gap-3 mt-4 pt-4 border-t border-slate-100">
-            <button type="button" onclick="openAddProductModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2">
-                <i class="fa-solid fa-plus"></i> Add Product
-            </button>
-        </div>
     </div>
 
     <!-- PRODUCTS TABLE CONTAINER -->

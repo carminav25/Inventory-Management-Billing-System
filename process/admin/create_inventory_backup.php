@@ -25,11 +25,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Conditionally add the password to avoid issues with empty passwords
     $passwordArg = !empty($dbPassword) ? "-p\"{$dbPassword}\"" : "";
 
-    // List of inventory-related tables to back up
-    $inventoryTables = "products suppliers deliveries delivery_items sales sale_items returns";
+    // List of all required inventory-related tables to back up (matched with restore validation)
+    $inventoryTables = "categories products suppliers deliveries delivery_items sales sale_items returns inventory_transactions inventory_stock_cards";
     
-    // Create backup using mysqldump for specific tables
-    $command = "\"{$mysqldumpPath}\" -h {$dbHost} -u {$dbUser} {$passwordArg} {$dbName} --tables {$inventoryTables} > \"{$backupFile}\" 2>&1";
+    // 1. Create the backup signature header
+    $signature = "-- ======================================================\n";
+    $signature .= "-- ISU INVENTORY MANAGEMENT & BILLING SYSTEM\n";
+    $signature .= "-- INVENTORY BACKUP FILE\n";
+    $signature .= "-- Version: 1.0\n";
+    $signature .= "-- Generated: " . date('Y-m-d H:i:s') . "\n";
+    $signature .= "-- ======================================================\n\n";
+
+    // Write the signature to the file first
+    file_put_contents($backupFile, $signature);
+
+    // 2. Append the mysqldump output to the file using >>
+    $command = "\"{$mysqldumpPath}\" -h {$dbHost} -u {$dbUser} {$passwordArg} {$dbName} --tables {$inventoryTables} >> \"{$backupFile}\" 2>&1";
     
     // Execute backup
     exec($command, $output, $returnCode);
