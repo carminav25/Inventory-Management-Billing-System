@@ -250,11 +250,11 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
                 
                 <!-- ROUTED EXPORT & PRINT BUTTONS -->
                 <div class="flex items-center gap-2">
-                    <a href="report_print.php?<?= http_build_query($_GET) ?>" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl shadow transition text-sm">
-                        <i class="fa-solid fa-print"></i> Print
+                    <a href="report_pdf.php?<?= http_build_query($_GET) ?>" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl shadow transition text-sm">
+                        <i class="fa-solid fa-file-pdf"></i> Download PDF
                     </a>
-                   
-                    <a href="report_excel.php<?= http_build_query($_GET) ?>" class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl shadow transition text-sm">
+                    
+                    <a href="report_excel.php?<?= http_build_query($_GET) ?>" class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl shadow transition text-sm">
                         <i class="fa-solid fa-file-excel"></i> Excel
                     </a>
                 </div>
