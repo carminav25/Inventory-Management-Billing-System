@@ -88,6 +88,47 @@ unset($_SESSION['login_error'], $_SESSION['old_input'], $_SESSION['login_locked'
             color: #333;
         }
     </style>
+
+    <style>
+        /* =========================================================
+           SHARED LOGIN + SIGNUP BRANDING / LOGO POSITION
+           ========================================================= */
+
+        .main-container {
+            align-items: flex-start !important;
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+
+        .main-container > .row {
+            align-items: flex-start !important;
+        }
+
+        .left-panel {
+            align-self: flex-start !important;
+            padding-top: 0 !important;
+        }
+
+        .left-panel .logo {
+            width: 140px !important;
+            height: 140px !important;
+            object-fit: contain !important;
+            display: block;
+            margin-bottom: 16px !important;
+        }
+
+        .left-panel > div {
+            text-align: left !important;
+        }
+
+        @media (max-width: 991.98px) {
+            .main-container {
+                padding-top: 20px;
+                padding-bottom: 20px;
+            }
+        }
+    </style>
+
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -106,7 +147,6 @@ unset($_SESSION['login_error'], $_SESSION['old_input'], $_SESSION['login_locked'
                     <p class="system-desc mb-5">Sign in or create a new account to manage the dashboard, browse the product directory, and use the transaction modules.</p>
 
                     <div class="feature-item d-flex align-items-start mb-4">
-                        <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
                         <div>
                             <h5>Account Policy & Roles</h5>
                             <p>Super Admin, Admin, and Viewer roles. The first signup becomes Super Admin, the second is Admin. All subsequent signups default to Viewer accounts.</p>
@@ -114,7 +154,6 @@ unset($_SESSION['login_error'], $_SESSION['old_input'], $_SESSION['login_locked'
                     </div>
                     
                     <div class="feature-item d-flex align-items-start mb-4">
-                        <div class="feature-icon"><i class="bi bi-grid-1x2"></i></div>
                         <div>
                             <h5>Dashboard</h5>
                             <p>See sales, inventory flow, low-stock alerts, and forecasting.</p>
@@ -122,7 +161,6 @@ unset($_SESSION['login_error'], $_SESSION['old_input'], $_SESSION['login_locked'
                     </div>
                     
                     <div class="feature-item d-flex align-items-start mb-4">
-                        <div class="feature-icon"><i class="bi bi-box-seam"></i></div>
                         <div>
                             <h5>Product Directory</h5>
                             <p>Browse categories, open product profiles, and manage active items.</p>
@@ -130,7 +168,6 @@ unset($_SESSION['login_error'], $_SESSION['old_input'], $_SESSION['login_locked'
                     </div>
 
                     <div class="feature-item d-flex align-items-start">
-                        <div class="feature-icon"><i class="bi bi-qr-code-scan"></i></div>
                         <div>
                             <h5>Smart Scanning</h5>
                             <p>Use QR or barcode scanning on the delivery, sales, and returns pages.</p>
@@ -143,12 +180,9 @@ unset($_SESSION['login_error'], $_SESSION['old_input'], $_SESSION['login_locked'
             <div class="col-lg-7 d-flex justify-content-center">
                 <div class="signup-card w-100">
                     <div class="text-center mb-4">
-                        <div class="top-icon mx-auto mb-3">
-                            <i class="bi bi-lock-fill"></i>
-                        </div>
-                        <h2 class="form-title">Welcome Back!</h2>
-                        <p class="text-muted text-sm">Sign in to your account to continue</p>
-                    </div>
+    <h2 class="form-title">Welcome Back!</h2>
+    <p class="text-muted text-sm">Sign in to your account to continue</p>
+</div>
 
                     <?php if ($loginError): ?>
                         <div class="alert alert-danger text-center mb-4">
