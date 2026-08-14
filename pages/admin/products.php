@@ -256,7 +256,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                     <option value="">All Suppliers</option>
                     <?php if ($suppliersList): while ($sup = $suppliersList->fetch_assoc()): ?>
                         <option value="<?= htmlspecialchars($sup['supplier_name']); ?>" <?= ($supplierFilter == $sup['supplier_name']) ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($sup['supplier']); ?>
+                            <?php echo htmlspecialchars($sup['supplier_name']); ?>
                         </option>
                     <?php endwhile; endif; ?>
                 </select>
@@ -584,7 +584,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <label class="block text-xs font-semibold text-slate-500 uppercase">Current Stock <span class="text-red-500">*</span></label>
-                                <button type="button" onclick="requestUnlockStock()" class="text-[11px] text-purple-600 hover:text-purple-700 font-semibold flex items-center gap-1">
+                                <button type="button" onclick="requestUnlockStock()" class="text-[11px] text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-1">
                                     <i class="fa-solid fa-lock text-[10px]" id="stockLockIcon"></i> <span id="stockLockText">Unlock via Super Admin</span>
                                 </button>
                             </div>

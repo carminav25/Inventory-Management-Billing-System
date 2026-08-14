@@ -19,11 +19,17 @@ if (isset($_GET['action_type']) && $_GET['action_type'] === 'delete') {
 
     if (!empty($backup_file)) {
         // Verify that the deletion was authorized by a Super Admin in the last 5 minutes
-        if (isset($_SESSION['delete_authorized']) && $_SESSION['delete_authorized'] === true && (time() - $_SESSION['delete_auth_time'] < 300)) {
+        $deleteAuthorized = ($_SESSION['delete_authorized'] ?? false) === true;
+        $deleteAuthTime = (int) ($_SESSION['delete_auth_time'] ?? 0);
+
+        if ($deleteAuthorized && (time() - $deleteAuthTime < 300)) {
             
             $filePath = $backupFolder . $backup_file;
 
-            if (file_exists($filePath) && strpos(realpath($filePath), realpath($backupFolder)) === 0) {
+            $resolvedFilePath = realpath($filePath);
+            $resolvedBackupFolder = realpath($backupFolder);
+
+            if ($resolvedFilePath !== false && $resolvedBackupFolder !== false && strpos($resolvedFilePath, $resolvedBackupFolder) === 0) {
                 if (unlink($filePath)) {
                     logActivity($conn, $_SESSION['user_id'], $_SESSION['fullname'], $_SESSION['username'], $_SESSION['role'], "Deleted Backup File: {$backup_file}. Reason: " . ($_SESSION['delete_auth_reason'] ?? 'N/A'));
                     $_SESSION['success_message'] = "Backup file '{$backup_file}' deleted successfully.";
@@ -50,6 +56,9 @@ if (!is_dir($backupFolder)) {
 }
 
 $backups = glob($backupFolder . "*.sql");
+if ($backups === false) {
+    $backups = [];
+}
 
 $totalBackups = count($backups);
 
@@ -57,10 +66,15 @@ $lastBackupDate = "No Backup";
 
 if ($totalBackups > 0) {
     usort($backups, function ($a, $b) {
-        return filemtime($b) - filemtime($a);
+        $aTime = is_file($a) ? filemtime($a) : 0;
+        $bTime = is_file($b) ? filemtime($b) : 0;
+        return $bTime <=> $aTime;
     });
 
-    $lastBackupDate = date("M d, Y h:i A", filemtime($backups[0]));
+    $latestBackup = $backups[0];
+    if (is_file($latestBackup)) {
+        $lastBackupDate = date("M d, Y h:i A", filemtime($latestBackup));
+    }
 }
 
 /* Database Size */
@@ -128,7 +142,7 @@ $backupStatus = [
             <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Last Backup</p>
             <h2 class="text-2xl font-bold text-slate-800 mt-1"><?= $lastBackupDate ?></h2>
         </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-purple-500">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
             <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Total Backups</p>
             <h2 class="text-2xl font-bold text-slate-800 mt-1"><?= $totalBackups ?></h2>
         </div>
@@ -174,8 +188,8 @@ $backupStatus = [
                     <?php if (!empty($backups)): ?>
                         <?php foreach ($backups as $backup):
                             $file = basename($backup);
-                            $size = round(filesize($backup) / 1024, 2) . " KB";
-                            $date = date("M d, Y", filemtime($backup));
+                            $size = is_file($backup) ? round(filesize($backup) / 1024, 2) . " KB" : "N/A";
+                            $date = is_file($backup) ? date("M d, Y", filemtime($backup)) : "Unknown";
                         ?>
                             <tr class="hover:bg-slate-50 transition">
                                 <td class="p-4 font-mono text-blue-600"><?= htmlspecialchars($file); ?></td>
