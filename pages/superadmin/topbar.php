@@ -8,11 +8,11 @@
         </div>
         <?php if (isset($breadcrumbs)): ?>
         <div class="text-[13px] flex items-center mt-0.5 ml-1 md:ml-0">
-            <a href="index.php" class="text-purple-700 hover:underline">Dashboard</a> 
+            <a href="index.php" class="text-emerald-700 hover:underline">Dashboard</a> 
             <?php foreach ($breadcrumbs as $breadcrumb): ?>
                 <i class="fa-solid fa-chevron-right text-[10px] text-gray-500 mx-2"></i> 
                 <?php if (isset($breadcrumb['link'])): ?>
-                    <a href="<?php echo $breadcrumb['link']; ?>" class="text-purple-700 hover:underline"><?php echo $breadcrumb['name']; ?></a>
+                    <a href="<?php echo $breadcrumb['link']; ?>" class="text-emerald-700 hover:underline"><?php echo $breadcrumb['name']; ?></a>
                 <?php else: ?>
                     <span class="text-gray-600"><?php echo $breadcrumb['name']; ?></span>
                 <?php endif; ?>

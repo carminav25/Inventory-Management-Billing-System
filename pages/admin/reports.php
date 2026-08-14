@@ -536,10 +536,10 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
         document.getElementById("cardVal").innerText = "₱<?= number_format($totalValue, 2) ?>";
 
         // Modern Chart Colors
-        const colBeg = '#3b82f6';
+        const colBeg = '#0B7A4B';
         const colRec = '#10b981';
-        const colSol = '#ef4444';
-        const colEnd = '#6366f1';
+        const colSol = '#dc2626';
+        const colEnd = '#0F766E';
 
         // 1. Inventory Movement Chart
         const ctxMovement = document.getElementById('movementChart')?.getContext('2d');
@@ -596,8 +596,8 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
                     datasets: [{
                         label: 'Sales Vol',
                         data: [<?= max(0, $totalSold * 0.2) ?>, <?= max(0, $totalSold * 0.4) ?>, <?= max(0, $totalSold * 0.1) ?>, <?= max(0, $totalSold * 0.3) ?>],
-                        borderColor: '#ef4444',
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderColor: '#dc2626',
+                        backgroundColor: 'rgba(220, 38, 38, 0.1)',
                         fill: true,
                         tension: 0.4
                     }]

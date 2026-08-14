@@ -200,7 +200,7 @@ if ($result) {
                 <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Today's Deliveries</p>
                 <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?= number_format($todayDeliveries); ?></h2>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-purple-500">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
                 <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Total Items Received</p>
                 <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?= number_format($totalItemsReceived); ?></h2>
             </div>

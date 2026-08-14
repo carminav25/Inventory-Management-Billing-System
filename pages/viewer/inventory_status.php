@@ -14,11 +14,11 @@ $outOfStockProducts = getViewerOutOfStockProducts($conn, 100);
 <head>
     <title>Inventory Status - Viewer Dashboard</title>
     <style>
-        body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+        body { font-family: Arial; background: #f5f7fa; padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; }
         .header { background: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; }
         h1 { color: #333; }
-        .back-link { color: #3498db; text-decoration: none; }
+        .back-link { color: #0B7A4B; text-decoration: none; }
         .section { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }

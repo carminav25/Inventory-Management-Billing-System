@@ -344,16 +344,16 @@ $totalTransactionsSum = array_sum($deliveriesData) + array_sum($salesData) + arr
         </a>
 
         <!-- Inventory Value -->
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200 border-l-4 border-l-purple-600 relative overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200 border-l-4 border-l-emerald-500 relative overflow-hidden">
             <div class="flex justify-between items-start">
                 <div>
                     <p class="text-xs uppercase tracking-wider font-semibold text-slate-400">Inventory Value</p>
                     <h2 class="text-3xl font-extrabold text-slate-800 mt-1">₱<?= number_format($inventoryValue, 2); ?></h2>
-                    <p class="text-xs text-purple-600 font-medium mt-2 flex items-center gap-2">
+                    <p class="text-xs text-emerald-600 font-medium mt-2 flex items-center gap-2">
                         <i class="fa-solid fa-circle-check"></i> Updated just now
                     </p>
                 </div>
-                <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl">
                     <i class="fa-solid fa-coins"></i>
                 </div>
             </div>
@@ -448,9 +448,9 @@ $totalTransactionsSum = array_sum($deliveriesData) + array_sum($salesData) + arr
         <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200 flex justify-between items-center">
             <div>
                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Transactions</p>
-                <h3 class="text-2xl font-bold text-purple-600 mt-1"><?= number_format($todayTransactions); ?></h3>
+                <h3 class="text-2xl font-bold text-emerald-600 mt-1"><?= number_format($todayTransactions); ?></h3>
             </div>
-            <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
                 <i class="fa-solid fa-receipt"></i>
             </div>
         </div>
@@ -628,8 +628,8 @@ new Chart(document.getElementById('movementChart'), {
             {
                 label: 'Sales',
                 data: salesData,
-                borderColor: '#3B82F6',
-                backgroundColor: 'rgba(59,130,246,0.08)',
+                borderColor: '#0B7A4B',
+                backgroundColor: 'rgba(11,122,75,0.08)',
                 borderWidth: 2.5,
                 pointRadius: 3,
                 fill: true,
@@ -681,8 +681,8 @@ new Chart(document.getElementById('categoryChart'), {
         datasets: [{
             data: categoryData,
             backgroundColor: [
-                '#10B981', '#3B82F6', '#F59E0B', '#EF4444', 
-                '#8B5CF6', '#06B6D4', '#14B8A6', '#F97316'
+                '#10B981', '#0B7A4B', '#F59E0B', '#065F46', 
+                '#0F766E', '#0B7A4B', '#14B8A6', '#F97316'
             ],
             borderWidth: 2,
             borderColor: '#ffffff'

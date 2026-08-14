@@ -17,10 +17,10 @@ $user = $result->fetch_assoc();
 <head>
     <title>Profile - Viewer Dashboard</title>
     <style>
-        body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+        body { font-family: Arial; background: #f5f7fa; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
         h1 { color: #333; }
-        .back-link { color: #3498db; text-decoration: none; }
+        .back-link { color: #0B7A4B; text-decoration: none; }
         .profile-info { margin: 20px 0; }
         .info-row { margin: 10px 0; }
         .label { font-weight: bold; color: #666; }

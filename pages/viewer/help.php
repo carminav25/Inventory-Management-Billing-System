@@ -10,14 +10,14 @@ requireViewer();
 <head>
     <title>Help Center - Viewer Dashboard</title>
     <style>
-        body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+        body { font-family: Arial; background: #f5f7fa; padding: 20px; }
         .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
         h1 { color: #333; }
-        .back-link { color: #3498db; text-decoration: none; }
+        .back-link { color: #0B7A4B; text-decoration: none; }
         .section { margin: 30px 0; }
         .section h2 { color: #333; margin-top: 20px; }
         .faq { margin: 15px 0; }
-        .faq-q { font-weight: bold; color: #3498db; }
+        .faq-q { font-weight: bold; color: #0B7A4B; }
         .faq-a { color: #666; margin-top: 5px; }
     </style>
 </head>

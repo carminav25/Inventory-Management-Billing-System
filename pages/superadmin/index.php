@@ -135,7 +135,7 @@ try {
                             </div>
                         </div>
                         <div class="bg-white border border-gray-200 rounded-full px-4 py-2 flex items-center gap-3 shadow-sm">
-                            <div class="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center text-sm">
+                            <div class="w-8 h-8 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center text-sm">
                                 <i class="fa-solid fa-database"></i>
                             </div>
                             <div class="leading-tight pr-2">
@@ -217,7 +217,7 @@ try {
                     <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm flex flex-col justify-between">
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">BACKUPS</span>
-                            <div class="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center">
+                            <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
                                 <i class="fa-solid fa-database text-xs"></i>
                             </div>
                         </div>
@@ -275,19 +275,19 @@ try {
                             <h3 class="font-bold text-[13px] text-gray-800 uppercase tracking-wide">Quick Actions</h3>
                         </div>
                         <div class="p-4 grid grid-cols-2 md:grid-cols-4 gap-3 flex-1 items-center">
-                            <a href="users.php?action=create" class="bg-[#10b981] hover:bg-[#059669] text-white rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition shadow-sm h-full">
+                            <a href="users.php?action=create" class="bg-[#34C38F] hover:bg-[#1E8F67] text-white rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition shadow-sm h-full">
                                 <i class="fa-solid fa-user-plus text-2xl"></i>
                                 <span class="text-xs font-semibold mt-1 text-center">Create User</span>
                             </a>
-                            <a href="users.php" class="bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition shadow-sm h-full">
+                            <a href="users.php" class="bg-[#5A9BFF] hover:bg-[#3D7AE6] text-white rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition shadow-sm h-full">
                                 <i class="fa-solid fa-users-gear text-2xl"></i>
                                 <span class="text-xs font-semibold mt-1 text-center">Manage Users</span>
                             </a>
-                            <a href="security_center.php" class="bg-[#ef4444] hover:bg-[#dc2626] text-white rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition shadow-sm h-full">
+                            <a href="security_center.php" class="bg-[#E76B6B] hover:bg-[#D55454] text-white rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition shadow-sm h-full">
                                 <i class="fa-solid fa-shield-halved text-2xl"></i>
                                 <span class="text-xs font-semibold mt-1 text-center leading-tight">Security Center</span>
                             </a>
-                            <a href="backup_restore.php" class="bg-[#a855f7] hover:bg-[#9333ea] text-white rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition shadow-sm h-full">
+                            <a href="backup_restore.php" class="bg-[#0F6D57] hover:bg-[#1E8F67] text-white rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition shadow-sm h-full">
                                 <i class="fa-solid fa-database text-2xl"></i>
                                 <span class="text-xs font-semibold mt-1 text-center leading-tight">Backup & Restore</span>
                             </a>
@@ -322,7 +322,7 @@ try {
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-3">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-[#3b82f6]"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#0B7A4B]"></div>
                                     <div class="text-xs">
                                         <p class="font-semibold text-gray-700">Admin</p>
                                         <p class="text-gray-500"><?php echo $adminCount; ?> (<?php echo $admPct; ?>%)</p>
@@ -356,7 +356,7 @@ try {
                                     } elseif(strpos($actionLow, 'reset password') !== false) {
                                         $icon = "fa-key text-blue-500"; $bg = "bg-blue-50";
                                     } elseif(strpos($actionLow, 'backup') !== false) {
-                                        $icon = "fa-database text-purple-500"; $bg = "bg-purple-50";
+                                        $icon = "fa-database text-sky-500"; $bg = "bg-sky-50";
                                     } elseif(strpos($actionLow, 'login') !== false || strpos($actionLow, 'logged in') !== false) {
                                         $icon = "fa-eye text-amber-500"; $bg = "bg-amber-50";
                                         if(strpos($actionLow, 'failed') !== false) { $icon = "fa-triangle-exclamation text-orange-500"; $bg = "bg-orange-50"; }
@@ -505,7 +505,7 @@ try {
                         labels: ['Super Admin', 'Admin', 'Viewer'],
                         datasets: [{
                             data: [<?php echo $superAdminCount; ?>, <?php echo $adminCount; ?>, <?php echo $viewerCount; ?>],
-                            backgroundColor: ['#10b981', '#3b82f6', '#f59e0b'],
+                            backgroundColor: ['#10b981', '#0B7A4B', '#f59e0b'],
                             borderWidth: 0,
                             cutout: '65%'
                         }]

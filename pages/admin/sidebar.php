@@ -80,7 +80,7 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 e
 
                 <div class="space-y-1">
 
-                    <a href="index.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'index.php') ? 'bg-[#10b981] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
+                    <a href="index.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'index.php') ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
                         <i class="fa-solid fa-chart-line w-5 text-center text-lg"></i> Dashboard
                     </a>
 
@@ -96,25 +96,25 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 e
 
                 <div class="space-y-1">
 
-                    <a href="products.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'products.php' || $current_page == 'add_product.php') ? 'bg-[#10b981] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
+                    <a href="products.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'products.php' || $current_page == 'add_product.php') ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
                         <i class="fa-solid fa-box w-5 text-center text-lg"></i> Products
                     </a>
 
-                    <a href="suppliers.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'suppliers.php' || $current_page == 'add_supplier.php') ? 'bg-[#10b981] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
+                    <a href="suppliers.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'suppliers.php' || $current_page == 'add_supplier.php') ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
                         <i class="fa-solid fa-truck w-5 text-center text-lg"></i> Suppliers
                     </a>
 
                     
 
-                    <a href="inventory_indeliveries.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= in_array($current_page, ['inventory_indeliveries.php', 'delivery_form.php', 'delivery_view.php', 'delivery_print.php']) ? 'bg-[#10b981] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
+                    <a href="inventory_indeliveries.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= in_array($current_page, ['inventory_indeliveries.php', 'delivery_form.php', 'delivery_view.php', 'delivery_print.php']) ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
                         <i class="fa-solid fa-truck-ramp-box w-5 text-center text-lg"></i> Inventory In (Deliveries)
                     </a>
 
-                    <a href="inventory_outsales.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= in_array($current_page, ['inventory_outsales.php', 'sale_form.php', 'sale_view.php', 'sale_print.php']) ? 'bg-[#10b981] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
+                    <a href="inventory_outsales.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= in_array($current_page, ['inventory_outsales.php', 'sale_form.php', 'sale_view.php', 'sale_print.php']) ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
                         <i class="fa-solid fa-cart-shopping w-5 text-center text-lg"></i> Inventory Out (Sales)
                     </a>
 
-                    <a href="returns.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= in_array($current_page, ['returns.php', 'return_form.php', 'return_view.php', 'return_print.php']) ? 'bg-[#10b981] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
+                    <a href="returns.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= in_array($current_page, ['returns.php', 'return_form.php', 'return_view.php', 'return_print.php']) ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
                         <i class="fa-solid fa-rotate-left w-5 text-center text-lg"></i> Supplier Returns
                     </a>
 
@@ -136,7 +136,7 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 e
 
                 <div class="space-y-1">
 
-                    <a href="reports.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'reports.php') ? 'bg-[#10b981] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
+                    <a href="reports.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'reports.php') ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
                         <i class="fa-solid fa-file-lines w-5 text-center text-lg"></i> Inventory Report
                   </a>
 
@@ -156,7 +156,7 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 e
 
                     <div class="space-y-1">
 
-                    <a href="backup_restore.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'backup_restore.php') ? 'bg-[#10b981] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
+                    <a href="backup_restore.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'backup_restore.php') ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
                         <i class="fa-solid fa-database w-5 text-center text-lg"></i> Backup & Restore
                     </a>
                 </div>
