@@ -316,53 +316,42 @@ if ($result) {
         </div>
 
         <!-- KPI CARDS -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
 
-            <!-- Total -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-600 flex justify-between items-center">
-                <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase">
-                        Total Suppliers
-                    </p>
-                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1">
-                        <?= number_format($totalSuppliers); ?>
-                    </h2>
-                </div>
-                <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 text-2xl">
-                    <i class="fa-solid fa-truck"></i>
-                </div>
-            </div>
+    <!-- Total Suppliers -->
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <p class="text-xs font-semibold text-slate-400 uppercase">
+            Total Suppliers
+        </p>
 
-            <!-- Active -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-600 flex justify-between items-center">
-                <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase">
-                        Active Suppliers
-                    </p>
-                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1">
-                        <?= number_format($activeSuppliersCount); ?>
-                    </h2>
-                </div>
-                <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-2xl">
-                    <i class="fa-solid fa-user-check"></i>
-                </div>
-            </div>
+        <h2 class="text-3xl font-extrabold text-slate-800 mt-1">
+            <?= number_format($totalSuppliers); ?>
+        </h2>
+    </div>
 
-            <!-- Inactive -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-red-600 flex justify-between items-center">
-                <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase">
-                        Inactive Suppliers
-                    </p>
-                    <h2 class="text-3xl font-extrabold text-red-600 mt-1">
-                        <?= number_format($inactiveSuppliersCount); ?>
-                    </h2>
-                </div>
-                <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-red-600 text-2xl">
-                    <i class="fa-solid fa-user-xmark"></i>
-                </div>
-            </div>
-        </div>
+    <!-- Active Suppliers -->
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <p class="text-xs font-semibold text-slate-400 uppercase">
+            Active Suppliers
+        </p>
+
+        <h2 class="text-3xl font-extrabold text-slate-800 mt-1">
+            <?= number_format($activeSuppliersCount); ?>
+        </h2>
+    </div>
+
+    <!-- Inactive Suppliers -->
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <p class="text-xs font-semibold text-slate-400 uppercase">
+            Inactive Suppliers
+        </p>
+
+        <h2 class="text-3xl font-extrabold text-red-600 mt-1">
+            <?= number_format($inactiveSuppliersCount); ?>
+        </h2>
+    </div>
+
+</div>
 
         <!-- ======================= SUPPLIER LIST CARD ======================= -->
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 mb-8">
