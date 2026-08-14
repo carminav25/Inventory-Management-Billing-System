@@ -1,11 +1,8 @@
 <?php
 
 // Determine current page filename to highlight the active menu item
-
 $current_page = basename($_SERVER['PHP_SELF']);
 
-?>
-<?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -13,88 +10,422 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once "../../config/database.php";
 require_once "../../includes/admin_auth.php";
 
-
 // Ensure user is an Admin
 requireAdmin();
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - <?= htmlspecialchars($pageTitle ?? 'Admin Dashboard'); ?></title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link rel="stylesheet" href="../../assets/css/admin-ui.css">
-    <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        body { background-color: #F5F7FA; font-family: 'Poppins', Arial, sans-serif; overflow:hidden; }
-        .bg-brand-green { background-color: #0B7A4B; }
-        main { height:100vh; overflow-y:auto; }
-        /* Global override to eliminate Bootstrap link underlines inside the sidebar */
-        #sidebar a { text-decoration: none !important; }
-    </style>
-</head>
 
-<!-- Sidebar Component -->
+<style>
+
+/* =========================================================
+   ISU CBAO MERCH BILLING
+   CLEAN LIGHT SIDEBAR
+   NO SCROLLING
+   NO MENU ICONS
+   OFFICIAL LOGO RETAINED
+   ========================================================= */
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+#sidebar {
+
+    width: 270px;
+    height: 100vh;
+
+    background: #ffffff;
+
+    color: #1f2937;
+
+    border-right: 1px solid #e5e7eb;
+
+    box-shadow:
+        4px 0 18px rgba(0, 0, 0, 0.05);
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    z-index: 50;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   BRAND HEADER
+   ========================================================= */
+
+#sidebar .sidebar-brand {
+
+    height: 92px;
+
+    padding: 0 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    background: #ecfdf5;
+
+    border-bottom: 1px solid #d1fae5;
+}
+
+
+/* =========================================================
+   LOGO CONTAINER
+   ========================================================= */
+
+#sidebar .sidebar-logo-wrap {
+
+    width: 48px;
+    height: 48px;
+
+    flex: 0 0 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #ffffff;
+
+    border: 1px solid #d1fae5;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 2px 6px rgba(6, 95, 70, 0.05);
+}
+
+
+/* =========================================================
+   OFFICIAL LOGO
+   ========================================================= */
+
+#sidebar .sidebar-logo {
+
+    width: 42px;
+    height: 42px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* =========================================================
+   BRAND TEXT
+   ========================================================= */
+
+#sidebar .brand-text {
+
+    min-width: 0;
+}
+
+
+#sidebar .brand-title {
+
+    color: #065f46;
+
+    font-size: 13px;
+
+    line-height: 1.3;
+
+    font-weight: 700;
+
+    letter-spacing: .01em;
+}
+
+
+#sidebar .brand-subtitle {
+
+    color: #4b7f6b;
+
+    font-size: 9.5px;
+
+    line-height: 1.3;
+
+    font-weight: 400;
+
+    margin-top: 3px;
+}
+
+
+/* =========================================================
+   SIDEBAR CONTENT
+   ========================================================= */
+
+#sidebar .sidebar-content {
+
+    height: calc(100vh - 92px);
+
+    padding: 14px 0 68px;
+
+    background: #ffffff;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+
+#sidebar .sidebar-section {
+
+    margin-bottom: 12px;
+}
+
+
+#sidebar .section-title {
+
+    margin: 0 20px 4px;
+
+    color: #059669;
+
+    font-size: 9px;
+
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    letter-spacing: .13em;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   MENU LINKS
+   ========================================================= */
+
+#sidebar .sidebar-link {
+
+    display: flex;
+
+    align-items: center;
+
+    min-height: 39px;
+
+    margin: 2px 12px;
+
+    padding: 8px 14px;
+
+    border-radius: 9px;
+
+    color: #334155;
+
+    background: transparent;
+
+    text-decoration: none !important;
+
+    font-size: 13px;
+
+    line-height: 1.2;
+
+    font-weight: 500;
+
+    transition:
+        background-color .18s ease,
+        color .18s ease,
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+#sidebar .sidebar-link:hover {
+
+    color: #065f46;
+
+    background: #ecfdf5;
+
+    transform: translateX(2px);
+}
+
+
+/* =========================================================
+   ACTIVE MENU
+   ========================================================= */
+
+#sidebar .sidebar-link.active {
+
+    color: #ffffff;
+
+    background: #10b981;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 4px 12px rgba(16, 185, 129, .20);
+}
+
+
+#sidebar .sidebar-link.active:hover {
+
+    color: #ffffff;
+
+    background: #10b981;
+
+    transform: none;
+}
+
+
+/* =========================================================
+   LOGOUT AREA
+   ========================================================= */
+
+#sidebar .sidebar-footer {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    padding: 10px 12px;
+
+    background: #ffffff;
+
+    border-top: 1px solid #e5e7eb;
+}
+
+
+/* =========================================================
+   LOGOUT BUTTON
+   ========================================================= */
+
+#sidebar .logout-link {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 100%;
+
+    height: 40px;
+
+    border-radius: 9px;
+
+    color: #475569;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+
+    text-decoration: none !important;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition:
+        background-color .18s ease,
+        color .18s ease,
+        border-color .18s ease;
+}
+
+
+/* =========================================================
+   LOGOUT HOVER
+   ========================================================= */
+
+#sidebar .logout-link:hover {
+
+    color: #dc2626;
+
+    background: #fef2f2;
+
+    border-color: #fecaca;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    #sidebar {
+
+        width: 270px;
+
+    }
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     SIDEBAR
+     ========================================================= -->
 
 <aside
-id="sidebar"
-class="fixed top-0 left-0
-w-[270px]
-h-screen
-bg-[#065F46]
-text-white
-shadow-lg
-overflow-y-auto
-z-50
-transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out"
+    id="sidebar"
+    aria-label="Admin navigation"
 >
-        <!-- Brand / Logo Header -->
 
-        <div class="px-6 py-6 flex items-center gap-3">
 
-            <img src="../../assets/images/logo.png" alt="Logo" class="w-10 h-10 rounded-full object-cover">
+    <!-- =====================================================
+         BRAND / LOGO HEADER
+         ===================================================== -->
 
-            <span class="font-bold text-sm tracking-wide text-white leading-tight">Inventory Management & Billing System</span>
+    <div class="sidebar-brand">
+
+
+        <!-- OFFICIAL ISU LOGO -->
+
+        <div class="sidebar-logo-wrap">
+
+            <img
+                src="../../assets/images/logo.png"
+                alt="ISU CBAO Merch Billing Logo"
+                class="sidebar-logo"
+            >
 
         </div>
 
 
+        <!-- SYSTEM NAME -->
 
-        <!-- Navigation Menu -->
+        <div class="brand-text">
 
-        <nav class="py-2 flex flex-col gap-5 text-xs font-medium">
+            <div class="brand-title">
 
-            <!-- MAIN -->
+                ISU CBAO Merch Billing
 
-            <div>
+            </div>
 
-                <p class="px-6 text-[10px] font-bold text-emerald-300 uppercase tracking-wider mb-2">Main</p>
-
-                <div class="space-y-1">
 
                     <a href="index.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'index.php') ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
                         <i class="fa-solid fa-chart-line w-5 text-center text-lg"></i> Dashboard
                     </a>
+            <div class="brand-subtitle">
 
-                </div>
+                Inventory Management &amp; Billing System
 
-         
+            </div>
 
-            <!-- INVENTORY -->
+        </div>
 
-            <div>
 
-                <p class="px-6 text-[10px] font-bold text-emerald-300 uppercase tracking-wider mb-2">Inventory</p>
+    </div>
 
-                <div class="space-y-1">
 
                     <a href="products.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'products.php' || $current_page == 'add_product.php') ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
                         <i class="fa-solid fa-box w-5 text-center text-lg"></i> Products
@@ -103,73 +434,199 @@ transform -translate-x-full md:translate-x-0 transition-transform duration-300 e
                     <a href="suppliers.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'suppliers.php' || $current_page == 'add_supplier.php') ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
                         <i class="fa-solid fa-truck w-5 text-center text-lg"></i> Suppliers
                     </a>
+    <!-- =====================================================
+         NAVIGATION
+         ===================================================== -->
 
-                    
-
-                    <a href="inventory_indeliveries.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= in_array($current_page, ['inventory_indeliveries.php', 'delivery_form.php', 'delivery_view.php', 'delivery_print.php']) ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
-                        <i class="fa-solid fa-truck-ramp-box w-5 text-center text-lg"></i> Inventory In (Deliveries)
-                    </a>
-
-                    <a href="inventory_outsales.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= in_array($current_page, ['inventory_outsales.php', 'sale_form.php', 'sale_view.php', 'sale_print.php']) ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
-                        <i class="fa-solid fa-cart-shopping w-5 text-center text-lg"></i> Inventory Out (Sales)
-                    </a>
-
-                    <a href="returns.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= in_array($current_page, ['returns.php', 'return_form.php', 'return_view.php', 'return_print.php']) ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
-                        <i class="fa-solid fa-rotate-left w-5 text-center text-lg"></i> Supplier Returns
-                    </a>
-
-                </div>
-
-            
+    <div class="sidebar-content">
 
 
+        <!-- =================================================
+             MAIN
+             ================================================= -->
 
-            
+        <section class="sidebar-section">
 
-
-
-            <!-- REPORTS -->
-
-            <div>
-
-                <p class="px-6 text-[10px] font-bold text-emerald-300 uppercase tracking-wider mb-2">Reports</p>
-
-                <div class="space-y-1">
-
-                    <a href="reports.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'reports.php') ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
-                        <i class="fa-solid fa-file-lines w-5 text-center text-lg"></i> Inventory Report
-                  </a>
-
-                    </div>
-
-                    </div>
-
-
-
-
-            <!-- SYSTEM -->
-
-            <div>
-
-                <p class="px-6 text-[10px] font-bold text-emerald-300 uppercase tracking-wider mb-2">System</p>
-
-
-                    <div class="space-y-1">
-
-                    <a href="backup_restore.php" class="no-underline px-6 py-2.5 flex items-center gap-3 text-sm transition-colors <?= ($current_page == 'backup_restore.php') ? 'bg-[#0B7A4B] rounded-lg mx-3 px-3 text-white font-medium shadow-md' : 'text-emerald-100 hover:text-white hover:bg-white/10 rounded-lg mx-3 px-3'; ?>">
-                        <i class="fa-solid fa-database w-5 text-center text-lg"></i> Backup & Restore
-                    </a>
-                </div>
-
+            <div class="section-title">
+                Main
             </div>
 
-        </nav>
-                        
-    <!-- Bottom Logout Area -->
-<div class="absolute bottom-0 left-0 right-0 p-4 border-t-0">        <a href="../../logout.php" class="no-underline flex items-center gap-3 px-3 py-2.5 text-sm text-emerald-100 hover:bg-red-500/20 hover:text-red-200 transition-colors rounded-xl w-full">
-            <i class="fa-solid fa-right-from-bracket w-5 text-center text-lg"></i> Logout
-        </a>
+
+            <a
+                href="index.php"
+                class="sidebar-link <?= ($current_page === 'index.php') ? 'active' : ''; ?>"
+            >
+                Dashboard
+            </a>
+
+        </section>
+
+
+        <!-- =================================================
+             INVENTORY
+             ================================================= -->
+
+        <section class="sidebar-section">
+
+            <div class="section-title">
+                Inventory
+            </div>
+
+
+            <!-- PRODUCTS -->
+
+            <a
+                href="products.php"
+                class="sidebar-link <?= in_array(
+                    $current_page,
+                    [
+                        'products.php',
+                        'add_product.php'
+                    ],
+                    true
+                ) ? 'active' : ''; ?>"
+            >
+                Products
+            </a>
+
+
+            <!-- SUPPLIERS -->
+
+            <a
+                href="suppliers.php"
+                class="sidebar-link <?= in_array(
+                    $current_page,
+                    [
+                        'suppliers.php',
+                        'add_supplier.php'
+                    ],
+                    true
+                ) ? 'active' : ''; ?>"
+            >
+                Suppliers
+            </a>
+
+
+            <!-- INVENTORY IN -->
+
+            <a
+                href="inventory_indeliveries.php"
+                class="sidebar-link <?= in_array(
+                    $current_page,
+                    [
+                        'inventory_indeliveries.php',
+                        'delivery_form.php',
+                        'delivery_view.php',
+                        'delivery_print.php'
+                    ],
+                    true
+                ) ? 'active' : ''; ?>"
+            >
+                Inventory In (Deliveries)
+            </a>
+
+
+            <!-- INVENTORY OUT -->
+
+            <a
+                href="inventory_outsales.php"
+                class="sidebar-link <?= in_array(
+                    $current_page,
+                    [
+                        'inventory_outsales.php',
+                        'sale_form.php',
+                        'sale_view.php',
+                        'sale_print.php'
+                    ],
+                    true
+                ) ? 'active' : ''; ?>"
+            >
+                Inventory Out (Sales)
+            </a>
+
+
+            <!-- SUPPLIER RETURNS -->
+
+            <a
+                href="returns.php"
+                class="sidebar-link <?= in_array(
+                    $current_page,
+                    [
+                        'returns.php',
+                        'return_form.php',
+                        'return_view.php',
+                        'return_print.php'
+                    ],
+                    true
+                ) ? 'active' : ''; ?>"
+            >
+                Supplier Returns
+            </a>
+
+        </section>
+
+
+        <!-- =================================================
+             REPORTS
+             ================================================= -->
+
+        <section class="sidebar-section">
+
+            <div class="section-title">
+                Reports
+            </div>
+
+
+            <a
+                href="reports.php"
+                class="sidebar-link <?= ($current_page === 'reports.php') ? 'active' : ''; ?>"
+            >
+                Inventory Report
+            </a>
+
+        </section>
+
+
+        <!-- =================================================
+             SYSTEM
+             ================================================= -->
+
+        <section class="sidebar-section">
+
+            <div class="section-title">
+                System
+            </div>
+
+
+            <a
+                href="backup_restore.php"
+                class="sidebar-link <?= ($current_page === 'backup_restore.php') ? 'active' : ''; ?>"
+            >
+                Backup &amp; Restore
+            </a>
+
+        </section>
+
+
     </div>
-                   
+
+
+    <!-- =====================================================
+         LOGOUT
+         ===================================================== -->
+
+    <div class="sidebar-footer">
+
+        <a
+            href="../../logout.php"
+            class="logout-link"
+            onclick="return confirm('Are you sure you want to logout?');"
+        >
+            Logout
+        </a>
+
+    </div>
+
 
 </aside>
+```

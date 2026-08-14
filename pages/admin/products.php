@@ -21,7 +21,7 @@ $categoryFilter = $_GET['category'] ?? '';
 $supplierFilter = $_GET['supplier'] ?? '';
 $statusFilter = $_GET['status'] ?? '';
 $page = isset($_GET['p']) ? (int)$_GET['p'] : 1;
-$limit = 10; // Products per page
+$limit = 5; // Products per page
 $offset = ($page - 1) * $limit;
 
 // Build dynamic WHERE clause based on filters
@@ -131,30 +131,30 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
 
 <?php include "sidebar.php"; ?>
 
-<main class="ml-0 md:ml-[270px] min-h-screen bg-[#f5f7fb] p-6 transition-all duration-300">
+<main class="ml-0 md:ml-[270px] min-h-screen bg-[#f5f7fb] px-4 py-2 md:px-5 md:py-3 transition-all duration-300">
 
     <div class="space-y-6 max-w-7xl mx-auto">
 
     <!-- NOTIFICATION ALERTS -->
     <?php if (isset($_SESSION['error_message'])): ?>
         <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 text-sm flex items-center justify-between">
-            <span><i class="fa-solid fa-triangle-exclamation mr-2"></i> <?php echo htmlspecialchars($_SESSION['error_message']); ?></span>
-            <button onclick="this.parentElement.remove();" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-xmark"></i></button>
+            <span> <?php echo htmlspecialchars($_SESSION['error_message']); ?></span>
+            <button onclick="this.parentElement.remove();" class="text-red-500 hover:text-red-700"></button>
         </div>
         <?php unset($_SESSION['error_message']); ?>
     <?php endif; ?>
 
     <?php if (isset($_SESSION['success_message'])): ?>
         <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl mb-6 text-sm flex items-center justify-between">
-            <span><i class="fa-solid fa-circle-check mr-2"></i> <?php echo htmlspecialchars($_SESSION['success_message']); ?></span>
-            <button onclick="this.parentElement.remove();" class="text-emerald-500 hover:text-emerald-700"><i class="fa-solid fa-xmark"></i></button>
+            <span> <?php echo htmlspecialchars($_SESSION['success_message']); ?></span>
+            <button onclick="this.parentElement.remove();" class="text-emerald-500 hover:text-emerald-700"></button>
         </div>
         <?php unset($_SESSION['success_message']); ?>
     <?php endif; ?>
 
     <!-- PAGE HEADER -->
-     
      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+     
        <div>
      <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Product Management</h1>
          <p class="text-sm text-slate-500 mt-0.5">Manage inventory products, categories, suppliers, stock levels, QR codes, and pricing.</p>
@@ -163,43 +163,31 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
 
     <!-- STAT CARDS -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-600 flex justify-between items-center">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 min-h-[116px]">
             <div>
                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Products</p>
                 <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?php echo $totalProducts; ?></h2>
             </div>
-            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-2xl">
-                <i class="fa-solid fa-box"></i>
-            </div>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-600 flex justify-between items-center">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 min-h-[116px]">
             <div>
                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Products</p>
                 <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?php echo $activeProducts; ?></h2>
             </div>
-            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl">
-                <i class="fa-solid fa-boxes-stacked"></i>
-            </div>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-amber-500 flex justify-between items-center">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 min-h-[116px]">
             <div>
                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Low Stock</p>
                 <h2 class="text-3xl font-extrabold text-amber-600 mt-1"><?php echo $lowStockItems; ?></h2>
             </div>
-            <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center text-2xl">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-red-600 flex justify-between items-center">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 min-h-[116px]">
             <div>
                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Out of Stock</p>
                 <h2 class="text-3xl font-extrabold text-red-600 mt-1"><?php echo $outOfStockItems; ?></h2>
-            </div>
-            <div class="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center text-2xl">
-                <i class="fa-solid fa-ban"></i>
             </div>
         </div>
     </div>
@@ -221,8 +209,6 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
             </div>
 
             <button onclick="openAddProductModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2.5 rounded-xl font-semibold">
-
-                <i class="fa-solid fa-plus mr-2"></i>
                 Add Product
 
             </button>
@@ -235,7 +221,6 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                 <!-- Search -->
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 text-sm">
-                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
                     </span>
                     <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search product name/code..." 
                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
@@ -272,12 +257,10 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
 
             <!-- Filter Action Buttons -->
             <div class="flex items-center gap-2 self-end lg:self-center">
-                <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition shadow-sm flex items-center gap-2">
-                    <i class="fa-solid fa-filter"></i> Filter
+                <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition shadow-sm flex items-center gap-2"> Filter
                 </button>
                 <?php if(!empty($search) || !empty($categoryFilter) || !empty($supplierFilter) || !empty($statusFilter)): ?>
                     <a href="products.php" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-medium transition" title="Reset Filters">
-                        <i class="fa-solid fa-arrows-rotate"></i>
                     </a>
                 <?php endif; ?>
             </div>
@@ -345,18 +328,14 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                         <td class="px-4 py-3 text-center">
                             <div class="flex items-center justify-center gap-1.5">
                                 <button type="button" onclick="openViewModal(<?php echo htmlspecialchars(json_encode($product)); ?>)" class="p-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg transition text-sm" title="View details">
-                                    <i class="fa-solid fa-eye"></i>
                                 </button>
                                 <button type="button" onclick="openEditModal(<?php echo htmlspecialchars(json_encode($product)); ?>)" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg transition text-sm" title="Edit product">
-                                    <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
                                 <?php if (!empty($product['qr_code'])): ?>
                                     <a href="../../<?php echo htmlspecialchars($product['qr_code']); ?>" download class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition text-sm" title="Download QR">
-                                        <i class="fa-solid fa-download"></i>
                                     </a>
                                 <?php endif; ?>
                                 <button type="button" onclick="confirmDeleteProduct(<?php echo $product['id']; ?>, '<?php echo htmlspecialchars($product['product_name'], ENT_QUOTES); ?>')" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition text-sm" title="Delete product">
-                                    <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
                         </td>
@@ -364,7 +343,6 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                     <?php endforeach; else: ?>
                     <tr>
                         <td colspan="12" class="px-6 py-12 text-center text-slate-400">
-                            <i class="fa-solid fa-box-open text-3xl mb-2"></i>
                             <p class="text-sm font-medium">No products found matching your filters.</p>
                         </td>
                     </tr>
@@ -382,7 +360,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
             if ($page > 1): 
                 $queryParams['p'] = $page - 1;
         ?>
-            <a href="?<?php echo http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition"><i class="fa-solid fa-chevron-left"></i></a>
+            <a href="?<?php echo http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition"></a>
         <?php endif; ?>
 
         <?php for ($i = 1; $i <= $totalPages; $i++): 
@@ -394,7 +372,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
         <?php if ($page < $totalPages): 
             $queryParams['p'] = $page + 1;
         ?>
-            <a href="?<?php echo http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition"><i class="fa-solid fa-chevron-right"></i></a>
+            <a href="?<?php echo http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition"></a>
         <?php endif; ?>
     </div>
     <?php endif; ?>
@@ -475,7 +453,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                     </div>
                     <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-slate-100">
                         <button type="button" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium transition" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2"><i class="fa-solid fa-floppy-disk"></i> Save Product</button>
+                        <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2"> Save Product</button>
                     </div>
                 </form>
             </div>
@@ -586,6 +564,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                                 <label class="block text-xs font-semibold text-slate-500 uppercase">Current Stock <span class="text-red-500">*</span></label>
                                 <button type="button" onclick="requestUnlockStock()" class="text-[11px] text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-1">
                                     <i class="fa-solid fa-lock text-[10px]" id="stockLockIcon"></i> <span id="stockLockText">Unlock via Super Admin</span>
+                                <button type="button" onclick="requestUnlockStock()" class="text-[11px] text-purple-600 hover:text-purple-700 font-semibold flex items-center gap-1"> <span id="stockLockText">Unlock via Super Admin</span>
                                 </button>
                             </div>
                             <input type="number" name="current_stock" id="editProductStock" class="w-full px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-500 cursor-not-allowed focus:outline-none" readonly required>
@@ -608,7 +587,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                     </div>
                     <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-slate-100">
                         <button type="button" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium transition" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2"><i class="fa-solid fa-floppy-disk"></i> Update Product</button>
+                        <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2"> Update Product</button>
                     </div>
                 </form>
             </div>
@@ -623,8 +602,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0 shadow-xl overflow-hidden">
             <div class="modal-header bg-red-600 text-white px-6 py-4">
-                <h5 class="modal-title font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-user-shield"></i> Super Admin Authorization
+                <h5 class="modal-title font-bold flex items-center gap-2"> Super Admin Authorization
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -648,8 +626,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                 </div>
                 <div class="modal-footer bg-slate-50 border-t border-slate-100 px-6 py-3 flex justify-end gap-2">
                     <button type="button" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium transition" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition shadow-sm flex items-center gap-2">
-                        <i class="fa-solid fa-check mr-1.5"></i> Verify & Unlock
+                    <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition shadow-sm flex items-center gap-2"> Verify & Unlock
                     </button>
                 </div>
             </form>
@@ -664,8 +641,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0 shadow-xl overflow-hidden">
             <div class="modal-header bg-red-600 text-white px-6 py-4">
-                <h5 class="modal-title font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Super Admin Delete Authorization
+                <h5 class="modal-title font-bold flex items-center gap-2"> Super Admin Delete Authorization
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -692,8 +668,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                 </div>
                 <div class="modal-footer bg-slate-50 border-t border-slate-100 px-6 py-3 flex justify-end gap-2">
                     <button type="button" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium transition" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition shadow-sm flex items-center gap-2">
-                        <i class="fa-solid fa-trash"></i> Verify & Delete
+                    <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition shadow-sm flex items-center gap-2"> Verify & Delete
                     </button>
                 </div>
             </form>
@@ -876,11 +851,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
     });
 </script>
 
-</main>
 
-</div>
-
-<?php include_once('../../includes/footer.php'); ?>
 
 </body>
 </html>
