@@ -315,6 +315,12 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
             align-items: center;
         }
 
+        /* Inventory Value stays at the far right of the first row */
+        .stat-card.inventory-value-card {
+            grid-column: 4;
+            grid-row: 1;
+        }
+
         .stat-label {
             margin: 0;
             color: #94a3b8;
@@ -768,6 +774,11 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
                 grid-template-columns: 1fr;
             }
 
+            .stat-card.inventory-value-card {
+                grid-column: auto;
+                grid-row: auto;
+            }
+
             .report-status-row {
                 align-items: stretch;
                 flex-direction: column;
@@ -819,6 +830,7 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
 <?php endif; ?>
 
 <main class="<?= $isPrintAll ? '' : 'report-main' ?>">
+
     <div class="<?= $isPrintAll ? '' : 'report-container' ?>">
 
         <!-- PAGE HEADER: SAME DESIGN AS PRODUCT MANAGEMENT -->
@@ -832,42 +844,42 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
     <!-- REPORT STAT CARDS: SAME DESIGN LANGUAGE AS PRODUCTS -->
         <div id="dashboardMetrics" class="stats-grid">
 
-            <div class="stat-card" style="border-left-color:#2563eb;">
+            <div class="stat-card">
                 <div>
                     <p class="stat-label">Beginning Stock</p>
                     <h2 id="cardBeg" class="stat-value" style="color:#2563eb;">0</h2>
                 </div>
             </div>
 
-            <div class="stat-card" style="border-left-color:#059669;">
+            <div class="stat-card">
                 <div>
                     <p class="stat-label">Received Stock</p>
                     <h2 id="cardRec" class="stat-value" style="color:#059669;">0</h2>
                 </div>
             </div>
 
-            <div class="stat-card" style="border-left-color:#dc2626;">
+            <div class="stat-card">
                 <div>
                     <p class="stat-label">Sold Stock</p>
                     <h2 id="cardSol" class="stat-value" style="color:#dc2626;">0</h2>
                 </div>
             </div>
 
-            <div class="stat-card" style="border-left-color:#4f46e5;">
+            <div class="stat-card">
                 <div>
                     <p class="stat-label">Ending Stock</p>
                     <h2 id="cardEnd" class="stat-value" style="color:#4f46e5;">0</h2>
                 </div>
             </div>
 
-            <div class="stat-card" style="border-left-color:#334155;">
+            <div class="stat-card inventory-value-card">
                 <div>
                     <p class="stat-label">Inventory Value</p>
                     <h2 id="cardVal" class="stat-value money">₱0.00</h2>
                 </div>
             </div>
 
-            <div class="stat-card" style="border-left-color:#d97706;">
+            <div class="stat-card">
                 <div>
                     <p class="stat-label">Low Stock Items</p>
                     <h2 class="stat-value" style="color:#d97706;">
@@ -876,7 +888,7 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
                 </div>
             </div>
 
-            <div class="stat-card" style="border-left-color:#dc2626;">
+            <div class="stat-card">
                 <div>
                     <p class="stat-label">Out of Stock Items</p>
                     <h2 class="stat-value" style="color:#dc2626;">

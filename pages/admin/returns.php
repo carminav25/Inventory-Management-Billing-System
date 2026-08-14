@@ -177,9 +177,7 @@ if ($result) {
                     <?= number_format($totalReturnsCount); ?>
                 </h2>
 
-                <p class="text-xs text-slate-400 mt-2">
-                    All supplier return transactions
-                </p>
+            
             </div>
 
             <!-- Returned to Supplier -->
@@ -192,9 +190,7 @@ if ($result) {
                     <?= number_format($returnedSuppliersCount); ?>
                 </h2>
 
-                <p class="text-xs text-slate-400 mt-2">
-                    Successfully returned items
-                </p>
+              
             </div>
 
             <!-- Total Quantity Returned -->
@@ -207,9 +203,7 @@ if ($result) {
                     <?= number_format($totalReturnedQty); ?>
                 </h2>
 
-                <p class="text-xs text-slate-400 mt-2">
-                    Total items returned
-                </p>
+               
             </div>
         </div>
 
