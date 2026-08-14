@@ -16,62 +16,6 @@ requireAdmin();
 |--------------------------------------------------------------------------
 */
 
-// Total Products & Products Added Today
-$totalProducts = 0;
-$productsToday = 0;
-$result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM products");
-if ($result && $row = mysqli_fetch_assoc($result)) {
-    $totalProducts = (int)$row['total'];
-}
-$resultTodayProd = mysqli_query($conn, "SELECT COUNT(*) AS total FROM products WHERE DATE(created_at) = CURDATE()");
-if ($resultTodayProd && $row = mysqli_fetch_assoc($resultTodayProd)) {
-    $productsToday = (int)$row['total'];
-}
-
-// Total Suppliers & New Suppliers
-$totalSuppliers = 0;
-$suppliersNew = 0;
-$tableCheckSuppliers = mysqli_query($conn, "SHOW TABLES LIKE 'suppliers'");
-if ($tableCheckSuppliers && mysqli_num_rows($tableCheckSuppliers) > 0) {
-    $result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM suppliers");
-    if ($result && $row = mysqli_fetch_assoc($result)) {
-        $totalSuppliers = (int)$row['total'];
-    }
-    $resultNewSup = mysqli_query($conn, "SELECT COUNT(*) AS total FROM suppliers WHERE DATE(created_at) >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)");
-    if ($resultNewSup && $row = mysqli_fetch_assoc($resultNewSup)) {
-        $suppliersNew = (int)$row['total'];
-    }
-}
-
-// Available Stock
-$totalStock = 0;
-$result = mysqli_query($conn, "SELECT SUM(current_stock) AS total FROM products");
-if ($result && $row = mysqli_fetch_assoc($result)) {
-    $totalStock = (int)($row['total'] ?? 0);
-}
-
-// Inventory Value & Value Change
-$inventoryValue = 0;
-$result = mysqli_query($conn, "
-    SELECT SUM(current_stock * unit_cost) AS total
-    FROM products
-");
-if ($result && $row = mysqli_fetch_assoc($result)) {
-    $inventoryValue = (float)($row['total'] ?? 0);
-}
-
-// Low Stock & Out of Stock
-$lowStock = 0;
-$result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM products WHERE current_stock <= reorder_level AND current_stock > 0");
-if ($result && $row = mysqli_fetch_assoc($result)) {
-    $lowStock = (int)$row['total'];
-}
-
-$outOfStock = 0;
-$result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM products WHERE current_stock <= 0");
-if ($result && $row = mysqli_fetch_assoc($result)) {
-    $outOfStock = (int)$row['total'];
-}
 
 
 /*
@@ -108,6 +52,21 @@ if ($tableCheckReturns && mysqli_num_rows($tableCheckReturns) > 0) {
 }
 
 $todayTransactions = $todayDeliveries + $todaySales + $todayReturns;
+
+/*
+|--------------------------------------------------------------------------
+| CURRENT INVENTORY VALUE
+|--------------------------------------------------------------------------
+| Current Stock × Unit Cost for all products.
+*/
+$inventoryValue = 0;
+$inventoryValueQuery = mysqli_query(
+    $conn,
+    "SELECT COALESCE(SUM(current_stock * unit_cost), 0) AS inventory_value FROM products"
+);
+if ($inventoryValueQuery && $row = mysqli_fetch_assoc($inventoryValueQuery)) {
+    $inventoryValue = (float)$row['inventory_value'];
+}
 
 
 /*
@@ -244,12 +203,37 @@ $totalTransactionsSum = array_sum($deliveriesData) + array_sum($salesData) + arr
     <title><?= htmlspecialchars($pageTitle ?? 'Admin Dashboard'); ?></title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js -->
+<!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         a { text-decoration: none !important; }
+
+        /* Dashboard metric cards: prevent long values from overlapping icons */
+        .dashboard-metric-card {
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .dashboard-metric-card .metric-value {
+            white-space: nowrap;
+            line-height: 1.15;
+        }
+
+        /* Compact dashboard spacing */
+        .dashboard-metric-card {
+            min-height: 96px;
+        }
+
+        @media (max-width: 767px) {
+            main {
+                padding: 12px !important;
+            }
+
+            .dashboard-metric-card {
+                min-height: 90px;
+            }
+        }
+
     </style>
 </head>
 
@@ -257,224 +241,107 @@ $totalTransactionsSum = array_sum($deliveriesData) + array_sum($salesData) + arr
 
 <?php include "sidebar.php"; ?> 
 
-<main class="ml-0 md:ml-[270px] min-h-screen bg-[#f5f7fb] p-6 transition-all duration-300">
-
+<main class="ml-0 md:ml-[270px] min-h-screen bg-[#f5f7fb] px-4 py-2 md:px-5 md:py-3 transition-all duration-300">
     <!-- =======================================================
         ROW 1: WELCOME + SEARCH + NOTIFICATIONS + QUICK ACTIONS
     ======================================================= -->
-    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 mb-5 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200">
         
         <div>
             <div class="flex items-center gap-2">
-                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
-                <span class="text-2xl">👋</span>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
             </div>
-            <p class="text-slate-500 mt-1">
+            <p class="text-slate-500 mt-0.5">
                 Welcome back, <span class="font-semibold text-emerald-700"><?= htmlspecialchars($_SESSION['full_name'] ?? 'Administrator'); ?></span>
             </p>
-            <p class="text-xs text-slate-400 mt-0.5">
-                <i class="fa-solid fa-calendar-days mr-1"></i> Today: <?= date('F j, Y, g:i A'); ?>
+            <p class="text-xs text-slate-400 mt-0.5"> Today: <?= date('F j, Y, g:i A'); ?>
             </p>
         </div>
 
         <!-- Global Search Bar -->
         <div class="relative flex-1 max-w-md mx-0 xl:mx-4">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </span>
-            <input type="text" id="globalDashboardSearch" placeholder="Search product, supplier, invoice..." 
-                   class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+<input type="text" id="globalDashboardSearch" placeholder="Search product, supplier, invoice..." 
+                   class="w-full pl-4 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
         </div>
 
         <!-- Action Shortcuts & Notifications Dropdown Trigger -->
         <div class="flex items-center gap-3">
             <!-- Quick Action Buttons -->
-            <a href="products.php" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl shadow transition text-sm font-medium flex items-center gap-2">
-                <i class="fa-solid fa-box"></i> Product
+            <a href="products.php" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl shadow transition text-sm font-medium"> Product
             </a>
-            <a href="inventory_indeliveries.php" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl shadow transition text-sm font-medium flex items-center gap-2">
-                <i class="fa-solid fa-truck-ramp-box"></i> Delivery
+            <a href="inventory_indeliveries.php" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl shadow transition text-sm font-medium"> Delivery
             </a>
-            <a href="inventory_outsales.php" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2.5 rounded-xl shadow transition text-sm font-medium flex items-center gap-2">
-                <i class="fa-solid fa-cart-shopping"></i> Sale
+            <a href="inventory_outsales.php" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2.5 rounded-xl shadow transition text-sm font-medium"> Sale
             </a>
-            <a href="reports.php" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl shadow transition text-sm font-medium flex items-center gap-2">
-                <i class="fa-solid fa-chart-pie"></i> Reports
+            <a href="reports.php" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl shadow transition text-sm font-medium"> Reports
             </a>
         </div>
 
     </div>
 
 
-    <!-- =======================================================
-        ROW 2: 6 KPI CARDS WITH TREND SUBTITLES
-    ======================================================= -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-
-        <!-- Products -->
-        <a href="products.php" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition p-6 border border-slate-200 border-l-4 border-l-emerald-600 relative overflow-hidden group">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="text-xs uppercase tracking-wider font-semibold text-slate-400">Total Products</p>
-                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?= number_format($totalProducts); ?></h2>
-                    <p class="text-xs text-emerald-600 font-medium mt-2 flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> +<?= $productsToday; ?> added today
-                    </p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition text-2xl">
-                    <i class="fa-solid fa-box"></i>
-                </div>
-            </div>
-        </a>
-
-        <!-- Suppliers -->
-        <a href="suppliers.php" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition p-6 border border-slate-200 border-l-4 border-l-blue-600 relative overflow-hidden group">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="text-xs uppercase tracking-wider font-semibold text-slate-400">Total Suppliers</p>
-                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?= number_format($totalSuppliers); ?></h2>
-                    <p class="text-xs text-blue-600 font-medium mt-2 flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> +<?= $suppliersNew; ?> this week
-                    </p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition text-2xl">
-                    <i class="fa-solid fa-truck"></i>
-                </div>
-            </div>
-        </a>
-
-        <!-- Inventory Value -->
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200 border-l-4 border-l-purple-600 relative overflow-hidden">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="text-xs uppercase tracking-wider font-semibold text-slate-400">Inventory Value</p>
-                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1">₱<?= number_format($inventoryValue, 2); ?></h2>
-                    <p class="text-xs text-purple-600 font-medium mt-2 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-check"></i> Updated just now
-                    </p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl">
-                    <i class="fa-solid fa-coins"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Available Stocks -->
-        <a href="products.php" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition p-6 border border-slate-200 border-l-4 border-l-cyan-600 relative overflow-hidden group">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="text-xs uppercase tracking-wider font-semibold text-slate-400">Available Stocks</p>
-                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?= number_format($totalStock); ?></h2>
-                    <p class="text-xs text-cyan-600 font-medium mt-2 flex items-center gap-2">
-                        <i class="fa-solid fa-boxes-stacked"></i> Across all categories
-                    </p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center group-hover:scale-110 transition text-2xl">
-                    <i class="fa-solid fa-warehouse"></i>
-                </div>
-            </div>
-        </a>
-
-        <!-- Low Stock -->
-        <a href="products.php?filter=low_stock" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition p-6 border border-slate-200 border-l-4 border-l-amber-500 relative overflow-hidden group">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="text-xs uppercase tracking-wider font-semibold text-slate-400">Low Stock Items</p>
-                    <h2 class="text-3xl font-extrabold text-amber-600 mt-1"><?= number_format($lowStock); ?></h2>
-                    <p class="text-xs text-amber-600 font-medium mt-2 flex items-center gap-2">
-                        <i class="fa-solid fa-triangle-exclamation"></i> Requires reorder
-                    </p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-110 transition text-2xl">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
-            </div>
-        </a>
-
-        <!-- Out Of Stock -->
-        <a href="products.php?filter=out_of_stock" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition p-6 border border-slate-200 border-l-4 border-l-red-600 relative overflow-hidden group">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="text-xs uppercase tracking-wider font-semibold text-slate-400">Out of Stock</p>
-                    <h2 class="text-3xl font-extrabold text-red-600 mt-1"><?= number_format($outOfStock); ?></h2>
-                    <p class="text-xs text-red-600 font-medium mt-2 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-xmark"></i> Action required
-                    </p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center group-hover:scale-110 transition text-2xl">
-                    <i class="fa-solid fa-ban"></i>
-                </div>
-            </div>
-        </a>
-
-    </div>
-
-
+   
     <!-- =======================================================
         ROW 3: TODAY'S 4 SUMMARY CARDS
     ======================================================= -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mb-5">
 
-        <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200 flex justify-between items-center">
-            <div>
+        <div class="dashboard-metric-card bg-white rounded-2xl shadow-sm p-4 border border-slate-200 flex justify-between items-center gap-3">
+            <div class="min-w-0 flex-1">
                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Today's Deliveries</p>
-                <h3 class="text-2xl font-bold text-emerald-600 mt-1"><?= number_format($todayDeliveries); ?></h3>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-truck-ramp-box"></i>
+                <h3 class="metric-value text-2xl font-bold text-emerald-600 mt-1"><?= number_format($todayDeliveries); ?></h3>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200 flex justify-between items-center">
-            <div>
+        <div class="dashboard-metric-card bg-white rounded-2xl shadow-sm p-4 border border-slate-200 flex justify-between items-center gap-3">
+            <div class="min-w-0 flex-1">
                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Today's Sales</p>
-                <h3 class="text-2xl font-bold text-blue-600 mt-1"><?= number_format($todaySales); ?></h3>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-cart-shopping"></i>
+                <h3 class="metric-value text-2xl font-bold text-blue-600 mt-1"><?= number_format($todaySales); ?></h3>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200 flex justify-between items-center">
-            <div>
+        <div class="dashboard-metric-card bg-white rounded-2xl shadow-sm p-4 border border-slate-200 flex justify-between items-center gap-3">
+            <div class="min-w-0 flex-1">
                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Today's Returns</p>
-                <h3 class="text-2xl font-bold text-amber-600 mt-1"><?= number_format($todayReturns); ?></h3>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-rotate-left"></i>
+                <h3 class="metric-value text-2xl font-bold text-amber-600 mt-1"><?= number_format($todayReturns); ?></h3>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200 flex justify-between items-center">
-            <div>
+        <div class="dashboard-metric-card bg-white rounded-2xl shadow-sm p-4 border border-slate-200 flex justify-between items-center gap-3">
+            <div class="min-w-0 flex-1">
                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Transactions</p>
-                <h3 class="text-2xl font-bold text-purple-600 mt-1"><?= number_format($todayTransactions); ?></h3>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-receipt"></i>
+                <h3 class="metric-value text-2xl font-bold text-purple-600 mt-1"><?= number_format($todayTransactions); ?></h3>
             </div>
         </div>
 
+        <!-- Inventory Value - LAST CARD -->
+        <div class="dashboard-metric-card bg-white rounded-2xl shadow-sm p-4 border border-slate-200 flex items-center gap-3 min-w-0 overflow-hidden">
+            <div class="min-w-0 flex-1">
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">Inventory Value</p>
+                <h3 class="text-xl font-bold text-emerald-600 mt-1 whitespace-nowrap leading-tight">
+                    ₱<?= number_format($inventoryValue, 2); ?>
+                </h3>
+            
+        </div>
+     
+        </div>
     </div>
 
 
     <!-- =======================================================
         ROW 4: CHARTS (70% Movement, 30% Category Distribution)
     ======================================================= -->
-    <div class="grid grid-cols-1 xl:grid-cols-10 gap-6 mb-8">
+    <div class="grid grid-cols-1 xl:grid-cols-10 gap-5 mb-5">
 
         <!-- Inventory Movement (70% / 7 cols) -->
         <div class="xl:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
                 <div>
                     <h2 class="text-base font-bold text-slate-800">Inventory Movement</h2>
                     <p class="text-xs text-slate-400">Deliveries, Sales, and Returns over the last 7 days.</p>
                 </div>
-                <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
-                    <i class="fa-solid fa-chart-line"></i>
-                </div>
             </div>
-            <div class="p-6 flex-1 flex items-center">
+            <div class="p-5 flex-1 flex items-center">
                 <div class="w-full h-72">
                     <canvas id="movementChart"></canvas>
                 </div>
@@ -483,16 +350,13 @@ $totalTransactionsSum = array_sum($deliveriesData) + array_sum($salesData) + arr
 
         <!-- Category Distribution (30% / 3 cols) -->
         <div class="xl:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
                 <div>
                     <h2 class="text-base font-bold text-slate-800">Categories</h2>
                     <p class="text-xs text-slate-400">Distribution share.</p>
                 </div>
-                <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
-                    <i class="fa-solid fa-layer-group"></i>
-                </div>
             </div>
-            <div class="p-6 flex-1 flex items-center justify-center">
+            <div class="p-5 flex-1 flex items-center justify-center">
                 <div class="w-full h-64">
                     <canvas id="categoryChart"></canvas>
                 </div>
@@ -505,27 +369,26 @@ $totalTransactionsSum = array_sum($deliveriesData) + array_sum($salesData) + arr
     <!-- =======================================================
         ROW 5: RECENT ACTIVITY TIMELINE & LOW STOCK ALERTS (SIDE BY SIDE)
     ======================================================= -->
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
 
         <!-- Recent Activity Timeline -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
                 <div>
                     <h2 class="text-base font-bold text-slate-800">Recent Activity Timeline</h2>
                     <p class="text-xs text-slate-400">Audit trail of recent administrative actions.</p>
                 </div>
-                <a href="audit_trails.php" class="text-emerald-600 hover:text-emerald-700 font-medium text-xs flex items-center gap-2">
-                    View All <i class="fa-solid fa-arrow-right"></i>
+                <a href="audit_trails.php" class="text-emerald-600 hover:text-emerald-700 font-medium text-xs">
+                    View All
                 </a>
             </div>
-            <div class="p-6 flex-1">
+            <div class="p-5 flex-1">
                 <?php if(empty($recentActivities)): ?>
                     <p class="text-center text-slate-400 text-sm py-4">No recent activity logs recorded.</p>
                 <?php else: ?>
-                    <div class="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
+                    <div class="space-y-6">
                         <?php foreach($recentActivities as $act): ?>
                             <div class="relative flex items-start gap-3">
-                                <span class="absolute -left-6 top-1 w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-white"></span>
                                 <div>
                                     <div class="text-sm font-semibold text-slate-800"><?= htmlspecialchars($act['fullname']); ?></div>
                                     <div class="text-xs text-slate-600 mt-0.5"><?= htmlspecialchars($act['action']); ?></div>
@@ -542,7 +405,7 @@ $totalTransactionsSum = array_sum($deliveriesData) + array_sum($salesData) + arr
 
         <!-- Low Stock Alerts -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-            <div class="flex justify-between items-center px-6 py-5 border-b border-slate-100">
+            <div class="flex justify-between items-center px-5 py-4 border-b border-slate-100">
                 <div>
                     <h2 class="text-base font-bold text-slate-800">Low Stock Alerts</h2>
                     <p class="text-xs text-slate-400">Products falling at or below reorder levels.</p>
@@ -554,7 +417,6 @@ $totalTransactionsSum = array_sum($deliveriesData) + array_sum($salesData) + arr
             <div class="divide-y divide-slate-100 flex-1 overflow-y-auto max-h-[380px]">
                 <?php if(empty($lowStockProducts)): ?>
                     <div class="p-8 text-center text-emerald-600 h-full flex flex-col items-center justify-center">
-                        <i class="fa-solid fa-circle-check text-3xl mb-2"></i>
                         <p class="font-bold text-sm">Inventory Healthy</p>
                         <p class="text-xs text-slate-400 mt-1">No products require reordering right now.</p>
                         <p class="text-[10px] text-slate-300 mt-4">Last checked: <?= date('g:i A'); ?></p>

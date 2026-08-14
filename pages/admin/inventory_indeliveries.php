@@ -99,7 +99,7 @@ if (!empty($search)) {
 
 // --- 3. PAGINATION SETUP ---
 $page = isset($_GET['p']) ? (int)$_GET['p'] : 1;
-$limit = 10; // Records per page
+$limit = 5; // Records per page
 $offset = ($page - 1) * $limit;
 
 // Count total records for pagination
@@ -146,10 +146,39 @@ if ($result) {
     <title><?= htmlspecialchars($pageTitle); ?></title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <!-- FontAwesome -->
+    <!-- Bootstrap CSS for modal behavior -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome (kept for compatibility with existing code) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         a { text-decoration: none !important; }
+
+        html, body {
+            overflow-x: hidden;
+        }
+
+        main {
+            box-sizing: border-box;
+        }
+
+        .modal {
+            z-index: 1060 !important;
+        }
+
+        .modal-backdrop {
+            z-index: 1050 !important;
+        }
+
+        .delivery-stat-card {
+            min-height: 116px;
+        }
+
+        @media (max-width: 767px) {
+            main {
+                margin-left: 0 !important;
+                padding: 1rem !important;
+            }
+        }
     </style>
 </head>
 
@@ -157,72 +186,101 @@ if ($result) {
 
 <?php include "sidebar.php"; ?> 
 
-<main class="ml-0 md:ml-[270px] min-h-screen p-6 transition-all duration-300">
+<main class="ml-0 md:ml-[270px] min-h-screen bg-[#f5f7fb] px-4 py-2 md:px-5 md:py-3 transition-all duration-300">
 
     <div class="space-y-6 max-w-7xl mx-auto">
         
         <!-- NOTIFICATIONS -->
         <?php if (isset($_SESSION['success_message'])): ?>
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
-                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl text-sm">
                 <span><?= htmlspecialchars($_SESSION['success_message']); unset($_SESSION['success_message']); ?></span>
             </div>
         <?php endif; ?>
         <?php if (isset($_SESSION['error_message'])): ?>
-            <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
-                <i class="fa-solid fa-circle-exclamation text-red-600"></i>
+            <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl text-sm">
                 <span><?= htmlspecialchars($_SESSION['error_message']); unset($_SESSION['error_message']); ?></span>
             </div>
         <?php endif; ?>
 
         <!-- HEADER -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
             <div>
                 <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Delivery Management</h1>
                 <p class="text-sm text-slate-500 mt-0.5">Record and manage incoming deliveries from suppliers.</p>
             </div>
             <div class="flex items-center gap-3">
-            
-                </a>
-                <a href="delivery_form.php" class="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 shadow transition">
-                    <i class="fa-solid fa-plus"></i> New Delivery
+                <a href="delivery_form.php" class="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow transition"> New Delivery
                 </a>
             </div>
         </div>
 
-        <!-- KPI CARDS -->
+        <!-- KPI CARDS - PRODUCT STYLE -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
-                <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Total Deliveries</p>
-                <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?= number_format($totalDeliveries); ?></h2>
+
+            <!-- Total Deliveries -->
+            <div class="delivery-stat-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div>
+                    <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">
+                        Total Deliveries
+                    </p>
+                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1">
+                        <?= number_format($totalDeliveries); ?>
+                    </h2>
+                </div>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
-                <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Today's Deliveries</p>
-                <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?= number_format($todayDeliveries); ?></h2>
+
+            <!-- Today's Deliveries -->
+            <div class="delivery-stat-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div>
+                    <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">
+                        Today's Deliveries
+                    </p>
+                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1">
+                        <?= number_format($todayDeliveries); ?>
+                    </h2>
+                </div>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-purple-500">
-                <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Total Items Received</p>
-                <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?= number_format($totalItemsReceived); ?></h2>
+
+            <!-- Total Items Received -->
+            <div class="delivery-stat-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div>
+                    <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">
+                        Total Items Received
+                    </p>
+                    <h2 class="text-3xl font-extrabold text-slate-800 mt-1">
+                        <?= number_format($totalItemsReceived); ?>
+                    </h2>
+                </div>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-amber-500">
-                <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Total Inventory Value</p>
-                <h2 class="text-3xl font-extrabold text-emerald-700 mt-1">₱<?= number_format($totalInventoryValue, 2); ?></h2>
+
+            <!-- Total Inventory Value -->
+            <div class="delivery-stat-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div>
+                    <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">
+                        Total Inventory Value
+                    </p>
+                    <h2 class="text-3xl font-extrabold text-emerald-700 mt-1">
+                        ₱<?= number_format($totalInventoryValue, 2); ?>
+                    </h2>
+                </div>
             </div>
+
         </div>
 
         <!-- RECENT DELIVERIES TABLE -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
             <div class="p-6 border-b border-slate-100">
                 <form method="GET" action="" class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <h2 class="text-base font-bold text-slate-800 whitespace-nowrap">Recent Deliveries</h2>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
                         <div class="relative flex-1 sm:w-72">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 text-sm"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
-                            <input type="text" name="search" value="<?= htmlspecialchars($search); ?>" placeholder="Search delivery no, supplier..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 text-sm"></span>
+                            <input type="text" name="search" value="<?= htmlspecialchars($search); ?>" placeholder="Search delivery no, supplier..." class="w-full pl-4 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
                         </div>
                         <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition shadow-sm"><i class="fa-solid fa-filter"></i></button>
                         <?php if(!empty($search)): ?><a href="inventory_indeliveries.php" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-medium transition" title="Reset Filters"><i class="fa-solid fa-arrows-rotate"></i></a><?php endif; ?>
                     </div>
+                </form>
                 </form>
             </div>
 
@@ -244,7 +302,6 @@ if ($result) {
                             <tr>
                                 <td colspan="7" class="text-center py-12 text-slate-400">
                                     <div class="flex flex-col items-center justify-center">
-                                        <i class="fa-solid fa-box-open text-3xl mb-2 text-slate-300"></i>
                                         <p class="font-medium text-slate-600">No delivery records found.</p>
                                     </div>
                                 </td>
@@ -257,7 +314,7 @@ if ($result) {
                                             <?php if(!empty($del['product_image'])): ?>
                                                 <img src="../../<?= htmlspecialchars($del['product_image']); ?>" class="w-14 h-14 rounded-xl object-cover border">
                                             <?php else: ?>
-                                                <div class="w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400"><i class="fa-solid fa-box"></i></div>
+                                                <div class="w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400"></div>
                                             <?php endif; ?>
                                             <div>
                                                 <div class="font-bold text-slate-800">
@@ -272,20 +329,16 @@ if ($result) {
                                     <td class="px-6 py-4 text-center font-bold text-slate-700"><?= (int)$del['total_items']; ?> pcs</td>
                                     <td class="px-6 py-4 text-right font-bold text-emerald-700">₱<?= number_format((float)$del['total_value'], 2); ?></td>
                                     <td class="px-6 py-4 text-center">
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
-                                            <i class="fa-solid fa-circle-check mr-1.5"></i> Completed
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold"> Completed
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <div class="flex items-center justify-center gap-2">
                                             <a href="delivery_view.php?id=<?= $del['id']; ?>" class="bg-blue-50 hover:bg-blue-100 text-blue-600 p-2 rounded-lg text-xs font-bold transition" title="View Details">
-                                                <i class="fa-solid fa-eye"></i>
                                             </a>
                                             <button type="button" onclick="window.open('delivery_print.php?id=<?= $del['id']; ?>', '_blank')" class="bg-slate-100 hover:bg-slate-200 text-slate-600 p-2 rounded-lg text-xs font-bold transition" title="Print Receipt">
-                                                <i class="fa-solid fa-print"></i>
                                             </button>
                                             <button type="button" onclick="confirmDeleteDelivery(<?= $del['id']; ?>, 'Delivery #<?= htmlspecialchars($del['delivery_no']); ?>')" class="bg-red-50 hover:bg-red-100 text-red-600 p-2 rounded-lg text-xs font-bold transition" title="Delete Delivery">
-                                                <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -304,7 +357,7 @@ if ($result) {
                     if ($page > 1): 
                         $queryParams['p'] = $page - 1;
                 ?>
-                    <a href="?<?= http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition"><i class="fa-solid fa-chevron-left text-xs"></i></a>
+                    <a href="?<?= http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition"></a>
                 <?php endif; ?>
 
                 <?php for ($i = 1; $i <= $totalPages; $i++): $queryParams['p'] = $i; ?>
@@ -312,7 +365,7 @@ if ($result) {
                 <?php endfor; ?>
 
                 <?php if ($page < $totalPages): $queryParams['p'] = $page + 1; ?>
-                    <a href="?<?= http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition"><i class="fa-solid fa-chevron-right text-xs"></i></a>
+                    <a href="?<?= http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition"></a>
                 <?php endif; ?>
             </div>
             <?php endif; ?>
@@ -324,12 +377,11 @@ if ($result) {
 </main>
 
 <!-- SUPER ADMIN DELETE AUTHENTICATION MODAL -->
-<div class="modal fade" id="deleteDeliveryAuthModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="deleteDeliveryAuthModal" style="display:none;" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0 shadow-xl overflow-hidden">
             <div class="modal-header bg-red-600 text-white px-6 py-4">
-                <h5 class="modal-title font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Super Admin Delete Authorization
+                <h5 class="modal-title font-bold flex items-center gap-2"> Super Admin Delete Authorization
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -357,8 +409,7 @@ if ($result) {
                 </div>
                 <div class="modal-footer bg-slate-50 border-t border-slate-100 px-6 py-3 flex justify-end gap-2">
                     <button type="button" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium transition" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition shadow-sm flex items-center gap-2">
-                        <i class="fa-solid fa-trash"></i> Verify & Delete
+                    <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition shadow-sm flex items-center gap-2"> Verify & Delete
                     </button>
                 </div>
             </form>
@@ -368,6 +419,12 @@ if ($result) {
 
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("deleteDeliveryAuthModal");
+    if (modal && !modal.classList.contains("show")) modal.style.display = "none";
+});
+</script>
 <script>
     function confirmDeleteDelivery(deliveryId, deliveryName) {
         document.getElementById('delete_delivery_id').value = deliveryId;
