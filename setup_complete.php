@@ -63,6 +63,7 @@
             text-align: center;
         }
     </style>
+    <link rel="stylesheet" href="assets/css/semantic-theme.css">
 </head>
 
 <?php
@@ -74,7 +75,7 @@ unset($_SESSION['setup_errors']);
 ?>
 
 
-<body>
+<body class="auth-shell">
     <div class="setup-card">
         <h2 class="setup-title">
             <i class="bi bi-check-circle-fill text-success me-2"></i> Setup Status

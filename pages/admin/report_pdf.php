@@ -147,7 +147,7 @@ font-family:DejaVu Sans,sans-serif;
 
 font-size:11px;
 
-color:#222;
+color:#0f172a;
 
 margin:20px;
 
@@ -157,7 +157,7 @@ margin:20px;
 
 width:100%;
 
-border-bottom:2px solid #0b7a38;
+border-bottom:2px solid #0B7A4B;
 
 padding-bottom:10px;
 
@@ -205,7 +205,7 @@ margin:6px 0;
 
 font-size:17px;
 
-color:#0b7a38;
+color:#0B7A4B;
 
 }
 
@@ -237,19 +237,19 @@ margin-top:20px;
 
 }table.report th{
 
-background:#0b7a38;
+background:#0B7A4B;
 
 color:#fff;
 
 padding:8px;
 
-border:1px solid #ddd;
+border:1px solid #e2e8f0;
 
 font-size:10px;
 
 }table.report td{
 
-border:1px solid #ddd;
+border:1px solid #e2e8f0;
 
 padding:6px;
 
@@ -281,7 +281,7 @@ object-fit:cover;
 
 }tfoot td{
 
-background:#f3f4f6;
+background:#f1f5f9;
 
 font-weight:bold;
 
@@ -305,7 +305,7 @@ padding-top:45px;
 
 .line{
 
-border-top:1px solid #222;
+border-top:1px solid #334155;
 
 padding-top:5px;
 
@@ -321,7 +321,7 @@ text-align:center;
 
 font-size:10px;
 
-color:#666;
+color:#64748b;
 
 }</style></head><body><div class="header"><table width="100%"><tr><td width="90"><img src="'.realpath(__DIR__ . '/../../assets/images/isu-logo.png').'"class="logo"></td><td class="school"><h1>
 

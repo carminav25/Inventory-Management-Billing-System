@@ -88,9 +88,10 @@ unset($_SESSION['login_error'], $_SESSION['old_input'], $_SESSION['login_locked'
             color: #333;
         }
     </style>
+    <link rel="stylesheet" href="assets/css/semantic-theme.css">
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="auth-shell d-flex flex-column min-vh-100">
 
     <div class="container main-container d-flex align-items-center justify-content-center flex-grow-1">
         <div class="row w-100 align-items-center g-5">

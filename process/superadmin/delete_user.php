@@ -95,11 +95,11 @@ try {
     $conn->rollback(); // Roll back changes on error
     
     // STOP AND DISPLAY THE EXACT ERROR INSTEAD OF REDIRECTING SILENTLY
-    echo "<div style='background: #ffe6e6; color: #cc0000; padding: 20px; font-family: monospace; border: 1px solid #cc0000; margin: 20px;'>";
+    echo "<div style='background: #fef2f2; color: #991b1b; padding: 20px; font-family: monospace; border: 1px solid #fecaca; margin: 20px; border-radius: 12px;'>";
     echo "<h3>Deletion Failed (Debug View)</h3>";
     echo "<p><strong>Error Message:</strong> " . htmlspecialchars($exception->getMessage()) . "</p>";
     echo "<p><strong>File:</strong> " . $exception->getFile() . " on line " . $exception->getLine() . "</p>";
-    echo "<br><a href='{$redirectURL}'>&larr; Return to Users Page</a>";
+    echo "<br><a href='{$redirectURL}' style='color: #0B7A4B; font-weight: 700;'>&larr; Return to Users Page</a>";
     echo "</div>";
     exit();
 }

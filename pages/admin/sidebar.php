@@ -40,6 +40,7 @@ requireAdmin();
         /* Global override to eliminate Bootstrap link underlines inside the sidebar */
         #sidebar a { text-decoration: none !important; }
     </style>
+    <link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 </head>
 
 <!-- Sidebar Component -->

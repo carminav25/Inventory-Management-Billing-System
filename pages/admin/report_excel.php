@@ -84,7 +84,7 @@ header("Expires: 0");
             <td colspan="11" align="center" style="font-size: 14px;">Merchandising Office</td>
         </tr>
         <tr>
-            <td colspan="11" align="center" style="font-size: 14px; font-weight: bold; color: #0b7a38;"><?= htmlspecialchars($title) ?></td>
+            <td colspan="11" align="center" style="font-size: 14px; font-weight: bold; color: #0B7A4B;"><?= htmlspecialchars($title) ?></td>
         </tr>
         <tr>
             <td colspan="11" align="center" style="font-size: 12px;">Report Period: <?= date('F d, Y', strtotime($fromDate)) ?> - <?= date('F d, Y', strtotime($toDate)) ?></td>
@@ -96,7 +96,7 @@ header("Expires: 0");
 
     <table border="1">
         <thead>
-            <tr style="background-color: #0b7a38; color: #ffffff; font-weight: bold; text-align: center;">
+            <tr style="background-color: #0B7A4B; color: #ffffff; font-weight: bold; text-align: center;">
                 <th>Product Code</th>
                 <th>Product Name</th>
                 <th>Category</th>

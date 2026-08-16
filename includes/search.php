@@ -13,8 +13,8 @@ $stmt->execute();
 $results = $stmt->get_result();
 
 while ($r = $results->fetch_assoc()) {
-    echo "<div class='p-3 border-b hover:bg-gray-50 cursor-pointer text-sm' style='padding: 12px; border-bottom: 1px solid #eee; cursor: pointer;'>
-            <i class='fa fa-box text-gray-400 mr-2' style='margin-right: 8px; color: #999;'></i> " . htmlspecialchars($r['product_name']) . "
+    echo "<div class='search-result-item text-sm'>
+            <i class='fa fa-box'></i> " . htmlspecialchars($r['product_name']) . "
           </div>";
 }
 

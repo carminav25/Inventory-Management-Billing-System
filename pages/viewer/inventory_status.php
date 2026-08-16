@@ -27,8 +27,9 @@ $outOfStockProducts = getViewerOutOfStockProducts($conn, 100);
         .badge.warning { background: #fff3cd; color: #856404; }
         .badge.danger { background: #f8d7da; color: #721c24; }
     </style>
+    <link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 </head>
-<body>
+<body class="viewer-shell">
     <div class="container">
         <div class="header">
             <h1>Inventory Status</h1>

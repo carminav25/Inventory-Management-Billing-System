@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="assets/css/signup.css">
+    <link rel="stylesheet" href="assets/css/semantic-theme.css">
 </head>
 
 <?php
@@ -22,7 +23,7 @@ $superAdminName = $_SESSION['super_admin_name'] ?? 'Super Admin';
 ?>
 
 
-<body class="bg-light">
+<body class="auth-shell bg-light">
     <div class="container d-flex align-items-center justify-content-center min-vh-100">
         <div class="row w-100 align-items-center g-5">
             <div class="col-lg-5 d-none d-lg-block">
@@ -58,7 +59,7 @@ $superAdminName = $_SESSION['super_admin_name'] ?? 'Super Admin';
             <div class="col-lg-7 d-flex justify-content-center">
                 <div class="signup-card w-100">
                     <div class="text-center mb-4">
-                        <div class="top-icon mx-auto mb-3" style="font-size: 48px; color: #ffc107;">
+                        <div class="top-icon mx-auto mb-3 text-warning" style="font-size: 48px;">
                             <i class="bi bi-key-fill"></i>
                         </div>
                         <h2 class="form-title">Super Admin Recovery Code</h2>
@@ -82,29 +83,12 @@ $superAdminName = $_SESSION['super_admin_name'] ?? 'Super Admin';
                             <h6 class="mb-0 fw-bold text-warning" style="font-size: 15px;">Your Recovery Code</h6>
                         </div>
                         <div class="text-center my-4">
-                            <div style="
-                                background: #f8f9fa;
-                                border: 2px dashed #ffc107;
-                                border-radius: 10px;
-                                padding: 30px;
-                                font-family: 'Courier New', monospace;
-                            ">
-                                <div style="font-size: 14px; color: #666; margin-bottom: 15px;">Recovery Code</div>
-                                <div style="
-                                    font-size: 32px;
-                                    font-weight: 700;
-                                    color: #333;
-                                    letter-spacing: 3px;
-                                    user-select: all;
-                                    cursor: pointer;
-                                    padding: 15px;
-                                    background: white;
-                                    border-radius: 8px;
-                                    border: 1px solid #ddd;
-                                " id="recovery-code-display">
+                            <div class="recovery-code-shell">
+                                <div class="recovery-code-label">Recovery Code</div>
+                                <div class="recovery-code-value" id="recovery-code-display">
                                     <?php echo htmlspecialchars($recoveryCode); ?>
                                 </div>
-                                <div style="font-size: 12px; color: #999; margin-top: 15px;">Click to select</div>
+                                <div class="recovery-code-hint">Click to select</div>
                             </div>
                         </div>
                         <p class="text-muted small mt-3">
@@ -128,7 +112,7 @@ $superAdminName = $_SESSION['super_admin_name'] ?? 'Super Admin';
                         </a>
                     </div>
 
-                    <div class="alert alert-info mt-4 small" style="background: #e7f3ff; border-color: #b3d9ff;">
+                    <div class="alert alert-info recovery-notes mt-4 small">
                         <strong>Next Steps:</strong>
                         <ul class="mb-0 mt-2">
                             <li>Log in with your username and password</li>

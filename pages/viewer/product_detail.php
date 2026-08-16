@@ -35,8 +35,9 @@ $status = getStockStatusBadge($product);
         .info-row { margin: 10px 0; }
         .info-label { font-weight: bold; color: #666; }
     </style>
+    <link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 </head>
-<body>
+<body class="viewer-shell">
     <div class="container">
         <p><a href="products.php" class="back-link">← Back to Products</a></p>
         <h1><?php echo htmlspecialchars($product['name']); ?></h1>
