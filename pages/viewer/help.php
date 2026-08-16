@@ -20,8 +20,9 @@ requireViewer();
         .faq-q { font-weight: bold; color: #0B7A4B; }
         .faq-a { color: #666; margin-top: 5px; }
     </style>
+    <link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 </head>
-<body>
+<body class="viewer-shell">
     <div class="container">
         <h1>Help Center</h1>
         <p><a href="index.php" class="back-link">← Back to Dashboard</a></p>

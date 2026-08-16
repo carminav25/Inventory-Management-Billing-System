@@ -451,6 +451,21 @@ try {
     <script>
         let regChartInstance = null;
         let roleChartInstance = null;
+        const themeColors = getComputedStyle(document.documentElement);
+        const colorPrimary = themeColors.getPropertyValue('--color-primary-700').trim();
+        const colorSuccess = themeColors.getPropertyValue('--color-success-500').trim();
+        const colorWarning = themeColors.getPropertyValue('--color-warning-500').trim();
+        const colorInfo = themeColors.getPropertyValue('--color-info-600').trim();
+        const colorNeutral = themeColors.getPropertyValue('--color-neutral-400').trim();
+        const colorSurface = themeColors.getPropertyValue('--color-surface').trim();
+        const rgba = (hex, alpha) => {
+            const normalized = hex.replace('#', '');
+            if (normalized.length !== 6) return `rgba(0, 0, 0, ${alpha})`;
+            const r = parseInt(normalized.slice(0, 2), 16);
+            const g = parseInt(normalized.slice(2, 4), 16);
+            const b = parseInt(normalized.slice(4, 6), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        };
 
         function initCharts() {
             // Line Chart: Yearly Registrations
@@ -464,11 +479,11 @@ try {
                         datasets: [{
                             label: 'Users Registered',
                             data: <?php echo json_encode($monthlyRegData); ?>,
-                            borderColor: '#10b981', // Emerald green
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderColor: colorSuccess,
+                            backgroundColor: rgba(colorSuccess, 0.1),
                             borderWidth: 2,
-                            pointBackgroundColor: '#10b981',
-                            pointBorderColor: '#ffffff',
+                            pointBackgroundColor: colorSuccess,
+                            pointBorderColor: colorSurface,
                             pointBorderWidth: 2,
                             pointRadius: 4,
                             fill: true,
@@ -483,11 +498,11 @@ try {
                             y: { 
                                 beginAtZero: true, 
                                 max: Math.max(...<?php echo json_encode($monthlyRegData); ?>, 10), // Scale nicely
-                                ticks: { stepSize: 2, font: { size: 9 }, color: '#9ca3af' }, 
-                                grid: { color: '#f3f4f6' } 
+                                ticks: { stepSize: 2, font: { size: 9 }, color: colorNeutral },
+                                grid: { color: 'rgba(148, 163, 184, 0.2)' }
                             },
                             x: { 
-                                ticks: { font: { size: 9 }, color: '#9ca3af' }, 
+                                ticks: { font: { size: 9 }, color: colorNeutral },
                                 grid: { display: false } 
                             }
                         }
@@ -505,7 +520,7 @@ try {
                         labels: ['Super Admin', 'Admin', 'Viewer'],
                         datasets: [{
                             data: [<?php echo $superAdminCount; ?>, <?php echo $adminCount; ?>, <?php echo $viewerCount; ?>],
-                            backgroundColor: ['#10b981', '#0B7A4B', '#f59e0b'],
+                            backgroundColor: [colorSuccess, colorPrimary, colorWarning],
                             borderWidth: 0,
                             cutout: '65%'
                         }]

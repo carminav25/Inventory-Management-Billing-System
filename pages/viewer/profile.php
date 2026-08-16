@@ -25,8 +25,9 @@ $user = $result->fetch_assoc();
         .info-row { margin: 10px 0; }
         .label { font-weight: bold; color: #666; }
     </style>
+    <link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 </head>
-<body>
+<body class="viewer-shell">
     <div class="container">
         <h1>My Profile</h1>
         <p><a href="index.php" class="back-link">← Back to Dashboard</a></p>

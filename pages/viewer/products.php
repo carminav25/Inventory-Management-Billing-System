@@ -290,8 +290,9 @@ $totalPages = ceil($totalProducts / $limit);
             }
         }
     </style>
+    <link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 </head>
-<body>
+<body class="viewer-shell">
     <div class="container">
         <!-- Header -->
         <div class="header">

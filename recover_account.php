@@ -12,6 +12,7 @@
             transition: width 0.3s ease;
         }
     </style>
+    <link rel="stylesheet" href="assets/css/semantic-theme.css">
 </head>
 
 <?php
@@ -144,7 +145,7 @@ if (isset($_SESSION['recovery_verified']) && $_SESSION['recovery_verified'] === 
 ?>
 
 
-<body>
+<body class="auth-shell">
     <div class="container main-container d-flex align-items-center justify-content-center">
         <div class="row w-100 align-items-center g-5">
             <div class="col-lg-5 d-none d-lg-block left-panel">
@@ -181,7 +182,7 @@ if (isset($_SESSION['recovery_verified']) && $_SESSION['recovery_verified'] === 
                 <div class="signup-card w-100">
                     <?php if ($step === 'success'): ?>
                         <div class="text-center mb-4">
-                            <div class="top-icon mx-auto mb-3" style="font-size: 48px; color: #28a745;">
+                            <div class="top-icon mx-auto mb-3 text-success" style="font-size: 48px;">
                                 <i class="bi bi-check-circle-fill"></i>
                             </div>
                             <h2 class="form-title">Password Reset Successful</h2>

@@ -16,8 +16,9 @@ requireViewer();
         .back-link { color: #0B7A4B; text-decoration: none; }
         .info { background: #ecfdf5; border-left: 4px solid #0B7A4B; padding: 15px; margin: 20px 0; border-radius: 5px; }
     </style>
+    <link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 </head>
-<body>
+<body class="viewer-shell">
     <div class="container">
         <h1>QR Code Scanner</h1>
         <p><a href="index.php" class="back-link">← Back to Dashboard</a></p>

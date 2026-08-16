@@ -25,8 +25,9 @@ $stockSummary = getStockSummaryReport($conn);
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background: #f5f5f5; }
     </style>
+    <link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 </head>
-<body>
+<body class="viewer-shell">
     <div class="container">
         <div class="header">
             <h1>Read-Only Reports</h1>
