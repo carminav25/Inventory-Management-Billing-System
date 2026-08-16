@@ -3,4 +3,116 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+}
+
+/* Flexible container used across pages */
+.container, .header-container, .section, .workflow, .intro-container {
+    max-width: 1150px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
+}
+
+/* Flexible row/column utilities */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.col { flex: 1 1 0; }
+.col-auto { flex: 0 0 auto; }
+.center { display:flex; align-items:center; justify-content:center; }
+
+/* Images & media should scale */
+img, video, svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Make forms and buttons adapt */
+input[type="text"], input[type="email"], input[type="password"], select, textarea, .btn, .app-btn, .login-button, .intro-button {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Tables - allow horizontal scroll on small screens */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Utility spacing helpers */
+.gap-sm { gap:8px; }
+.gap-md { gap:16px; }
+.gap-lg { gap:24px; }
+.mt-1 { margin-top:8px; }
+.mt-2 { margin-top:16px; }
+.mb-1 { margin-bottom:8px; }
+.mb-2 { margin-bottom:16px; }
+
+/* Ensure navigation and header adapt */
+.navigation { align-items:center; }
+.navigation a { white-space: nowrap; }
+
+/* Ensure content cards don't overflow on narrow screens */
+.content-card, .app-card, .feature, .step, .stat-card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Breakpoints - mobile first approach */
+/* Mobile (up to 600px) */
+@media (max-width: 600px) {
+    .header-container, .container { padding-left: 12px; padding-right: 12px; }
+
+    /* Stack header elements */
+    .header-container { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+
+    /* Navigation - keep only important items visible */
+    .navigation { gap:8px; }
+    .navigation a:not(.login-button) { display:none; }
+
+    /* Hero / intro adjustments */
+    .intro-container { grid-template-columns: 1fr; padding-top:40px; padding-bottom:40px; gap:28px; }
+    .intro-content h1 { font-size: 28px; }
+    .intro-content h2 { font-size: 16px; }
+    .intro-logo img { width: 180px; height: auto; }
+
+    /* Forms */
+    .form-row { display:block; }
+    .form-group input, .form-group select { width: 100%; }
+
+    /* Buttons full-width */
+    .btn, .app-btn, .intro-button, .login-button { display:block; width:100%; }
+}
+
+/* Tablet (601px - 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .intro-container { grid-template-columns: 1fr; gap:36px; padding-top:48px; padding-bottom:48px; }
+    .feature-grid { grid-template-columns: repeat(2, 1fr); }
+    .workflow-steps { grid-template-columns: repeat(2, 1fr); }
+    .header-container { padding-left:18px; padding-right:18px; }
+    .navigation a { font-size:14px; }
+    .app-stat-card { min-height: 140px; }
+}
+
+/* Desktop (1025px and up) */
+@media (min-width: 1025px) {
+    /* Restore wider layout for larger screens */
+    .intro-container { grid-template-columns: 1.5fr 0.8fr; }
+    .feature-grid { grid-template-columns: repeat(3, 1fr); }
+    .workflow-steps { grid-template-columns: repeat(4, 1fr); }
+    .navigation a { display:inline-block; }
+    .btn, .app-btn { width: auto; }
+}
+
+/* Accessibility: reduce motion */
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
 }

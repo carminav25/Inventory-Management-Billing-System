@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_type']) && $_P
 
 <?php include "sidebar.php"; ?> 
 
-<main class="ml-0 md:ml-[270px] min-h-screen p-6 transition-all duration-300">
+<main class="ml-0 md:ml-[270px] min-h-screen bg-[#f5f7fb] px-4 py-2 md:px-5 md:py-3 transition-all duration-300">
     <div class="max-w-5xl mx-auto space-y-6">
 
         <!-- HEADER -->

@@ -98,7 +98,7 @@ if (!empty($search)) {
 
 // --- 3. PAGINATION SETUP ---
 $page = isset($_GET['p']) ? (int)$_GET['p'] : 1;
-$limit = 10; // Records per page
+$limit = 5; // Records per page
 $offset = ($page - 1) * $limit;
 
 // Count total records for pagination
@@ -170,7 +170,7 @@ if ($result) {
 
 <?php include "sidebar.php"; ?> 
 
-<main class="ml-0 md:ml-[270px] min-h-screen p-6 transition-all duration-300">
+<main class="ml-0 md:ml-[270px] min-h-screen bg-[#f5f7fb] px-4 py-2 md:px-5 md:py-3 transition-all duration-300">
 
     <div class="space-y-6 max-w-7xl mx-auto">
         

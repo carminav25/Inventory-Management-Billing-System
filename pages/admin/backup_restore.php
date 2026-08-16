@@ -105,83 +105,154 @@ $backupStatus = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($pageTitle ?? 'Admin Backup & Restore'); ?></title>
-    <!-- Tailwind CSS CDN -->
+    <title><?= htmlspecialchars($pageTitle ?? 'Backup & Restore'); ?></title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        a { text-decoration: none !important; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; min-height: 100%; }
+        body { background:#f5f7fb; color:#0f172a; font-family:Arial, Helvetica, sans-serif; }
+        a { text-decoration:none !important; }
+        main {
+            margin-left:270px;
+            width:calc(100% - 270px);
+            min-height:100vh;
+            padding:24px;
+            background:#f5f7fb;
+        }
+        .page-wrap { width:100%; max-width:1280px; margin:0 auto; }
+        .page-header {
+            background:#fff;
+            border:1px solid #e2e8f0;
+            border-radius:16px;
+            padding:24px;
+            box-shadow:0 2px 8px rgba(15,23,42,.04);
+            margin-bottom:24px;
+        }
+        .page-header h1 { margin:0; font-size:26px; line-height:1.25; font-weight:700; color:#0f172a; letter-spacing:-.02em; }
+        .page-header p { margin:4px 0 0; font-size:14px; color:#64748b; }
+        .panel { background:#fff; border:1px solid #e2e8f0; border-radius:16px; box-shadow:0 2px 8px rgba(15,23,42,.035); }
+        .stats-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:20px; margin-bottom:24px; }
+        .stat-card { min-width:0; min-height:112px; padding:20px; border-left:4px solid #10b981; }
+        .stat-label { margin:0; color:#94a3b8; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; }
+        .stat-value { margin:8px 0 0; color:#0f172a; font-size:20px; line-height:1.3; font-weight:700; }
+        .last-date { display:block; }
+        .last-time { display:block; margin-top:2px; color:#475569; font-size:14px; font-weight:600; }
+        .section { padding:24px; margin-bottom:24px; }
+        .section-title { margin:0; color:#1e293b; font-size:18px; font-weight:700; }
+        .section-subtitle { margin:4px 0 0; color:#64748b; font-size:13px; }
+        .primary-btn { display:inline-flex; align-items:center; justify-content:center; min-height:42px; padding:10px 18px; border:0; border-radius:10px; background:#059669; color:#fff; font-size:13px; font-weight:700; cursor:pointer; transition:.2s; }
+        .primary-btn:hover { background:#047857; transform:translateY(-1px); }
+        .secondary-btn { display:inline-flex; align-items:center; justify-content:center; min-height:42px; padding:10px 18px; border:1px solid #e2e8f0; border-radius:10px; background:#f8fafc; color:#475569; font-size:13px; font-weight:700; cursor:pointer; }
+        .table-wrap { overflow-x:auto; }
+        table { width:100%; border-collapse:collapse; }
+        th { padding:14px 18px; background:#f8fafc; color:#94a3b8; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; text-align:left; white-space:nowrap; }
+        td { padding:15px 18px; border-top:1px solid #f1f5f9; color:#475569; font-size:13px; }
+        tbody tr:hover { background:#f8fafc; }
+        .file-name { color:#334155; font-family:Consolas,monospace; font-size:12px; font-weight:600; }
+        .action-row { display:flex; gap:8px; align-items:center; }
+        .table-btn { display:inline-flex; align-items:center; justify-content:center; min-height:34px; padding:7px 12px; border-radius:8px; font-size:12px; font-weight:700; border:0; cursor:pointer; }
+        .download-btn { background:#ecfdf5; color:#047857; }
+        .download-btn:hover { background:#d1fae5; }
+        .delete-btn { background:#fef2f2; color:#dc2626; }
+        .delete-btn:hover { background:#fee2e2; }
+        .warning { background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:10px; padding:16px; margin:20px 0; }
+        .warning-title { margin:0; color:#b45309; font-size:14px; font-weight:700; }
+        .warning-text { margin:5px 0 0; color:#92400e; font-size:13px; line-height:1.6; }
+        .file-input { width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:10px; background:#f8fafc; color:#475569; font-size:13px; }
+        .file-input:focus { outline:none; border-color:#10b981; box-shadow:0 0 0 3px rgba(16,185,129,.1); background:#fff; }
+        .form-label { display:block; margin-bottom:7px; color:#64748b; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+        .alert { padding:13px 16px; border-radius:10px; margin-bottom:16px; font-size:13px; }
+        .alert-success { background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; }
+        .alert-error { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; }
+        .empty { padding:40px 20px; text-align:center; color:#94a3b8; }
+        #deleteBackupAuthModal { display:none; position:fixed; inset:0; z-index:9999; padding:20px; background:rgba(15,23,42,.48); align-items:center; justify-content:center; }
+        #deleteBackupAuthModal.show { display:flex; }
+        .modal-dialog { width:100%; max-width:500px; }
+        .modal-content { background:#fff; border-radius:16px; border:1px solid #e2e8f0; overflow:hidden; box-shadow:0 25px 70px rgba(15,23,42,.25); }
+        .modal-header { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; background:#fef2f2; border-bottom:1px solid #fee2e2; }
+        .modal-title { margin:0; color:#991b1b; font-size:16px; font-weight:700; }
+        .modal-close { border:0; background:transparent; color:#64748b; font-size:12px; font-weight:700; cursor:pointer; padding:6px; }
+        .modal-body { padding:20px; }
+        .modal-footer { display:flex; justify-content:flex-end; gap:8px; padding:14px 20px; background:#f8fafc; border-top:1px solid #e2e8f0; }
+        .auth-field { margin-top:14px; }
+        .auth-label { display:block; margin-bottom:6px; color:#475569; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
+        .auth-input { width:100%; min-height:42px; padding:10px 12px; border:1px solid #cbd5e1; border-radius:9px; background:#f8fafc; color:#0f172a; font-size:13px; outline:none; }
+        .auth-input:focus { border-color:#ef4444; background:#fff; box-shadow:0 0 0 3px rgba(239,68,68,.1); }
+        textarea.auth-input { min-height:88px; resize:vertical; }
+        .cancel-btn,.verify-btn { min-height:40px; padding:9px 15px; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer; }
+        .cancel-btn { border:1px solid #e2e8f0; background:#fff; color:#475569; }
+        .verify-btn { border:1px solid #dc2626; background:#dc2626; color:#fff; }
+        @media(max-width:1100px) { .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+        @media(max-width:767px) { main { margin-left:0; width:100%; padding:16px; } .page-header { padding:20px; } }
+        @media(max-width:600px) { .stats-grid { grid-template-columns:1fr; gap:14px; } .section { padding:18px; } .page-header h1 { font-size:23px; } .modal-footer { flex-direction:column-reverse; } .cancel-btn,.verify-btn { width:100%; } }
     </style>
 </head>
+<body>
+<?php include "sidebar.php"; ?>
+<main>
+<div class="page-wrap">
 
-<body class="bg-[#f5f7fb] font-sans">
+    <!-- SAME HEADER STYLE AS PRODUCT MANAGEMENT -->
+    <div class="page-header">
+        <h1>Backup &amp; Restore</h1>
+        <p>Manage inventory backups, restore saved records, and maintain database protection.</p>
+    </div>
 
-<?php include "sidebar.php"; ?> 
-
-<main class="ml-0 md:ml-[270px] min-h-screen bg-[#f5f7fb] p-6 transition-all duration-300">
-
-<div class="max-w-7xl mx-auto">
-    <!-- NOTIFICATIONS -->
     <?php if (isset($_SESSION['success_message'])): ?>
-        <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl text-sm flex items-center justify-between mb-4">
-            <span><i class="fa-solid fa-circle-check mr-2"></i> <?= htmlspecialchars($_SESSION['success_message']); unset($_SESSION['success_message']); ?></span>
-        </div>
+        <div class="alert alert-success"><?= htmlspecialchars($_SESSION['success_message']); unset($_SESSION['success_message']); ?></div>
     <?php endif; ?>
     <?php if (isset($_SESSION['error_message'])): ?>
-        <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl text-sm flex items-center justify-between mb-4">
-            <span><i class="fa-solid fa-circle-exclamation mr-2"></i> <?= htmlspecialchars($_SESSION['error_message']); unset($_SESSION['error_message']); ?></span>
-        </div>
+        <div class="alert alert-error"><?= htmlspecialchars($_SESSION['error_message']); unset($_SESSION['error_message']); ?></div>
     <?php endif; ?>
-</div>
 
-<div class="space-y-6">
-    <!-- STATS CARDS -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
-            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Last Backup</p>
-            <h2 class="text-2xl font-bold text-slate-800 mt-1"><?= $lastBackupDate ?></h2>
+    <div class="stats-grid">
+        <div class="panel stat-card">
+            <p class="stat-label">Last Backup</p>
+            <?php if ($totalBackups > 0): ?>
+                <h2 class="stat-value"><span class="last-date"><?= htmlspecialchars(date("M d, Y", filemtime($backups[0]))) ?></span><span class="last-time"><?= htmlspecialchars(date("h:i A", filemtime($backups[0]))) ?></span></h2>
+            <?php else: ?>
+                <h2 class="stat-value">No Backup</h2>
+            <?php endif; ?>
         </div>
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
             <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Total Backups</p>
             <h2 class="text-2xl font-bold text-slate-800 mt-1"><?= $totalBackups ?></h2>
         </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
-            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Database Size</p>
-            <h2 class="text-2xl font-bold text-slate-800 mt-1"><?= $dbSize ?></h2>
+        <div class="panel stat-card">
+            <p class="stat-label">Database Size</p>
+            <h2 class="stat-value"><?= htmlspecialchars($dbSize) ?></h2>
         </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 <?= $backupStatus['class'] ?>">
-            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Backup Status</p>
-            <h2 class="text-2xl font-bold text-slate-800 mt-1"><?= $backupStatus['text'] ?></h2>
+        <div class="panel stat-card" style="border-left-color:<?= $totalBackups > 0 ? '#10b981' : '#ef4444' ?>;">
+            <p class="stat-label">Backup Status</p>
+            <h2 class="stat-value"><?= htmlspecialchars($backupStatus['text']) ?></h2>
         </div>
     </div>
 
-    <!-- BACKUP ACTIONS -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h3 class="text-lg font-bold text-slate-800 mb-4">Create New Backup</h3>
-        <form action="../../process/admin/create_inventory_backup.php" method="POST">
-            <button
-                type="submit"
-                class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow transition flex items-center gap-2">
-                <i class="fa-solid fa-plus"></i> Create Inventory Backup
-            </button>
+    <div class="panel section">
+        <h2 class="section-title">Create New Backup</h2>
+        <p class="section-subtitle">Create a complete SQL backup of the inventory database.</p>
+        <form action="../../process/admin/create_inventory_backup.php" method="POST" class="mt-5">
+            <button type="submit" class="primary-btn">Create Inventory Backup</button>
         </form>
     </div>
 
-    <!-- EXISTING BACKUPS TABLE -->
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="px-6 py-5 border-b border-slate-100">
-            <h3 class="text-lg font-bold text-slate-800">Existing Backups</h3>
+    <div class="panel section" style="padding:0; overflow:hidden;">
+        <div style="padding:20px 24px; border-bottom:1px solid #f1f5f9;">
+            <h2 class="section-title">Existing Backups</h2>
+            <p class="section-subtitle">Download or securely delete previously created inventory backups.</p>
         </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-slate-50 text-[11px] text-slate-400 uppercase tracking-wider">
-                        <th class="p-4">Backup Name</th>
-                        <th class="p-4">Type</th>
-                        <th class="p-4">Size</th>
-                        <th class="p-4">Date</th>
-                        <th class="p-4">Action</th>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Backup Name</th><th>Type</th><th>Size</th><th>Date</th><th>Action</th></tr></thead>
+                <tbody>
+                <?php if (!empty($backups)): ?>
+                    <?php foreach ($backups as $backup): $file=basename($backup); $size=round(filesize($backup)/1024,2).' KB'; $date=date('M d, Y',filemtime($backup)); ?>
+                    <tr>
+                        <td class="file-name"><?= htmlspecialchars($file) ?></td>
+                        <td>Full</td>
+                        <td><?= htmlspecialchars($size) ?></td>
+                        <td><?= htmlspecialchars($date) ?></td>
+                        <td><div class="action-row"><a class="table-btn download-btn" href="../../backups/inventory/<?= urlencode($file) ?>" download>Download</a><button type="button" class="table-btn delete-btn" onclick="confirmDeleteBackup('<?= htmlspecialchars($file, ENT_QUOTES) ?>')">Delete</button></div></td>
                     </tr>
                 </thead>
                 <tbody class="text-sm divide-y divide-slate-100">
@@ -216,130 +287,114 @@ $backupStatus = [
                 </tbody>
             </table>
         </div>
-    </div>    
+    </div>
 
-    <!-- RESTORE INVENTORY -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-7">
-
-        <h3 class="text-xl font-bold text-slate-800 mb-6">
-            Restore Inventory Backup
-        </h3>
-
-        <div class="bg-amber-50 border-l-4 border-amber-500 p-5 rounded-xl mb-6">
-            <h4 class="font-bold text-amber-700">
-                Warning!
-            </h4>
-            <p class="text-amber-700 text-sm mt-1">
-                Restoring this backup will overwrite the current inventory records only. 
-                User accounts, Super Admin settings, activity logs, and system configuration will NOT be affected.
-            </p>
+    <div class="panel section">
+        <h2 class="section-title">Restore Inventory Backup</h2>
+        <p class="section-subtitle">Upload a saved SQL backup to restore inventory records.</p>
+        <div class="warning">
+            <p class="warning-title">Warning!</p>
+            <p class="warning-text">Restoring this backup will overwrite the current inventory records only. User accounts, Super Admin settings, activity logs, and system configuration will NOT be affected.</p>
         </div>
-
-        <form
-            action="../../process/admin/restore_inventory_backup.php"
-            method="POST"
-            enctype="multipart/form-data">
-
-            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-                Select SQL Backup File
-            </label>
-
-            <input
-                type="file"
-                name="backup_file"
-                accept=".sql"
-                required
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-
-            <button
-                type="submit"
-                class="mt-6 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold shadow transition flex items-center gap-2">
-                <i class="fa fa-upload"></i>
-                Restore Inventory
-            </button>
+        <form action="../../process/admin/restore_inventory_backup.php" method="POST" enctype="multipart/form-data">
+            <label class="form-label">Select SQL Backup File</label>
+            <input class="file-input" type="file" name="backup_file" accept=".sql" required>
+            <button type="submit" class="primary-btn" style="margin-top:16px;">Restore Inventory</button>
         </form>
     </div>
 </div>
-
 </main>
 
-<!-- SUPER ADMIN DELETE AUTHENTICATION MODAL -->
-<div class="modal fade" id="deleteBackupAuthModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4 border-0 shadow-xl overflow-hidden">
-            <div class="modal-header bg-red-600 text-white px-6 py-4">
-                <h5 class="modal-title font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Super Admin Delete Authorization
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+<div id="deleteBackupAuthModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="deleteBackupAuthTitle">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header"><h5 id="deleteBackupAuthTitle" class="modal-title">Super Admin Delete Authorization</h5><button type="button" class="modal-close" onclick="closeDeleteBackupModal()">Close</button></div>
+        <form id="deleteBackupAuthForm">
+            <div class="modal-body">
+                <input type="hidden" id="delete_backup_file">
+                <div class="alert alert-error" style="margin:0;"><strong>Warning:</strong> You are about to permanently delete <span id="delete_backup_name_label" style="font-weight:700;text-decoration:underline;"></span>. This action is irreversible.</div>
+                <div class="auth-field"><label for="delete_auth_username" class="auth-label">Super Admin Username</label><input type="text" id="delete_auth_username" class="auth-input" autocomplete="username" required></div>
+                <div class="auth-field"><label for="delete_auth_password" class="auth-label">Password</label><input type="password" id="delete_auth_password" class="auth-input" autocomplete="current-password" required></div>
+                <div class="auth-field"><label for="delete_auth_reason" class="auth-label">Reason for Deletion</label><textarea id="delete_auth_reason" rows="3" class="auth-input" required placeholder="e.g., Obsolete backup / Freeing up space"></textarea></div>
             </div>
-            <form id="deleteBackupAuthForm">
-                <div class="modal-body p-6 space-y-4">
-                    <input type="hidden" id="delete_backup_file">
-                    
-                    <div class="bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl text-xs">
-                        <p><span class="font-bold">Warning:</span> You are about to permanently delete the backup file <span id="delete_backup_name_label" class="font-semibold underline"></span>. This action is irreversible.</p>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Super Admin Username</label>
-                        <input type="text" id="delete_auth_username" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Password</label>
-                        <input type="password" id="delete_auth_password" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Reason for Deletion</label>
-                        <textarea id="delete_auth_reason" rows="3" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500" required placeholder="e.g., Obsolete backup / Freeing up space"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer bg-slate-50 border-t border-slate-100 px-6 py-3 flex justify-end gap-2">
-                    <button type="button" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-medium transition" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium transition shadow-sm">
-                        <i class="fa-solid fa-trash mr-1.5"></i> Verify & Delete
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+            <div class="modal-footer"><button type="button" class="cancel-btn" onclick="closeDeleteBackupModal()">Cancel</button><button type="submit" class="verify-btn">Verify &amp; Delete</button></div>
+        </form>
+    </div></div>
 </div>
-
-<!-- Bootstrap JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    const deleteBackupModal = document.getElementById('deleteBackupAuthModal');
+
     function confirmDeleteBackup(fileName) {
         document.getElementById('delete_backup_file').value = fileName;
         document.getElementById('delete_backup_name_label').innerText = fileName;
-        
+
         document.getElementById('delete_auth_username').value = '';
         document.getElementById('delete_auth_password').value = '';
         document.getElementById('delete_auth_reason').value = '';
 
-        var deleteModal = new bootstrap.Modal(document.getElementById('deleteBackupAuthModal'));
-        deleteModal.show();
+        deleteBackupModal.classList.add('show');
+        deleteBackupModal.setAttribute('aria-hidden', 'false');
+
+        setTimeout(function () {
+            document.getElementById('delete_auth_username').focus();
+        }, 50);
     }
+
+    function closeDeleteBackupModal() {
+        deleteBackupModal.classList.remove('show');
+        deleteBackupModal.setAttribute('aria-hidden', 'true');
+    }
+
+    deleteBackupModal.addEventListener('click', function (event) {
+        if (event.target === deleteBackupModal) {
+            closeDeleteBackupModal();
+        }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (
+            event.key === 'Escape' &&
+            deleteBackupModal.classList.contains('show')
+        ) {
+            closeDeleteBackupModal();
+        }
+    });
 
     document.getElementById("deleteBackupAuthForm").addEventListener("submit", function(e) {
         e.preventDefault();
-        let fileName = document.getElementById("delete_backup_file").value;
+
+        const fileName =
+            document.getElementById("delete_backup_file").value;
+
         fetch("../../includes/verify_delete_auth.php", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            headers: {
+                "Content-Type":
+                    "application/x-www-form-urlencoded"
+            },
             body: new URLSearchParams({
-                item_id: 1, // Using a dummy ID since we're deleting a file, not a DB record
-                username: document.getElementById("delete_auth_username").value,
-                password: document.getElementById("delete_auth_password").value,
-                reason: document.getElementById("delete_auth_reason").value
+                item_id: 1,
+                username:
+                    document.getElementById("delete_auth_username").value,
+                password:
+                    document.getElementById("delete_auth_password").value,
+                reason:
+                    document.getElementById("delete_auth_reason").value
             })
-        }).then(res => res.json()).then(data => {
+        })
+        .then(res => res.json())
+        .then(data => {
             if (data.success) {
-                bootstrap.Modal.getInstance(document.getElementById("deleteBackupAuthModal")).hide();
-                window.location.href = `backup_restore.php?action_type=delete&file=${encodeURIComponent(fileName)}`;
+                closeDeleteBackupModal();
+
+                window.location.href =
+                    `backup_restore.php?action_type=delete&file=${encodeURIComponent(fileName)}`;
             } else {
                 alert("Authorization Failed: " + data.message);
             }
-        }).catch(err => alert("An error occurred during verification."));
+        })
+        .catch(() => {
+            alert("An error occurred during verification.");
+        });
     });
 </script>
 </body>

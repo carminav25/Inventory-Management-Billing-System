@@ -414,6 +414,55 @@ try {
         $messages[] = "• return_items table already exists";
     }
 
+    $stockAdjustmentTables = $conn->query("SHOW TABLES LIKE 'stock_adjustments'");
+    if (!$stockAdjustmentTables || $stockAdjustmentTables->num_rows === 0) {
+        $createStockAdjustmentsTable = "
+        CREATE TABLE stock_adjustments (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            product_id INT NOT NULL,
+            old_stock INT NOT NULL,
+            new_stock INT NOT NULL,
+            reason TEXT NOT NULL,
+            requested_by INT NOT NULL,
+            approved_by INT NOT NULL,
+            approved_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+            status ENUM('Pending','Approved','Rejected') DEFAULT 'Approved'
+        )
+        ";
+        $conn->query($createStockAdjustmentsTable);
+        $messages[] = "✓ Created stock_adjustments table";
+    } else {
+        $messages[] = "• stock_adjustments table already exists";
+    }
+
+    $stockMovementTables = $conn->query("SHOW TABLES LIKE 'stock_movements'");
+    if (!$stockMovementTables || $stockMovementTables->num_rows === 0) {
+        $createStockMovementsTable = "
+        CREATE TABLE stock_movements (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            product_id INT NOT NULL,
+            transaction_type ENUM('Beginning','Delivery','Sale','Supplier Return','Adjustment') NOT NULL,
+            reference_no VARCHAR(100) DEFAULT NULL,
+            reference_table VARCHAR(30) DEFAULT NULL,
+            reference_id INT DEFAULT NULL,
+            qty_in INT DEFAULT 0,
+            qty_out INT DEFAULT 0,
+            balance_after INT NOT NULL,
+            remarks VARCHAR(255) DEFAULT NULL,
+            created_by INT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            KEY idx_stock_movements_product (product_id),
+            KEY idx_stock_movements_reference (reference_table, reference_id),
+            KEY idx_stock_movements_created_at (created_at),
+            CONSTRAINT fk_stock_movements_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+        )
+        ";
+        $conn->query($createStockMovementsTable);
+        $messages[] = "✓ Created stock_movements table";
+    } else {
+        $messages[] = "• stock_movements table already exists";
+    }
+
     $backupHistoryTables = $conn->query("SHOW TABLES LIKE 'backup_history'");
     if (!$backupHistoryTables || $backupHistoryTables->num_rows === 0) {
         $createBackupHistoryTable = "

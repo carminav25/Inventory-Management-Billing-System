@@ -46,7 +46,6 @@ $isSuperAdminSignup = ($userCount === 0);
                     <p class="system-desc mb-5">Sign in or create a new account to manage the dashboard, browse the product directory, and use the transaction modules.</p>
 
                     <div class="feature-item d-flex align-items-start mb-4">
-                        <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
                         <div>
                             <h5>Account Policy & Roles</h5>
                             <p>Super Admin, Admin, and Viewer roles. The first signup becomes Super Admin, the second is Admin. All subsequent signups default to Viewer accounts.</p>
@@ -54,7 +53,6 @@ $isSuperAdminSignup = ($userCount === 0);
                     </div>
                     
                     <div class="feature-item d-flex align-items-start mb-4">
-                        <div class="feature-icon"><i class="bi bi-grid-1x2"></i></div>
                         <div>
                             <h5>Dashboard</h5>
                             <p>See sales, inventory flow, low-stock alerts, and forecasting.</p>
@@ -62,7 +60,6 @@ $isSuperAdminSignup = ($userCount === 0);
                     </div>
                     
                     <div class="feature-item d-flex align-items-start mb-4">
-                        <div class="feature-icon"><i class="bi bi-box-seam"></i></div>
                         <div>
                             <h5>Product Directory</h5>
                             <p>Browse categories, open product profiles, and manage active items.</p>
@@ -70,7 +67,6 @@ $isSuperAdminSignup = ($userCount === 0);
                     </div>
 
                     <div class="feature-item d-flex align-items-start">
-                        <div class="feature-icon"><i class="bi bi-qr-code-scan"></i></div>
                         <div>
                             <h5>Smart Scanning</h5>
                             <p>Use QR or barcode scanning on the delivery, sales, and returns pages.</p>
@@ -82,9 +78,6 @@ $isSuperAdminSignup = ($userCount === 0);
             <div class="col-lg-7 d-flex justify-content-center">
                 <div class="signup-card w-100">
                     <div class="text-center mb-4">
-                        <div class="top-icon mx-auto mb-3">
-                            <i class="bi bi-person-plus-fill"></i>
-                        </div>
                         <h2 class="form-title">Create Account</h2>
                         <?php if ($isSuperAdminSignup): ?>
                             <p class="text-muted text-sm"><i class="bi bi-shield-check me-1"></i>Super Admin Registration</p>
