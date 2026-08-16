@@ -8,47 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="assets/css/signup.css">
-
-    <style>
-        /* =========================================================
-           SHARED LOGIN + SIGNUP BRANDING / LOGO POSITION
-           ========================================================= */
-
-        .main-container {
-            align-items: flex-start !important;
-            padding-top: 30px;
-            padding-bottom: 30px;
-        }
-
-        .main-container > .row {
-            align-items: flex-start !important;
-        }
-
-        .left-panel {
-            align-self: flex-start !important;
-            padding-top: 0 !important;
-        }
-
-        .left-panel .logo {
-            width: 140px !important;
-            height: 140px !important;
-            object-fit: contain !important;
-            display: block;
-            margin-bottom: 16px !important;
-        }
-
-        .left-panel > div {
-            text-align: left !important;
-        }
-
-        @media (max-width: 991.98px) {
-            .main-container {
-                padding-top: 20px;
-                padding-bottom: 20px;
-            }
-        }
-    </style>
-
+    <link rel="stylesheet" href="assets/css/semantic-theme.css">
 </head>
 
 <?php
@@ -71,7 +31,7 @@ if ($result) {
 $isSuperAdminSignup = ($userCount === 0);
 ?>
 
-<body>
+<body class="auth-shell">
 
     <div class="container main-container d-flex align-items-center justify-content-center">
         <div class="row w-100 align-items-center g-5">

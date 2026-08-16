@@ -47,7 +47,7 @@ $totalPages = ceil($totalProducts / $limit);
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: linear-gradient(135deg, #0B7A4B 0%, #065F46 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -71,7 +71,7 @@ $totalPages = ceil($totalProducts / $limit);
         }
         
         .back-link {
-            color: #3498db;
+            color: #0B7A4B;
             text-decoration: none;
             font-weight: 500;
         }
@@ -127,12 +127,12 @@ $totalPages = ceil($totalProducts / $limit);
         }
         
         .btn-primary {
-            background: #3498db;
+            background: #0B7A4B;
             color: white;
         }
         
         .btn-primary:hover {
-            background: #2980b9;
+            background: #065F46;
         }
         
         .btn-secondary {
@@ -196,7 +196,7 @@ $totalPages = ceil($totalProducts / $limit);
         .product-price {
             font-size: 16px;
             font-weight: bold;
-            color: #3498db;
+            color: #0B7A4B;
             margin-bottom: 10px;
         }
         
@@ -231,7 +231,7 @@ $totalPages = ceil($totalProducts / $limit);
         .view-btn {
             width: 100%;
             padding: 8px;
-            background: #3498db;
+            background: #0B7A4B;
             color: white;
             border: none;
             border-radius: 5px;
@@ -241,7 +241,7 @@ $totalPages = ceil($totalProducts / $limit);
         }
         
         .view-btn:hover {
-            background: #2980b9;
+            background: #065F46;
         }
         
         .pagination {
@@ -257,19 +257,19 @@ $totalPages = ceil($totalProducts / $limit);
             border: 1px solid #ddd;
             border-radius: 5px;
             text-decoration: none;
-            color: #3498db;
+            color: #0B7A4B;
             background: white;
         }
         
         .pagination a:hover {
-            background: #3498db;
+            background: #0B7A4B;
             color: white;
         }
         
         .pagination .active {
-            background: #3498db;
+            background: #0B7A4B;
             color: white;
-            border-color: #3498db;
+            border-color: #0B7A4B;
         }
         
         .empty-state {
@@ -290,8 +290,9 @@ $totalPages = ceil($totalProducts / $limit);
             }
         }
     </style>
+    <link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 </head>
-<body>
+<body class="viewer-shell">
     <div class="container">
         <!-- Header -->
         <div class="header">

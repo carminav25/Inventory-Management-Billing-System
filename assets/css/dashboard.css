@@ -177,8 +177,8 @@ body {
     justify-content: space-between;
     align-items: center;
     background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     padding: 15px 25px;
     border-radius: 18px;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -627,9 +627,9 @@ body.dark-mode .content-card {
 }
 
 .users-stat-card .stat-icon.total { background: #10B981; }
-.users-stat-card .stat-icon.admin { background: #3B82F6; }
+.users-stat-card .stat-icon.admin { background: #0B7A4B; }
 .users-stat-card .stat-icon.viewer { background: #F59E0B; }
-.users-stat-card .stat-icon.disabled { background: #EF4444; }
+.users-stat-card .stat-icon.disabled { background: #DC2626; }
 
 .users-toolbar {
     display: flex;

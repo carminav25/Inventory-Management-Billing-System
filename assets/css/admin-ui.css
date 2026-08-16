@@ -1,17 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
 :root {
-    --isu-primary: #0B7A4B;
-    --isu-secondary: #065F46;
-    --isu-success: #10B981;
-    --isu-warning: #F59E0B;
-    --isu-danger: #EF4444;
-    --isu-info: #3B82F6;
+    --isu-primary: #1E8F67;
+    --isu-secondary: #0F6D57;
+    --isu-success: #34C38F;
+    --isu-warning: #F6B94C;
+    --isu-danger: #E76B6B;
+    --isu-info: #5A9BFF;
+    --isu-primary-soft: rgba(30, 143, 103, 0.12);
+    --isu-success-soft: rgba(52, 195, 143, 0.12);
+    --isu-danger-soft: rgba(231, 107, 107, 0.12);
+    --isu-info-soft: rgba(90, 155, 255, 0.12);
     --app-bg: #F5F7FA;
     --app-border: #E5E7EB;
     --app-text: #111827;
     --app-muted: #64748B;
     --app-shadow: 0 14px 35px rgba(15, 23, 42, 0.07);
+    --focus-ring: rgba(30, 143, 103, 0.18);
 }
 
 html,
@@ -37,7 +42,7 @@ a {
 
 #sidebar nav a:hover,
 #sidebar nav a.bg-\[\#10b981\] {
-    background: var(--isu-success) !important;
+    background: linear-gradient(135deg, var(--isu-primary), var(--isu-success)) !important;
 }
 
 #page-header {
@@ -153,7 +158,7 @@ main {
 .app-filter select:focus,
 .app-input:focus {
     border-color: var(--isu-primary) !important;
-    box-shadow: 0 0 0 3px rgba(11, 122, 75, .14) !important;
+    box-shadow: 0 0 0 3px var(--focus-ring) !important;
 }
 
 .app-btn {
@@ -171,10 +176,13 @@ main {
 }
 
 .app-btn-primary { background: var(--isu-primary); color: #fff; }
-.app-btn-primary:hover { background: var(--isu-secondary); color: #fff; }
+.app-btn-primary:hover { background: var(--isu-secondary); color: #fff; box-shadow: 0 10px 20px rgba(15, 109, 87, 0.18); }
 .app-btn-secondary { background: var(--isu-info); color: #fff; }
+.app-btn-secondary:hover { background: #3D7AE6; color: #fff; }
 .app-btn-warning { background: var(--isu-warning); color: #fff; }
+.app-btn-warning:hover { background: #E39B2D; color: #fff; }
 .app-btn-danger { background: var(--isu-danger); color: #fff; }
+.app-btn-danger:hover { background: #D55454; color: #fff; }
 .app-btn-light { background: #fff; color: #334155; border-color: var(--app-border); }
 .app-btn-light:hover { background: #F8FAFC; color: #0F172A; }
 
@@ -231,10 +239,10 @@ table tbody tr:hover {
     border: 1px solid transparent;
 }
 
-.app-badge-success { color: #047857; background: #ECFDF5; border-color: #A7F3D0; }
-.app-badge-warning { color: #B45309; background: #FFFBEB; border-color: #FDE68A; }
-.app-badge-danger { color: #B91C1C; background: #FEF2F2; border-color: #FECACA; }
-.app-badge-info { color: #1D4ED8; background: #EFF6FF; border-color: #BFDBFE; }
+.app-badge-success { color: #0F6D57; background: rgba(52, 195, 143, 0.12); border-color: rgba(52, 195, 143, 0.35); }
+.app-badge-warning { color: #8A5B08; background: rgba(246, 185, 76, 0.12); border-color: rgba(246, 185, 76, 0.32); }
+.app-badge-danger { color: #B93D3D; background: rgba(231, 107, 107, 0.12); border-color: rgba(231, 107, 107, 0.28); }
+.app-badge-info { color: #2F5FC9; background: rgba(90, 155, 255, 0.12); border-color: rgba(90, 155, 255, 0.28); }
 .app-badge-muted { color: #475569; background: #F1F5F9; border-color: #E2E8F0; }
 
 .app-pagination a,

@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 <!-- SIDEBAR -->
 <aside id="sidebar" class="w-[260px] bg-brand-dark text-white flex-col h-full shrink-0 fixed inset-y-0 left-0 z-50 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out md:flex">
     <!-- Logo Area -->

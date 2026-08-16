@@ -88,50 +88,10 @@ unset($_SESSION['login_error'], $_SESSION['old_input'], $_SESSION['login_locked'
             color: #333;
         }
     </style>
-
-    <style>
-        /* =========================================================
-           SHARED LOGIN + SIGNUP BRANDING / LOGO POSITION
-           ========================================================= */
-
-        .main-container {
-            align-items: flex-start !important;
-            padding-top: 30px;
-            padding-bottom: 30px;
-        }
-
-        .main-container > .row {
-            align-items: flex-start !important;
-        }
-
-        .left-panel {
-            align-self: flex-start !important;
-            padding-top: 0 !important;
-        }
-
-        .left-panel .logo {
-            width: 140px !important;
-            height: 140px !important;
-            object-fit: contain !important;
-            display: block;
-            margin-bottom: 16px !important;
-        }
-
-        .left-panel > div {
-            text-align: left !important;
-        }
-
-        @media (max-width: 991.98px) {
-            .main-container {
-                padding-top: 20px;
-                padding-bottom: 20px;
-            }
-        }
-    </style>
-
+    <link rel="stylesheet" href="assets/css/semantic-theme.css">
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="auth-shell d-flex flex-column min-vh-100">
 
     <div class="container main-container d-flex align-items-center justify-content-center flex-grow-1">
         <div class="row w-100 align-items-center g-5">

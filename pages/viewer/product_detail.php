@@ -21,22 +21,23 @@ $status = getStockStatusBadge($product);
 <head>
     <title><?php echo htmlspecialchars($product['name']); ?> - Product Details</title>
     <style>
-        body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+        body { font-family: Arial; background: #f5f7fa; padding: 20px; }
         .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
         h1 { color: #333; }
-        .back-link { color: #3498db; text-decoration: none; }
+        .back-link { color: #0B7A4B; text-decoration: none; }
         .product-details { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
         .product-image { background: #f5f5f5; padding: 20px; border-radius: 10px; }
         .badge { padding: 8px 16px; border-radius: 20px; font-weight: bold; display: inline-block; margin: 10px 0; }
         .badge.success { background: #d4edda; color: #155724; }
         .badge.warning { background: #fff3cd; color: #856404; }
         .badge.danger { background: #f8d7da; color: #721c24; }
-        .price { font-size: 24px; font-weight: bold; color: #3498db; margin: 15px 0; }
+        .price { font-size: 24px; font-weight: bold; color: #0B7A4B; margin: 15px 0; }
         .info-row { margin: 10px 0; }
         .info-label { font-weight: bold; color: #666; }
     </style>
+    <link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 </head>
-<body>
+<body class="viewer-shell">
     <div class="container">
         <p><a href="products.php" class="back-link">← Back to Products</a></p>
         <h1><?php echo htmlspecialchars($product['name']); ?></h1>

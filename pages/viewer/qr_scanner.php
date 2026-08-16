@@ -10,14 +10,15 @@ requireViewer();
 <head>
     <title>QR Code Scanner - Viewer Dashboard</title>
     <style>
-        body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+        body { font-family: Arial; background: #f5f7fa; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
         h1 { color: #333; }
-        .back-link { color: #3498db; text-decoration: none; }
-        .info { background: #e8f4f8; border-left: 4px solid #3498db; padding: 15px; margin: 20px 0; border-radius: 5px; }
+        .back-link { color: #0B7A4B; text-decoration: none; }
+        .info { background: #ecfdf5; border-left: 4px solid #0B7A4B; padding: 15px; margin: 20px 0; border-radius: 5px; }
     </style>
+    <link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 </head>
-<body>
+<body class="viewer-shell">
     <div class="container">
         <h1>QR Code Scanner</h1>
         <p><a href="index.php" class="back-link">← Back to Dashboard</a></p>

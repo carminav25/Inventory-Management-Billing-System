@@ -29,7 +29,7 @@ $recentActivity = getViewerRecentActivity($conn, 5);
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: linear-gradient(135deg, #0B7A4B 0%, #065F46 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -122,7 +122,7 @@ $recentActivity = getViewerRecentActivity($conn, 5);
         
         .nav-menu a:hover {
             background: #f5f5f5;
-            color: #3498db;
+            color: #0B7A4B;
         }
         
         .stats-grid {
@@ -137,7 +137,7 @@ $recentActivity = getViewerRecentActivity($conn, 5);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid #3498db;
+            border-left: 5px solid #0B7A4B;
         }
         
         .stat-card h3 {
@@ -229,8 +229,8 @@ $recentActivity = getViewerRecentActivity($conn, 5);
         }
         
         .info-box {
-            background: #e8f4f8;
-            border-left: 4px solid #3498db;
+            background: #ecfdf5;
+            border-left: 4px solid #0B7A4B;
             padding: 15px;
             margin-bottom: 20px;
             border-radius: 5px;
@@ -266,8 +266,9 @@ $recentActivity = getViewerRecentActivity($conn, 5);
             }
         }
     </style>
+    <link rel="stylesheet" href="../../assets/css/semantic-theme.css">
 </head>
-<body>
+<body class="viewer-shell">
     <div class="container">
         <!-- Header -->
         <div class="header">

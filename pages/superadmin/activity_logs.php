@@ -229,7 +229,7 @@ $activitySummary = getActivitySummary($conn);
                                                     elseif (strpos($action_lower, 'failed') !== false) $icon = 'fa-solid fa-circle-xmark text-red-500';
                                                     elseif (strpos($action_lower, 'create') !== false) $icon = 'fa-solid fa-user-plus text-blue-500';
                                                     elseif (strpos($action_lower, 'update') !== false) $icon = 'fa-regular fa-pen-to-square text-yellow-500';
-                                                    elseif (strpos($action_lower, 'reset') !== false) $icon = 'fa-solid fa-key text-purple-500';
+                                                    elseif (strpos($action_lower, 'reset') !== false) $icon = 'fa-solid fa-key text-sky-500';
                                                     elseif (strpos($action_lower, 'logout') !== false) $icon = 'fa-solid fa-right-from-bracket text-gray-400';
                                                     elseif (strpos($action_lower, 'backup') !== false) $icon = 'fa-solid fa-database text-yellow-500';
                                                     elseif (strpos($action_lower, 'unlock') !== false) $icon = 'fa-solid fa-lock-open text-green-500';
@@ -258,9 +258,9 @@ $activitySummary = getActivitySummary($conn);
                                             <td class="p-3">
                                                 <?php
                                                     $role_class = 'bg-gray-100 text-gray-600'; // Default
-                                                    if ($log['role'] === 'Super Admin') $role_class = 'bg-orange-100 text-orange-600';
-                                                    if ($log['role'] === 'Admin') $role_class = 'bg-blue-100 text-blue-600';
-                                                    if ($log['role'] === 'Viewer') $role_class = 'bg-purple-100 text-purple-600';
+                                                    if ($log['role'] === 'Super Admin') $role_class = 'bg-emerald-100 text-emerald-700';
+                                                    if ($log['role'] === 'Admin') $role_class = 'bg-blue-100 text-blue-700';
+                                                    if ($log['role'] === 'Viewer') $role_class = 'bg-sky-100 text-sky-700';
                                                     $status = getStatusFromAction($log['action']);
                                                 ?>
                                                 <span class="<?php echo $role_class; ?> px-2.5 py-1 rounded-full text-[10px] font-medium"><?php echo htmlspecialchars($log['role'] ?? 'N/A'); ?></span>

@@ -209,7 +209,7 @@ if ($result) {
                 <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Today's Sales</p>
                 <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?= number_format($todaySales); ?></h2>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-purple-500">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-l-4 border-l-emerald-500">
                 <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Total Items Sold</p>
                 <h2 class="text-3xl font-extrabold text-slate-800 mt-1"><?= number_format($totalItemsSold); ?></h2>
             </div>

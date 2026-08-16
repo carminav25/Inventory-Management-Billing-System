@@ -470,6 +470,21 @@ const returnsData = <?= json_encode($returnsData); ?>;
 
 const categoryLabels = <?= json_encode($categoryLabels); ?>;
 const categoryData = <?= json_encode($categoryTotals); ?>;
+const themeColors = getComputedStyle(document.documentElement);
+const colorPrimary = themeColors.getPropertyValue('--color-primary-700').trim();
+const colorSuccess = themeColors.getPropertyValue('--color-success-500').trim();
+const colorWarning = themeColors.getPropertyValue('--color-warning-500').trim();
+const colorDanger = themeColors.getPropertyValue('--color-danger-600').trim();
+const colorSecondary = themeColors.getPropertyValue('--color-secondary-600').trim();
+const colorSurface = themeColors.getPropertyValue('--color-surface').trim();
+const rgba = (hex, alpha) => {
+    const normalized = hex.replace('#', '');
+    if (normalized.length !== 6) return `rgba(0, 0, 0, ${alpha})`;
+    const r = parseInt(normalized.slice(0, 2), 16);
+    const g = parseInt(normalized.slice(2, 4), 16);
+    const b = parseInt(normalized.slice(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
 
 // 1. Inventory Movement Multi-Series Chart
 new Chart(document.getElementById('movementChart'), {
@@ -480,8 +495,8 @@ new Chart(document.getElementById('movementChart'), {
             {
                 label: 'Deliveries',
                 data: deliveriesData,
-                borderColor: '#10B981',
-                backgroundColor: 'rgba(16,185,129,0.08)',
+                borderColor: colorSuccess,
+                backgroundColor: rgba(colorSuccess, 0.08),
                 borderWidth: 2.5,
                 pointRadius: 3,
                 fill: true,
@@ -490,8 +505,8 @@ new Chart(document.getElementById('movementChart'), {
             {
                 label: 'Sales',
                 data: salesData,
-                borderColor: '#3B82F6',
-                backgroundColor: 'rgba(59,130,246,0.08)',
+                borderColor: colorPrimary,
+                backgroundColor: rgba(colorPrimary, 0.08),
                 borderWidth: 2.5,
                 pointRadius: 3,
                 fill: true,
@@ -500,8 +515,8 @@ new Chart(document.getElementById('movementChart'), {
             {
                 label: 'Returns',
                 data: returnsData,
-                borderColor: '#F59E0B',
-                backgroundColor: 'rgba(245,158,11,0.08)',
+                borderColor: colorWarning,
+                backgroundColor: rgba(colorWarning, 0.08),
                 borderWidth: 2.5,
                 pointRadius: 3,
                 fill: true,
@@ -543,11 +558,17 @@ new Chart(document.getElementById('categoryChart'), {
         datasets: [{
             data: categoryData,
             backgroundColor: [
-                '#10B981', '#3B82F6', '#F59E0B', '#EF4444', 
-                '#8B5CF6', '#06B6D4', '#14B8A6', '#F97316'
+                colorSuccess,
+                colorPrimary,
+                colorWarning,
+                colorSecondary,
+                'rgba(20, 184, 166, 0.9)',
+                'rgba(249, 115, 22, 0.9)',
+                'rgba(96, 165, 250, 0.9)',
+                'rgba(220, 38, 38, 0.9)'
             ],
             borderWidth: 2,
-            borderColor: '#ffffff'
+            borderColor: colorSurface
         }]
     },
     options: {

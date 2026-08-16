@@ -194,9 +194,9 @@ function getInitials($name) {
                                     <td class="p-4"><?php echo htmlspecialchars($user['email']); ?></td>
                                     <td class="p-4">
                                         <?php
-                                            $role_class = 'bg-purple-100 text-purple-600'; // Default for Viewer
-                                            if ($user['role'] === 'Super Admin') $role_class = 'bg-orange-100 text-orange-600';
-                                            if ($user['role'] === 'Admin') $role_class = 'bg-blue-100 text-blue-600';
+                                            $role_class = 'bg-sky-100 text-sky-700';
+                                            if ($user['role'] === 'Super Admin') $role_class = 'bg-emerald-100 text-emerald-700';
+                                            if ($user['role'] === 'Admin') $role_class = 'bg-blue-100 text-blue-700';
                                         ?>
                                         <span class="<?php echo $role_class; ?> px-3 py-1 rounded-full text-xs font-medium"><?php echo htmlspecialchars($user['role']); ?></span>
                                     </td>
