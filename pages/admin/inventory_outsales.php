@@ -195,7 +195,7 @@ if ($result) {
                 <p class="text-sm text-slate-500 mt-0.5">Track and process point-of-sale transactions and item outflows.</p>
             </div>
             <a href="sale_form.php" class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 shadow transition">
-                <i class="fa fa-plus"></i> New Sale Transaction
+                </i> New Sale Transaction
             </a>
         </div>
 
@@ -230,7 +230,7 @@ if ($result) {
                             <input type="text" name="search" value="<?= htmlspecialchars($search); ?>" placeholder="Search invoice no, customer..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition">
                              
                         </div>
-                        <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition shadow-sm"><i class="fa-solid fa-filter"></i></button>
+                        <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition shadow-sm">Filter</button>
                         <?php if(!empty($search)): ?><a href="inventory_outsales.php" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-medium transition" title="Reset Filters"><i class="fa-solid fa-arrows-rotate"></i></a><?php endif; ?>
                     </div>
                 </form>

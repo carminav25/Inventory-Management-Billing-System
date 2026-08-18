@@ -132,6 +132,7 @@ $backupStatus = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle ?? 'Backup & Restore'); ?></title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; }
         html, body { margin: 0; min-height: 100%; }
@@ -180,6 +181,53 @@ $backupStatus = [
         .download-btn:hover { background:#d1fae5; }
         .delete-btn { background:#fef2f2; color:#dc2626; }
         .delete-btn:hover { background:#fee2e2; }
+        /* Backup action buttons — match the Supplier Management icons */
+        .backup-actions {
+            display:flex;
+            align-items:center;
+            justify-content:flex-start;
+            gap:6px;
+        }
+
+        .backup-action-btn {
+            width:auto;
+            height:auto;
+            min-width:36px;
+            min-height:36px;
+            padding:6px;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            border:0;
+            border-radius:8px;
+            background:#f8fafc;
+            font-size:14px;
+            line-height:1;
+            text-decoration:none !important;
+            cursor:pointer;
+            transition:all .2s ease;
+        }
+
+        .backup-action-btn.download {
+            background:#eff6ff;
+            color:#2563eb;
+        }
+
+        .backup-action-btn.download:hover {
+            background:#dbeafe;
+            color:#1d4ed8;
+        }
+
+        .backup-action-btn.delete {
+            background:#fef2f2;
+            color:#dc2626;
+        }
+
+        .backup-action-btn.delete:hover {
+            background:#fee2e2;
+            color:#b91c1c;
+        }
+
         .warning { background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:10px; padding:16px; margin:20px 0; }
         .warning-title { margin:0; color:#b45309; font-size:14px; font-weight:700; }
         .warning-text { margin:5px 0 0; color:#92400e; font-size:13px; line-height:1.6; }
@@ -362,7 +410,9 @@ $backupStatus = [
             Manage inventory backups, restore saved records, and maintain database protection.
         </p>
     </div>
-
+<form action="../../process/admin/create_inventory_backup.php" method="POST" class="mt-5">
+            <button type="submit" class="primary-btn">Create Inventory Backup</button>
+        </form>
 </div>
 
     <?php if (isset($_SESSION['success_message'])): ?>
@@ -395,13 +445,6 @@ $backupStatus = [
         </div>
     </div>
 
-    <div class="panel section">
-        <h2 class="section-title">Create New Backup</h2>
-        <p class="section-subtitle">Create a complete SQL backup of the inventory database.</p>
-        <form action="../../process/admin/create_inventory_backup.php" method="POST" class="mt-5">
-            <button type="submit" class="primary-btn">Create Inventory Backup</button>
-        </form>
-    </div>
 
     <div class="panel section" style="padding:0; overflow:hidden;">
         <div style="padding:20px 24px; border-bottom:1px solid #f1f5f9;">
@@ -424,12 +467,25 @@ $backupStatus = [
                                 <td class="p-4 text-slate-600"><?= htmlspecialchars($size); ?></td>
                                 <td class="p-4 text-slate-600"><?= htmlspecialchars($date); ?></td>
                                 <td class="p-4">
-                                    <div class="flex items-center gap-3">
-                                        <a href="../../backups/inventory/<?= urlencode($file); ?>" class="text-blue-600 hover:text-blue-800" title="Download" download>
-                                            <i class="fa-solid fa-download"></i>
+                                    <div class="backup-actions">
+                                        <a
+                                            href="../../backups/inventory/<?= urlencode($file); ?>"
+                                            class="backup-action-btn download"
+                                            title="Download Backup"
+                                            aria-label="Download Backup"
+                                            download
+                                        >
+                                            <i class="fa-solid fa-download" aria-hidden="true"></i>
                                         </a>
-                                        <button type="button" onclick="confirmDeleteBackup('<?= htmlspecialchars($file, ENT_QUOTES); ?>')" class="text-red-600 hover:text-red-800" title="Delete">
-                                            <i class="fa-solid fa-trash"></i>
+
+                                        <button
+                                            type="button"
+                                            onclick="confirmDeleteBackup('<?= htmlspecialchars($file, ENT_QUOTES); ?>')"
+                                            class="backup-action-btn delete"
+                                            title="Delete Backup"
+                                            aria-label="Delete Backup"
+                                        >
+                                            <i class="fa-solid fa-trash" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 </td>

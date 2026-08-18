@@ -160,7 +160,7 @@ if ($result) {
             </div>
             <div class="flex items-center gap-3">
                 <a href="return_form.php" class="bg-amber-600 hover:bg-amber-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 shadow transition">
-                    <i class="fa fa-plus"></i> New Supplier Return
+                    </i> New Supplier Return
                 </a>
             </div>
         </div>
@@ -213,11 +213,10 @@ if ($result) {
                 <form method="GET" action="" class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <h2 class="text-base font-bold text-slate-800 whitespace-nowrap">Supplier Return History</h2>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <div class="relative flex-1 sm:w-72">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 text-sm"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
-                            <input type="text" name="search" value="<?= htmlspecialchars($search); ?>" placeholder="Search Return No, Supplier, Product..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition">
+                        <div class="flex-1 sm:w-72">
+                            <input type="text" name="search" value="<?= htmlspecialchars($search); ?>" placeholder="Search Return No, Supplier, Product..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition">
                         </div>
-                        <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition shadow-sm"><i class="fa-solid fa-filter"></i></button>
+                        <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition shadow-sm">Filter</button>
                         <?php if(!empty($search)): ?><a href="returns.php" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-medium transition" title="Reset Filters"><i class="fa-solid fa-arrows-rotate"></i></a><?php endif; ?>
                     </div>
                 </form>

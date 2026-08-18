@@ -313,6 +313,13 @@ if ($result) {
                 <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Supplier Management</h1>
                 <p class="text-sm text-slate-500 mt-0.5">Manage partner vendors, contact persons, and delivery sources.</p>
             </div> 
+              <button
+                    type="button"
+                    onclick="openAddSupplierModal()"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2.5 rounded-xl font-semibold transition">
+                    </i>
+                    Add Supplier
+                </button>
         </div>
 
         <!-- KPI CARDS -->
@@ -367,13 +374,7 @@ if ($result) {
                     </p>
                 </div>
 
-                <button
-                    type="button"
-                    onclick="openAddSupplierModal()"
-                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2.5 rounded-xl font-semibold transition">
-                    <i class="fa-solid fa-plus mr-2"></i>
-                    Add Supplier
-                </button>
+              
             </div>
 
             <!-- Filters -->
@@ -383,16 +384,13 @@ if ($result) {
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 flex-1">
 
                     <!-- Search -->
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
-                        </span>
+                    <div>
                         <input
                             type="text"
                             name="search"
                             value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
                             placeholder="Search supplier..."
-                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm
                             focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
 
@@ -440,14 +438,13 @@ if ($result) {
                         <button
                             type="submit"
                             class="flex-1 bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-xl
-                            text-sm font-medium transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-filter"></i>
+                            text-sm font-medium transition flex items-center justify-center">
                             Filter
                         </button>
                         
                         <?php if (!empty($_GET['search']) || !empty($_GET['contact']) || !empty($_GET['status'])): ?>
                             <a href="suppliers.php" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3.5 py-2.5 rounded-xl text-sm font-medium transition flex items-center justify-center" title="Reset Filters">
-                                <i class="fa-solid fa-arrows-rotate"></i>
+                                Reset
                             </a>
                         <?php endif; ?>
                     </div>

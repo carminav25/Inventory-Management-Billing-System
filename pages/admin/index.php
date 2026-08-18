@@ -222,6 +222,51 @@ if ($result) {
 
 /*
 |--------------------------------------------------------------------------
+| INVENTORY STATUS LOGIC
+|--------------------------------------------------------------------------
+| Available: current_stock > reorder_level
+| Low Stock: current_stock > 0 AND current_stock <= reorder_level
+| Out of Stock: current_stock <= 0
+*/
+
+$availableStockCount = 0;
+$lowStockCount = 0;
+$outOfStockCount = 0;
+$inventoryStatusProducts = [];
+
+$statusResult = mysqli_query(
+    $conn,
+    "SELECT id, product_name, current_stock, reorder_level, front_image
+     FROM products
+     ORDER BY product_name ASC"
+);
+
+if ($statusResult) {
+    while ($row = mysqli_fetch_assoc($statusResult)) {
+        $currentStock = (int)($row['current_stock'] ?? 0);
+        $reorderLevel = (int)($row['reorder_level'] ?? 0);
+
+        if ($currentStock <= 0) {
+            $status = 'Out of Stock';
+            $outOfStockCount++;
+        } elseif ($currentStock <= $reorderLevel) {
+            $status = 'Low Stock';
+            $lowStockCount++;
+        } else {
+            $status = 'Available';
+            $availableStockCount++;
+        }
+
+        $row['inventory_status'] = $status;
+        $inventoryStatusProducts[] = $row;
+    }
+}
+
+$totalInventoryStatusProducts = $availableStockCount + $lowStockCount + $outOfStockCount;
+
+
+/*
+|--------------------------------------------------------------------------
 | RECENT ACTIVITIES
 |--------------------------------------------------------------------------
 */
@@ -564,7 +609,7 @@ $totalTransactionsSum =
 <!-- =========================================================
      MAIN DASHBOARD
 ========================================================= -->
-<main class="min-h-screen bg-[#f5f7fb] px-4 py-2 md:px-5 md:py-3">
+<main class="min-h-screen bg-[#f5f7fb] px-4 py-2 md:px-5 md:py-2">
 
 
 
@@ -581,7 +626,7 @@ $totalTransactionsSum =
             xl:items-center
             xl:justify-between
             gap-3
-            mb-5
+            mb-3
             bg-white
             p-4
             md:p-5
@@ -614,20 +659,7 @@ $totalTransactionsSum =
             </div>
 
 
-            <p class="text-slate-500 mt-0.5">
-
-                Welcome back,
-
-                <span
-                    class="font-semibold text-emerald-700"
-                >
-                    <?= htmlspecialchars(
-                        $_SESSION['full_name'] ?? 'Administrator'
-                    ); ?>
-                </span>
-
-            </p>
-
+         
 
             <p class="text-xs text-slate-400 mt-0.5">
 
@@ -779,8 +811,8 @@ $totalTransactionsSum =
             sm:grid-cols-2
             lg:grid-cols-3
             xl:grid-cols-5
-            gap-5
-            mb-5
+            gap-4
+            mb-3
         "
     >
 
@@ -1046,6 +1078,100 @@ $totalTransactionsSum =
 
 
     <!-- =====================================================
+         INVENTORY STATUS LOGIC
+    ====================================================== -->
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 mb-3 overflow-hidden">
+
+        <div class="px-5 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+                <h2 class="text-base font-bold text-slate-800">Inventory Status</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Automatic product stock classification based on current stock and reorder level.</p>
+            </div>
+            <span class="text-xs font-semibold text-slate-500">
+                <?= number_format($totalInventoryStatusProducts); ?> Products Analyzed
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4">
+            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-bold uppercase tracking-wide text-emerald-700">Available Stock</p>
+                        <p class="text-2xl font-extrabold text-emerald-700 mt-1"><?= number_format($availableStockCount); ?></p>
+                    </div>
+                </div>
+                <p class="text-[11px] text-emerald-700/70 mt-1">Stock is above reorder level.</p>
+            </div>
+
+            <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-bold uppercase tracking-wide text-amber-700">Low Stock</p>
+                        <p class="text-2xl font-extrabold text-amber-700 mt-1"><?= number_format($lowStockCount); ?></p>
+                    </div>
+                </div>
+                <p class="text-[11px] text-amber-700/70 mt-1">Stock is at or below reorder level.</p>
+            </div>
+
+            <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-bold uppercase tracking-wide text-red-700">Out of Stock</p>
+                        <p class="text-2xl font-extrabold text-red-700 mt-1"><?= number_format($outOfStockCount); ?></p>
+                    </div>
+                </div>
+                <p class="text-[11px] text-red-700/70 mt-1">No available stock remaining.</p>
+            </div>
+        </div>
+
+        <?php if (!empty($inventoryStatusProducts)): ?>
+            <div class="border-t border-slate-100 px-5 py-3">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Product Status Logic</h3>
+                    <a href="products.php" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700">View Products</a>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-left">
+                        <thead class="text-[10px] uppercase tracking-wider text-slate-400">
+                            <tr>
+                                <th class="py-2 pr-4 font-semibold">Product</th>
+                                <th class="py-2 px-4 font-semibold text-center">Current Stock</th>
+                                <th class="py-2 px-4 font-semibold text-center">Reorder Level</th>
+                                <th class="py-2 pl-4 font-semibold text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <?php foreach (array_slice($inventoryStatusProducts, 0, 6) as $statusProduct): ?>
+                                <?php
+                                    $status = $statusProduct['inventory_status'];
+                                    $badgeClass = $status === 'Available'
+                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                        : ($status === 'Low Stock'
+                                            ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                            : 'bg-red-50 text-red-700 border-red-200');
+                                ?>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="py-2.5 pr-4 text-sm font-semibold text-slate-700"><?= htmlspecialchars($statusProduct['product_name']); ?></td>
+                                    <td class="py-2.5 px-4 text-center text-sm font-bold text-slate-700"><?= number_format((int)$statusProduct['current_stock']); ?></td>
+                                    <td class="py-2.5 px-4 text-center text-sm text-slate-500"><?= number_format((int)$statusProduct['reorder_level']); ?></td>
+                                    <td class="py-2.5 pl-4 text-right">
+                                        <span class="inline-flex px-2.5 py-1 rounded-full border text-[10px] font-bold <?= $badgeClass; ?>"><?= htmlspecialchars($status); ?></span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="border-t border-slate-100 px-5 py-5 text-center text-sm text-slate-400">No products are currently available for inventory status analysis.</div>
+        <?php endif; ?>
+    </div>
+
+
+    <!-- =====================================================
          ROW 3
          INVENTORY MOVEMENT + CATEGORIES
     ====================================================== -->
@@ -1055,8 +1181,8 @@ $totalTransactionsSum =
             grid
             grid-cols-1
             xl:grid-cols-10
-            gap-5
-            mb-5
+            gap-4
+            mb-3
         "
     >
 
@@ -1224,8 +1350,8 @@ $totalTransactionsSum =
             grid
             grid-cols-1
             xl:grid-cols-2
-            gap-5
-            mb-5
+            gap-4
+            mb-3
         "
     >
 

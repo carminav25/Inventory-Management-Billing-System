@@ -17,10 +17,135 @@ requireAdmin();
     rel="stylesheet"
     href="../../assets/css/sidebar.css?v=<?= filemtime(__DIR__ . '/../../assets/css/sidebar.css'); ?>"
 >
+
 <link
     rel="stylesheet"
     href="../../assets/css/admin-design.css?v=<?= filemtime(__DIR__ . '/../../assets/css/admin-design.css'); ?>"
 >
+
+<style>
+/* =========================================================
+   SIDEBAR BRAND SIZE FIX
+   ========================================================= */
+
+#sidebar .sidebar-brand {
+    min-height: 125px !important;
+    height: 125px !important;
+    padding: 18px 15px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+
+    box-sizing: border-box !important;
+}
+
+/* Logo container */
+#sidebar .sidebar-logo-wrap {
+    width: 54px !important;
+    height: 54px !important;
+
+    min-width: 54px !important;
+    min-height: 54px !important;
+
+    flex-shrink: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: #ffffff !important;
+    border-radius: 14px !important;
+    overflow: hidden !important;
+}
+
+/* Actual logo */
+#sidebar .sidebar-logo {
+    width: 44px !important;
+    height: 44px !important;
+
+    max-width: 44px !important;
+    max-height: 44px !important;
+
+    object-fit: contain !important;
+    display: block !important;
+}
+
+/* Brand text container */
+#sidebar .brand-text {
+    min-width: 0 !important;
+    flex: 1 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+/* Main title */
+#sidebar .brand-title {
+    font-size: 15px !important;
+    line-height: 1.2 !important;
+    font-weight: 800 !important;
+
+    color: #ffffff !important;
+
+    white-space: nowrap !important;
+}
+
+/* Subtitle */
+#sidebar .brand-subtitle {
+    margin-top: 5px !important;
+
+    font-size: 8.5px !important;
+    line-height: 1.25 !important;
+    font-weight: 500 !important;
+
+    color: rgba(255,255,255,0.95) !important;
+
+    white-space: nowrap !important;
+}
+
+/* Keep sidebar navigation below the larger brand */
+#sidebar .sidebar-nav {
+    padding-top: 8px !important;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    #sidebar .sidebar-brand {
+        min-height: 110px !important;
+        height: 110px !important;
+        padding: 15px !important;
+    }
+
+    #sidebar .sidebar-logo-wrap {
+        width: 50px !important;
+        height: 50px !important;
+        min-width: 50px !important;
+        min-height: 50px !important;
+    }
+
+    #sidebar .sidebar-logo {
+        width: 40px !important;
+        height: 40px !important;
+        max-width: 40px !important;
+        max-height: 40px !important;
+    }
+
+    #sidebar .brand-title {
+        font-size: 14px !important;
+    }
+
+    #sidebar .brand-subtitle {
+        font-size: 8px !important;
+    }
+}
+</style>
+
 
 <aside id="sidebar" aria-label="Admin navigation">
 

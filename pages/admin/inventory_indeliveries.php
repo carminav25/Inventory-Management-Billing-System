@@ -277,7 +277,7 @@ if ($result) {
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400 text-sm"></span>
                             <input type="text" name="search" value="<?= htmlspecialchars($search); ?>" placeholder="Search delivery no, supplier..." class="w-full pl-4 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
                         </div>
-                        <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition shadow-sm"><i class="fa-solid fa-filter"></i></button>
+                        <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition shadow-sm">Filter</button>
                         <?php if(!empty($search)): ?><a href="inventory_indeliveries.php" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-medium transition" title="Reset Filters"><i class="fa-solid fa-arrows-rotate"></i></a><?php endif; ?>
                     </div>
                 </form>
@@ -311,9 +311,16 @@ if ($result) {
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
                                             <?php if(!empty($del['product_image'])): ?>
-                                                <img src="../../<?= htmlspecialchars($del['product_image']); ?>" class="w-14 h-14 rounded-xl object-cover border">
+                                                <img
+                                                    src="../../<?= htmlspecialchars($del['product_image']); ?>"
+                                                    alt="<?= htmlspecialchars($del['product_name'] ?? 'Product'); ?>"
+                                                    class="w-14 h-14 rounded-xl object-contain border border-slate-200 bg-white p-1.5 shadow-sm flex-shrink-0"
+                                                    onerror="this.onerror=null; this.src='../../assets/images/default.png';"
+                                                >
                                             <?php else: ?>
-                                                <div class="w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400"></div>
+                                                <div class="w-14 h-14 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-300 flex-shrink-0">
+                                                    <i class="fa-solid fa-image text-sm"></i>
+                                                </div>
                                             <?php endif; ?>
                                             <div>
                                                 <div class="font-bold text-slate-800">

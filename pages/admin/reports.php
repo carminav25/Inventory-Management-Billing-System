@@ -407,37 +407,6 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
         .action-excel { background: #059669; }
         .action-excel:hover { background: #047857; }
 
-        .preset-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 8px;
-            padding-bottom: 18px;
-            margin-bottom: 18px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .preset-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 14px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 700;
-            color: #2563eb;
-            background: #f1f5f9;
-        }
-
-        .preset-btn:hover {
-            background: #e2e8f0;
-        }
-
-        .preset-btn.active {
-            color: #ffffff;
-            background: #065f46;
-        }
-
         .filter-grid {
             display: grid;
             grid-template-columns: minmax(180px, 1.25fr) repeat(5, minmax(130px, 1fr));
@@ -840,14 +809,31 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
 
 <main class="<?= $isPrintAll ? '' : 'report-main' ?>">
 
-    <div class="<?= $isPrintAll ? '' : 'report-container' ?>">
+    <div class="<?= $isPrintAll ? '' : 'report-container' ?> space-y-6 max-w-7xl mx-auto">
 
-        <!-- PAGE HEADER: SAME DESIGN AS PRODUCT MANAGEMENT -->
-        <div class="page-header <?= $isPrintAll ? 'no-print' : '' ?>">
+
+        <!-- HEADER & TOP ACTION BUTTONS -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
             <div>
-                <h1>Inventory Movement Reports</h1>
-                <p>View inventory movement, stock levels, sales, returns, and inventory values.</p>
+                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Inventory Movement Reports</h1>
+                <p class="text-sm text-slate-500 mt-0.5">View inventory movement, stock levels, sales, returns, and inventory values.</p>
             </div>
+                            <div class="action-group">
+                    <a
+                        href="report_print.php?<?= http_build_query($_GET) ?>"
+                        target="_blank"
+                        class="action-btn action-print"
+                    >
+                        Print
+                    </a>
+
+                    <a
+                        href="report_excel.php?<?= http_build_query($_GET) ?>"
+                        class="action-btn action-excel"
+                    >
+                        Excel
+                    </a>
+                </div>
         </div>
 
     <!-- REPORT STAT CARDS: SAME DESIGN LANGUAGE AS PRODUCTS -->
@@ -909,19 +895,7 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
         </div>
 
 
-        <!-- DATE RANGE -->
-        <div class="report-status-row">
-            <p class="date-range">
-                Showing records from
-                <strong><?= date("F d, Y", strtotime($fromDate)) ?></strong>
-                to
-                <strong><?= date("F d, Y", strtotime($toDate)) ?></strong>
-            </p>
-            <button type="button" class="refresh-report-btn" onclick="refreshReport()" title="Reload the latest database data">
-                ↻ Refresh Report
-            </button>
-        </div>
-
+        
         <!-- DATE RANGE -->
         <p class="date-range legacy-date-range">
             Showing records from
@@ -938,54 +912,11 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
                     <p>Search, filter, and manage inventory report records.</p>
                 </div>
 
-                <div class="action-group">
-                    <a
-                        href="report_print.php?<?= http_build_query($_GET) ?>"
-                        target="_blank"
-                        class="action-btn action-print"
-                    >
-                        Print
-                    </a>
 
-                    <a
-                        href="report_excel.php?<?= http_build_query($_GET) ?>"
-                        class="action-btn action-excel"
-                    >
-                        Excel
-                    </a>
-                </div>
             </div>
 
             <form method="GET">
-                <div class="preset-row">
-                    <a
-                        href="?type=today&from=<?= date('Y-m-d') ?>&to=<?= date('Y-m-d') ?>"
-                        class="preset-btn <?= $reportType == 'today' ? 'active' : '' ?>"
-                    >
-                        Today
-                    </a>
 
-                    <a
-                        href="?type=weekly"
-                        class="preset-btn <?= $reportType == 'weekly' ? 'active' : '' ?>"
-                    >
-                        Weekly
-                    </a>
-
-                    <a
-                        href="?type=monthly"
-                        class="preset-btn <?= $reportType == 'monthly' ? 'active' : '' ?>"
-                    >
-                        Monthly
-                    </a>
-
-                    <a
-                        href="?type=yearly"
-                        class="preset-btn <?= $reportType == 'yearly' ? 'active' : '' ?>"
-                    >
-                        Yearly
-                    </a>
-                </div>
 
                 <input
                     type="hidden"
@@ -1047,12 +978,16 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
                         ?>
                     </select>
 
+                    
+
                     <select name="status" class="filter-control">
                         <option value="">All Status</option>
                         <option value="Available" <?= $statusFilter == 'Available' ? 'selected' : '' ?>>Available</option>
                         <option value="Low Stock" <?= $statusFilter == 'Low Stock' ? 'selected' : '' ?>>Low Stock</option>
                         <option value="Out of Stock" <?= $statusFilter == 'Out of Stock' ? 'selected' : '' ?>>Out of Stock</option>
                     </select>
+
+
 
                     <select name="supplier" class="filter-control">
                         <option value="">All Suppliers</option>
@@ -1096,6 +1031,21 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
                 </div>
             </form>
         </div>
+
+
+        <!-- DATE RANGE -->
+        <div class="report-status-row">
+            <p class="date-range">
+                Showing records from
+                <strong><?= date("F d, Y", strtotime($fromDate)) ?></strong>
+                to
+                <strong><?= date("F d, Y", strtotime($toDate)) ?></strong>
+            </p>
+            <button type="button" class="refresh-report-btn" onclick="refreshReport()" title="Reload the latest database data">
+                Refresh Report
+            </button>
+        </div>
+
 
        
         <!-- REPORT TABLE: SAME CONTAINER/TABLE STYLE AS PRODUCT PAGE -->

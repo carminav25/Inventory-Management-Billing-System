@@ -159,6 +159,11 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
      <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Product Management</h1>
          <p class="text-sm text-slate-500 mt-0.5">Manage inventory products, categories, suppliers, stock levels, QR codes, and pricing.</p>
     </div>
+     <button onclick="openAddProductModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2.5 rounded-xl font-semibold">
+                Add Product
+
+            </button>
+
     </div>
 
     <!-- STAT CARDS -->
@@ -208,11 +213,7 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
 
             </div>
 
-            <button onclick="openAddProductModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2.5 rounded-xl font-semibold">
-                Add Product
-
-            </button>
-
+           
         </div>
 
         <form method="GET" action="" class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
