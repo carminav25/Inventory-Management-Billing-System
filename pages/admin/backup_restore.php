@@ -77,6 +77,31 @@ if ($totalBackups > 0) {
     }
 }
 
+/* =========================================================
+   BACKUP PAGINATION
+   Show 5 backup records per page
+========================================================= */
+
+$perPage = 5;
+
+$currentPage = isset($_GET['page'])
+    ? max(1, (int) $_GET['page'])
+    : 1;
+
+$totalPages = max(1, (int) ceil($totalBackups / $perPage));
+
+if ($currentPage > $totalPages) {
+    $currentPage = $totalPages;
+}
+
+$offset = ($currentPage - 1) * $perPage;
+
+/*
+ * Keep the complete $backups array for totals and latest-backup
+ * information, but only display 5 records on the current page.
+ */
+$paginatedBackups = array_slice($backups, $offset, $perPage);
+
 /* Database Size */
 $dbSize = "0 MB";
 
@@ -116,7 +141,7 @@ $backupStatus = [
             margin-left:270px;
             width:calc(100% - 270px);
             min-height:100vh;
-            padding:24px;
+            padding:12px 20px 32px;
             background:#f5f7fb;
         }
         .page-wrap { width:100%; max-width:1280px; margin:0 auto; }
@@ -165,6 +190,89 @@ $backupStatus = [
         .alert-success { background:#ecfdf5; border:1px solid #a7f3d0; color:#047857; }
         .alert-error { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; }
         .empty { padding:40px 20px; text-align:center; color:#94a3b8; }
+        /* =====================================================
+           BACKUP PAGINATION
+        ====================================================== */
+
+        .backup-pagination {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;
+            padding:16px 20px;
+            border-top:1px solid #f1f5f9;
+            background:#fff;
+        }
+
+        .pagination-info {
+            color:#64748b;
+            font-size:12px;
+        }
+
+        .pagination-info strong {
+            color:#334155;
+            font-weight:700;
+        }
+
+        .pagination-controls {
+            display:flex;
+            align-items:center;
+            gap:6px;
+        }
+
+        .pagination-btn {
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-width:36px;
+            height:36px;
+            padding:0 12px;
+            border:1px solid #e2e8f0;
+            border-radius:9px;
+            background:#fff;
+            color:#475569;
+            font-size:12px;
+            font-weight:700;
+            text-decoration:none;
+            transition:.2s;
+        }
+
+        .pagination-btn:hover {
+            background:#f0fdf4;
+            border-color:#a7f3d0;
+            color:#047857;
+        }
+
+        .pagination-btn.active {
+            background:#059669;
+            border-color:#059669;
+            color:#fff;
+        }
+
+        .pagination-btn.active:hover {
+            background:#047857;
+            border-color:#047857;
+            color:#fff;
+        }
+
+        .pagination-btn.disabled {
+            opacity:.45;
+            cursor:not-allowed;
+            pointer-events:none;
+            background:#f8fafc;
+        }
+
+        .pagination-dots {
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            width:24px;
+            height:36px;
+            color:#94a3b8;
+            font-size:12px;
+            font-weight:700;
+        }
+
         #deleteBackupAuthModal { display:none; position:fixed; inset:0; z-index:9999; padding:20px; background:rgba(15,23,42,.48); align-items:center; justify-content:center; }
         #deleteBackupAuthModal.show { display:flex; }
         .modal-dialog { width:100%; max-width:500px; }
@@ -183,8 +291,60 @@ $backupStatus = [
         .cancel-btn { border:1px solid #e2e8f0; background:#fff; color:#475569; }
         .verify-btn { border:1px solid #dc2626; background:#dc2626; color:#fff; }
         @media(max-width:1100px) { .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-        @media(max-width:767px) { main { margin-left:0; width:100%; padding:16px; } .page-header { padding:20px; } }
-        @media(max-width:600px) { .stats-grid { grid-template-columns:1fr; gap:14px; } .section { padding:18px; } .page-header h1 { font-size:23px; } .modal-footer { flex-direction:column-reverse; } .cancel-btn,.verify-btn { width:100%; } }
+        @media(max-width:767px) {
+            main {
+                margin-left:0;
+                width:100%;
+                padding:12px 16px 24px;
+            }
+
+            .page-header {
+                padding:20px;
+            }
+        }
+        @media(max-width:600px) {
+            .stats-grid {
+                grid-template-columns:1fr;
+                gap:14px;
+            }
+
+            .section {
+                padding:18px;
+            }
+
+            .page-header h1 {
+                font-size:23px;
+            }
+
+            .modal-footer {
+                flex-direction:column-reverse;
+            }
+
+            .cancel-btn,
+            .verify-btn {
+                width:100%;
+            }
+
+            .backup-pagination {
+                flex-direction:column;
+                align-items:stretch;
+            }
+
+            .pagination-info {
+                text-align:center;
+            }
+
+            .pagination-controls {
+                justify-content:center;
+                flex-wrap:wrap;
+            }
+
+            .pagination-btn {
+                min-width:34px;
+                height:34px;
+                padding:0 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -193,10 +353,17 @@ $backupStatus = [
 <div class="page-wrap">
 
     <!-- SAME HEADER STYLE AS PRODUCT MANAGEMENT -->
-    <div class="page-header">
+   <div class="page-header">
+
+    <div>
         <h1>Backup &amp; Restore</h1>
-        <p>Manage inventory backups, restore saved records, and maintain database protection.</p>
+
+        <p>
+            Manage inventory backups, restore saved records, and maintain database protection.
+        </p>
     </div>
+
+</div>
 
     <?php if (isset($_SESSION['success_message'])): ?>
         <div class="alert alert-success"><?= htmlspecialchars($_SESSION['success_message']); unset($_SESSION['success_message']); ?></div>
@@ -244,20 +411,9 @@ $backupStatus = [
         <div class="table-wrap">
             <table>
                 <thead><tr><th>Backup Name</th><th>Type</th><th>Size</th><th>Date</th><th>Action</th></tr></thead>
-                <tbody>
-                <?php if (!empty($backups)): ?>
-                    <?php foreach ($backups as $backup): $file=basename($backup); $size=round(filesize($backup)/1024,2).' KB'; $date=date('M d, Y',filemtime($backup)); ?>
-                    <tr>
-                        <td class="file-name"><?= htmlspecialchars($file) ?></td>
-                        <td>Full</td>
-                        <td><?= htmlspecialchars($size) ?></td>
-                        <td><?= htmlspecialchars($date) ?></td>
-                        <td><div class="action-row"><a class="table-btn download-btn" href="../../backups/inventory/<?= urlencode($file) ?>" download>Download</a><button type="button" class="table-btn delete-btn" onclick="confirmDeleteBackup('<?= htmlspecialchars($file, ENT_QUOTES) ?>')">Delete</button></div></td>
-                    </tr>
-                </thead>
                 <tbody class="text-sm divide-y divide-slate-100">
-                    <?php if (!empty($backups)): ?>
-                        <?php foreach ($backups as $backup):
+                    <?php if (!empty($paginatedBackups)): ?>
+                        <?php foreach ($paginatedBackups as $backup):
                             $file = basename($backup);
                             $size = is_file($backup) ? round(filesize($backup) / 1024, 2) . " KB" : "N/A";
                             $date = is_file($backup) ? date("M d, Y", filemtime($backup)) : "Unknown";
@@ -287,6 +443,84 @@ $backupStatus = [
                 </tbody>
             </table>
         </div>
+
+        <?php if ($totalPages > 1): ?>
+            <div class="backup-pagination">
+                <div class="pagination-info">
+                    Showing
+                    <strong><?= $offset + 1; ?></strong>
+                    to
+                    <strong><?= min($offset + $perPage, $totalBackups); ?></strong>
+                    of
+                    <strong><?= $totalBackups; ?></strong>
+                    backups
+                </div>
+
+                <div class="pagination-controls">
+
+                    <?php if ($currentPage > 1): ?>
+                        <a
+                            href="?page=<?= $currentPage - 1; ?>"
+                            class="pagination-btn"
+                        >
+                            Previous
+                        </a>
+                    <?php else: ?>
+                        <span class="pagination-btn disabled">
+                            Previous
+                        </span>
+                    <?php endif; ?>
+
+
+                    <?php for ($page = 1; $page <= $totalPages; $page++): ?>
+
+                        <?php if (
+                            $page === 1 ||
+                            $page === $totalPages ||
+                            abs($page - $currentPage) <= 1
+                        ): ?>
+
+                            <a
+                                href="?page=<?= $page; ?>"
+                                class="pagination-btn <?= ($page === $currentPage) ? 'active' : ''; ?>"
+                            >
+                                <?= $page; ?>
+                            </a>
+
+                        <?php elseif (
+                            $page === 2 && $currentPage > 3
+                        ): ?>
+
+                            <span class="pagination-dots">...</span>
+
+                        <?php elseif (
+                            $page === $totalPages - 1 && $currentPage < $totalPages - 2
+                        ): ?>
+
+                            <span class="pagination-dots">...</span>
+
+                        <?php endif; ?>
+
+                    <?php endfor; ?>
+
+
+                    <?php if ($currentPage < $totalPages): ?>
+                        <a
+                            href="?page=<?= $currentPage + 1; ?>"
+                            class="pagination-btn"
+                        >
+                            Next
+                        </a>
+                    <?php else: ?>
+                        <span class="pagination-btn disabled">
+                            Next
+                        </span>
+                    <?php endif; ?>
+
+                </div>
+            </div>
+        <?php endif; ?>
+
     </div>
 
     <div class="panel section">

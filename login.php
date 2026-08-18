@@ -233,8 +233,7 @@ unset($_SESSION['login_error'], $_SESSION['old_input'], $_SESSION['login_locked'
                         <!-- Create Account Link -->
                         <div class="text-center mt-4 form-footer border-top pt-4">
                             <span class="text-muted">Don't have an account?</span>
-                            <a href="/InventoryManagementSystem/signup.php" class="ms-1 fw-bold">Create Account</a>
-                        </div>
+                            <a href="signup.php" class="ms-1 fw-bold">Create Account</a>                        </div>
                     </form>
                 </div>
             </div>

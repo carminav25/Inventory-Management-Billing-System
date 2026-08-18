@@ -97,9 +97,9 @@
     --warning: var(--color-warning-600);
     --input-border: var(--color-border-strong);
 
-    --sidebar-bg: var(--color-primary-900);
-    --sidebar-hover: var(--color-primary-800);
-    --sidebar-active: var(--color-primary-700);
+    --sidebar-bg: #ffffff;
+    --sidebar-hover: #f0f7f3;
+    --sidebar-active: #e8f4ed;
     --button-primary-bg: var(--color-primary-700);
 
     --app-bg: var(--color-page-bg);
@@ -407,66 +407,64 @@ body.dark-mode {
     color: var(--color-danger-700) !important;
 }
 
-/* Shared admin/superadmin shells */
+/* Shared admin/superadmin shells
+   Sidebar body is WHITE.
+   The green brand/header area is handled by .sidebar-brand
+   in admin-ui.css.
+*/
 #sidebar,
 .sidebar {
-    background-color: var(--sidebar-bg) !important;
-    color: #fff;
+    background-color: #ffffff !important;
+    color: var(--color-text) !important;
+    border-right: 1px solid var(--color-border);
+    overflow: hidden;
+}
+
+#sidebar .sidebar-nav,
+.sidebar .sidebar-nav {
+    background-color: #ffffff !important;
+    color: var(--color-text) !important;
+    overflow: hidden;
 }
 
 #sidebar nav a,
-.sidebar-nav li a {
-    color: rgba(255, 255, 255, 0.82);
+.sidebar-nav li a,
+#sidebar .sidebar-link {
+    color: #173b2a !important;
+    background-color: transparent;
 }
 
 #sidebar nav a:hover,
 #sidebar nav a.bg-\[\#10b981\],
 .sidebar-nav li a:hover,
-.sidebar-nav li a.active {
-    background-color: var(--sidebar-active) !important;
-    color: #fff !important;
+.sidebar-nav li a.active,
+#sidebar .sidebar-link.active {
+    background-color: #e8f4ed !important;
+    color: #056b35 !important;
 }
 
-#page-header {
-    border-color: var(--color-border) !important;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05) !important;
+#sidebar .sidebar-link:hover {
+    background-color: #f0f7f3 !important;
+    color: #056b35 !important;
 }
 
-.app-btn-primary { background: var(--color-primary-700) !important; color: #fff !important; }
-.app-btn-primary:hover { background: var(--color-primary-800) !important; color: #fff !important; }
-.app-btn-secondary { background: var(--color-info-600) !important; color: #fff !important; }
-.app-btn-secondary:hover { background: var(--color-info-700) !important; color: #fff !important; }
-.app-btn-warning { background: var(--color-warning-500) !important; color: #fff !important; }
-.app-btn-warning:hover { background: var(--color-warning-600) !important; color: #fff !important; }
-.app-btn-danger { background: var(--color-danger-600) !important; color: #fff !important; }
-.app-btn-danger:hover { background: var(--color-danger-700) !important; color: #fff !important; }
-.app-btn-light { background: var(--color-surface) !important; color: var(--color-neutral-700) !important; border-color: var(--color-border) !important; }
-.app-btn-light:hover { background: var(--color-neutral-50) !important; color: var(--color-neutral-900) !important; }
+#sidebar .section-title {
+    color: #64748b !important;
+}
 
-.app-badge-success {
-    color: var(--color-success-800) !important;
-    background: var(--color-success-100) !important;
-    border-color: var(--color-success-200) !important;
+#sidebar .sidebar-footer {
+    background-color: #ffffff !important;
+    border-top: 1px solid var(--color-border);
 }
-.app-badge-warning {
-    color: var(--color-warning-800) !important;
-    background: var(--color-warning-100) !important;
-    border-color: var(--color-warning-200) !important;
+
+#sidebar .logout-link {
+    color: var(--color-danger-600) !important;
+    background-color: transparent;
 }
-.app-badge-danger {
-    color: var(--color-danger-800) !important;
-    background: var(--color-danger-100) !important;
-    border-color: var(--color-danger-200) !important;
-}
-.app-badge-info {
-    color: var(--color-info-800) !important;
-    background: var(--color-info-100) !important;
-    border-color: var(--color-info-200) !important;
-}
-.app-badge-muted {
-    color: var(--color-neutral-700) !important;
-    background: var(--color-neutral-100) !important;
-    border-color: var(--color-neutral-200) !important;
+
+#sidebar .logout-link:hover {
+    background-color: var(--color-danger-50) !important;
+    color: var(--color-danger-700) !important;
 }
 
 /* Auth shell */

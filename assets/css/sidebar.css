@@ -1,0 +1,578 @@
+#sidebar {
+    --sidebar-width: 270px;
+    --sidebar-green: #056b35;
+    --sidebar-green-dark: #04582c;
+    --sidebar-green-accent: #0b9b58;
+    --sidebar-border: #e2e8f0;
+
+    --sidebar-menu-text: #173b2a;
+    --sidebar-menu-muted: #64748b;
+    --sidebar-menu-hover-bg: #f0f7f3;
+    --sidebar-menu-active-bg: #e8f4ed;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: var(--sidebar-width);
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    background: #ffffff;
+    border-right: 1px solid var(--sidebar-border);
+
+    z-index: 1000;
+
+    overflow: hidden !important;
+}
+
+
+/* =========================================================
+   GLOBAL SIDEBAR BOX SIZING
+========================================================= */
+
+#sidebar,
+#sidebar * {
+    box-sizing: border-box;
+}
+
+
+#sidebar a {
+    text-decoration: none !important;
+}
+
+
+/* =========================================================
+   BRAND HEADER
+========================================================= */
+
+#sidebar .sidebar-brand {
+    width: 100%;
+
+    height: 128px;
+    min-height: 128px;
+
+    padding: 18px 16px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    background: var(--sidebar-green);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+#sidebar .sidebar-logo-wrap {
+    width: 60px;
+    height: 60px;
+
+    min-width: 60px;
+    min-height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ffffff;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+}
+
+
+#sidebar .sidebar-logo {
+    width: 52px;
+    height: 52px;
+
+    max-width: 52px;
+    max-height: 52px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* =========================================================
+   BRAND TEXT
+========================================================= */
+
+#sidebar .brand-text {
+    min-width: 0;
+
+    flex: 1;
+
+    overflow: hidden;
+}
+
+
+#sidebar .brand-title {
+    margin: 0 0 5px;
+
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+}
+
+
+#sidebar .brand-subtitle {
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.9);
+
+    font-size: 9px;
+    font-weight: 500;
+
+    line-height: 1.3;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SIDEBAR NAVIGATION
+========================================================= */
+
+#sidebar .sidebar-nav {
+    flex: 1;
+
+    min-height: 0;
+
+    width: 100%;
+
+    padding: 14px 10px 10px;
+
+    background: #ffffff;
+
+    overflow: hidden !important;
+}
+
+
+/* =========================================================
+   SECTION LABELS
+   MAIN
+   INVENTORY
+   REPORTS
+   SYSTEM
+
+   These are labels only.
+   They are NOT clickable.
+========================================================= */
+
+#sidebar .section-title {
+    width: 100%;
+
+    margin: 0 0 4px;
+
+    padding: 0 12px;
+
+    color: var(--sidebar-menu-muted);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+
+    line-height: 14px;
+
+    text-transform: uppercase;
+
+    cursor: default;
+
+    pointer-events: none;
+
+    user-select: none;
+
+    background: transparent;
+
+    border: 0;
+}
+
+
+/* Space before the next section */
+
+#sidebar .section-title:not(:first-child) {
+    margin-top: 9px;
+}
+
+
+/* Section labels should never get hover styling */
+
+#sidebar .section-title:hover,
+#sidebar .section-title:focus,
+#sidebar .section-title:active {
+    color: var(--sidebar-menu-muted);
+
+    background: transparent;
+
+    cursor: default;
+}
+
+
+/* =========================================================
+   SIDEBAR MENU LINKS
+========================================================= */
+
+#sidebar .sidebar-link {
+    position: relative;
+
+    width: 100%;
+
+    height: 40px;
+    min-height: 40px;
+
+    margin: 2px 0;
+
+    padding: 0 16px;
+
+    display: flex;
+    align-items: center;
+
+    background: transparent;
+
+    color: var(--sidebar-menu-text) !important;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+/* =========================================================
+   MENU HOVER
+========================================================= */
+
+#sidebar .sidebar-link:hover {
+    background: var(--sidebar-menu-hover-bg);
+
+    color: var(--sidebar-green-dark) !important;
+}
+
+
+/* =========================================================
+   ACTIVE MENU
+========================================================= */
+
+#sidebar .sidebar-link.active {
+    background: var(--sidebar-menu-active-bg);
+
+    color: var(--sidebar-green-dark) !important;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   ACTIVE INDICATOR
+========================================================= */
+
+#sidebar .sidebar-link.active::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    top: 6px;
+    bottom: 6px;
+
+    width: 3px;
+
+    background: var(--sidebar-green-accent);
+
+    border-radius: 0 4px 4px 0;
+}
+
+
+/* =========================================================
+   MENU TEXT
+========================================================= */
+
+#sidebar .sidebar-label {
+    display: block;
+
+    color: inherit;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+========================================================= */
+
+#sidebar .sidebar-footer {
+    width: 100%;
+
+    height: 58px;
+    min-height: 58px;
+
+    padding: 8px 10px;
+
+    background: #ffffff;
+
+    border-top: 1px solid var(--sidebar-border);
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+#sidebar .logout-link {
+    width: 100%;
+
+    height: 42px;
+
+    padding: 0 16px;
+
+    display: flex;
+    align-items: center;
+
+    color: #b91c1c !important;
+
+    background: transparent;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+#sidebar .logout-link:hover,
+#sidebar .logout-link:focus-visible {
+    background: #fef2f2;
+
+    color: #991b1b !important;
+}
+
+
+#sidebar .logout-label {
+    color: inherit;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SHORT SCREEN
+========================================================= */
+
+@media (max-height: 700px) {
+
+    #sidebar .sidebar-brand {
+        height: 120px;
+        min-height: 120px;
+
+        padding: 14px 15px;
+    }
+
+
+    #sidebar .sidebar-logo-wrap {
+        width: 52px;
+        height: 52px;
+
+        min-width: 52px;
+        min-height: 52px;
+    }
+
+
+    #sidebar .sidebar-logo {
+        width: 52px;
+        height: 52px;
+
+        max-width: 52px;
+        max-height: 52px;
+    }
+
+
+    #sidebar .brand-title {
+        font-size: 14px;
+    }
+
+
+    #sidebar .brand-subtitle {
+        font-size: 8px;
+    }
+
+
+    #sidebar .sidebar-nav {
+        padding: 9px 9px 8px;
+
+        overflow: hidden !important;
+    }
+
+
+    /* Smaller section labels on short screens */
+
+    #sidebar .section-title {
+        margin-bottom: 2px;
+
+        font-size: 8.5px;
+
+        line-height: 12px;
+    }
+
+
+    #sidebar .section-title:not(:first-child) {
+        margin-top: 6px;
+    }
+
+
+    #sidebar .sidebar-link {
+        height: 34px;
+        min-height: 34px;
+
+        margin: 1px 0;
+
+        font-size: 13px;
+    }
+
+
+    #sidebar .sidebar-link.active::before {
+        top: 5px;
+        bottom: 5px;
+    }
+
+
+    #sidebar .sidebar-footer {
+        height: 52px;
+        min-height: 52px;
+
+        padding: 6px 10px;
+    }
+
+
+    #sidebar .logout-link {
+        height: 38px;
+
+        font-size: 13px;
+    }
+}
+
+
+/* =========================================================
+   VERY SHORT SCREEN
+========================================================= */
+
+@media (max-height: 600px) {
+
+    #sidebar .sidebar-brand {
+        height: 104px;
+        min-height: 104px;
+
+        padding: 10px 14px;
+    }
+
+
+    #sidebar .sidebar-logo-wrap {
+        width: 46px;
+        height: 46px;
+
+        min-width: 46px;
+        min-height: 46px;
+    }
+
+
+    #sidebar .sidebar-logo {
+        width: 46px;
+        height: 46px;
+
+        max-width: 46px;
+        max-height: 46px;
+    }
+
+
+    #sidebar .brand-title {
+        font-size: 12px;
+    }
+
+
+    #sidebar .brand-subtitle {
+        font-size: 7px;
+    }
+
+
+    #sidebar .sidebar-nav {
+        padding: 6px 8px;
+
+        overflow: hidden !important;
+    }
+
+
+    /* Very small section labels */
+
+    #sidebar .section-title {
+        margin-bottom: 1px;
+
+        font-size: 8px;
+
+        line-height: 11px;
+    }
+
+
+    #sidebar .section-title:not(:first-child) {
+        margin-top: 4px;
+    }
+
+
+    #sidebar .sidebar-link {
+        height: 28px;
+        min-height: 28px;
+
+        margin: 0;
+
+        border-radius: 7px;
+
+        font-size: 12px;
+    }
+
+
+    #sidebar .sidebar-link.active::before {
+        top: 4px;
+        bottom: 4px;
+    }
+
+
+    #sidebar .sidebar-footer {
+        height: 46px;
+        min-height: 46px;
+
+        padding: 4px 8px;
+    }
+
+
+    #sidebar .logout-link {
+        height: 34px;
+
+        font-size: 12px;
+    }
+}

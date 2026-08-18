@@ -254,27 +254,34 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
             margin-left: 270px;
             width: calc(100% - 270px);
             min-height: 100vh;
-            padding: 24px;
+
+            /* Match the spacing used by Supplier Management */
+            padding: 12px 20px 32px;
         }
 
         .report-container {
             width: 100%;
-            max-width: 1400px;
+            max-width: 1280px;
             margin: 0 auto;
         }
 
-        /* Same header design as Product Management */
+        /* Same header spacing and alignment as Supplier Management */
         .page-header {
+            width: 100%;
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
             gap: 16px;
+
             background: #ffffff;
             padding: 24px;
             border-radius: 16px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 1px 2px rgba(15,23,42,.04);
             margin-bottom: 24px;
+
+            text-align: left;
         }
 
         .page-header h1 {
@@ -284,6 +291,7 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
             line-height: 1.25;
             font-weight: 700;
             letter-spacing: -.02em;
+            text-align: left;
         }
 
         .page-header p {
@@ -291,6 +299,7 @@ $logoSrc = file_exists($logoPath) ? $logoPath : '../../assets/images/default-log
             color: #64748b;
             font-size: 14px;
             line-height: 1.5;
+            text-align: left;
         }
 
         /* Same four-card visual language as Product Management */
@@ -1409,6 +1418,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script>
         // Sync table-calculated totals directly into Dashboard Metric Cards
         document.getElementById("cardBeg").innerText = "<?= number_format($totalBeg) ?>";
         document.getElementById("cardRec").innerText = "<?= number_format($totalReceived) ?>";
@@ -1499,7 +1509,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         }
-    });
+
     </script>
 </body>
 </html>

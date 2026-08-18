@@ -1,0 +1,419 @@
+:root {
+    --admin-sidebar-width: 270px;
+    --admin-green: #056b35;
+    --admin-green-dark: #04582c;
+    --admin-green-soft: #e8f4ed;
+    --admin-bg: #f5f7fa;
+    --admin-surface: #ffffff;
+    --admin-text: #14213d;
+    --admin-muted: #58708f;
+    --admin-border: #dfe5eb;
+    --admin-border-soft: #edf1f5;
+    --admin-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+    --admin-radius-lg: 18px;
+    --admin-radius-md: 16px;
+    --admin-control-border: #d8e0e8;
+}
+
+html,
+body {
+    background: var(--admin-bg);
+    color: var(--admin-text);
+}
+
+body > main,
+main.report-main {
+    margin-left: var(--admin-sidebar-width) !important;
+    width: calc(100% - var(--admin-sidebar-width)) !important;
+    min-height: 100vh;
+    padding: 24px 28px 40px !important;
+    background: var(--admin-bg) !important;
+}
+
+main > .max-w-7xl,
+main > .max-w-6xl,
+main > .max-w-5xl,
+main > .page-wrap,
+main > .space-y-6,
+.report-main > .report-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+}
+
+.page-section,
+main > .max-w-7xl > * + *,
+main > .max-w-6xl > * + *,
+main > .max-w-5xl > * + *,
+main > .page-wrap > * + *,
+main > .space-y-6 > * + *,
+.report-container > * + * {
+    margin-top: 22px;
+}
+
+.page-header {
+    width: 100% !important;
+    min-height: 110px;
+    padding: 24px 28px !important;
+    background: var(--admin-surface) !important;
+    border: 1px solid var(--admin-border) !important;
+    border-radius: var(--admin-radius-lg) !important;
+    box-shadow: var(--admin-shadow) !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 0 !important;
+}
+
+.space-y-6 > .flex:has(h1),
+.max-w-7xl > .flex:has(h1),
+.max-w-6xl > .flex:has(h1),
+.max-w-5xl > .flex:has(h1) {
+    width: 100% !important;
+    min-height: 110px;
+    padding: 24px 28px !important;
+    background: var(--admin-surface) !important;
+    border: 1px solid var(--admin-border) !important;
+    border-radius: var(--admin-radius-lg) !important;
+    box-shadow: var(--admin-shadow) !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 18px !important;
+}
+
+.page-header h1,
+.page-title,
+main h1.text-2xl,
+main h1.text-3xl {
+    margin: 0;
+    color: var(--admin-text) !important;
+    font-size: 25px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+}
+
+.page-header p,
+.page-subtitle,
+main h1 + p {
+    margin-top: 4px;
+    color: var(--admin-muted) !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+}
+
+.stats-grid,
+.stat-grid,
+#dashboardMetrics,
+.grid:has(.stat-card),
+.grid:has(.delivery-stat-card) {
+    display: grid;
+    gap: 20px !important;
+}
+
+.stat-card,
+.delivery-stat-card,
+.panel.stat-card,
+.grid > .bg-white:has(.text-3xl),
+.grid > .bg-white:has(.text-2xl.font-bold),
+.grid > .bg-white:has(.font-extrabold) {
+    min-height: 108px;
+    padding: 22px 24px !important;
+    background: var(--admin-surface) !important;
+    border: 1px solid var(--admin-border) !important;
+    border-radius: var(--admin-radius-md) !important;
+    box-shadow: 0 2px 5px rgba(15, 23, 42, 0.05) !important;
+}
+
+.stat-card p,
+.delivery-stat-card p,
+.stat-label {
+    color: var(--admin-muted) !important;
+}
+
+.stat-card h2,
+.delivery-stat-card h2,
+.stat-value {
+    color: var(--admin-text) !important;
+}
+
+.content-card,
+.table-panel,
+.panel,
+main .bg-white.rounded-2xl,
+main .bg-white.rounded-xl,
+main .bg-white.border,
+main .bg-white.shadow-sm {
+    background: var(--admin-surface) !important;
+    border: 1px solid var(--admin-border) !important;
+    border-radius: var(--admin-radius-lg) !important;
+    box-shadow: var(--admin-shadow) !important;
+}
+
+.card-header,
+.content-card > .card-header,
+.table-panel > .card-header,
+main .border-b {
+    border-color: var(--admin-border-soft) !important;
+}
+
+.filter-row,
+.filter-grid,
+form:has(input[name="search"]),
+form:has(select[name="status"]),
+form:has(select[name="category"]) {
+    gap: 12px !important;
+    align-items: center;
+}
+
+main input[type="text"],
+main input[type="search"],
+main input[type="date"],
+main input[type="number"],
+main input[type="password"],
+main input[type="file"],
+main select,
+main textarea,
+.filter-control,
+.file-input,
+.auth-input,
+.form-control,
+.form-select {
+    min-height: 42px;
+    border-radius: 11px !important;
+    border: 1px solid var(--admin-control-border) !important;
+    background: #f8fafc !important;
+    color: #334155 !important;
+    font-size: 13px !important;
+    padding: 0 14px !important;
+    box-shadow: none !important;
+}
+
+main textarea {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+main input:focus,
+main select:focus,
+main textarea:focus,
+.filter-control:focus {
+    outline: none !important;
+    border-color: var(--admin-green) !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(5, 107, 53, 0.12) !important;
+}
+
+.btn-primary,
+.primary-btn,
+.page-header-action,
+main a[href*="add_"],
+main a[href*="delivery_form.php"],
+main a[href*="backup_restore.php"],
+main button[type="submit"].primary-btn,
+main button[data-bs-target="#addProductModal"],
+main button[data-bs-target="#addSupplierModal"] {
+    min-height: 42px;
+    padding: 0 18px !important;
+    border: 0 !important;
+    border-radius: 11px !important;
+    background: var(--admin-green) !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: none !important;
+    transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.page-header-action {
+    min-width: 160px;
+}
+
+.btn-primary:hover,
+.primary-btn:hover,
+.page-header-action:hover,
+main a[href*="add_"]:hover,
+main a[href*="delivery_form.php"]:hover,
+main button[type="submit"].primary-btn:hover,
+main button[data-bs-target="#addProductModal"]:hover,
+main button[data-bs-target="#addSupplierModal"]:hover {
+    background: var(--admin-green-dark) !important;
+    color: #ffffff !important;
+}
+
+.btn-warning,
+main a[href*="sale_form.php"],
+main a[href*="return_form.php"] {
+    min-height: 42px;
+    padding: 0 18px !important;
+    border: 0 !important;
+    border-radius: 11px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.filter-btn,
+.btn-filter,
+main button[type="submit"].bg-slate-800,
+main button[type="submit"][class*="bg-slate-800"] {
+    min-width: 120px;
+    min-height: 42px;
+    padding: 0 18px !important;
+    border: 0 !important;
+    border-radius: 11px !important;
+    background: #1e293b !important;
+    color: #ffffff !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table-wrap,
+.table-scroll,
+main .overflow-x-auto {
+    overflow-x: auto;
+}
+
+main table,
+.table,
+.report-table {
+    width: 100%;
+    border-collapse: collapse !important;
+}
+
+main table thead th,
+.table thead th,
+.report-table th {
+    height: 48px;
+    padding: 14px !important;
+    background: #f8fafc !important;
+    color: #6b7f99 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 1px solid var(--admin-border-soft) !important;
+    white-space: nowrap;
+}
+
+main table tbody td,
+.table tbody td,
+.report-table td {
+    min-height: 68px;
+    padding: 16px 14px !important;
+    color: #334155 !important;
+    font-size: 13px !important;
+    border-top: 1px solid var(--admin-border-soft) !important;
+    vertical-align: middle;
+}
+
+main table tbody tr:hover,
+.report-table tbody tr:hover {
+    background: #f8fafc !important;
+}
+
+.table-action,
+main table a[title],
+main table button[title] {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    padding: 0 !important;
+    border-radius: 9px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0 !important;
+    background: #f8fafc !important;
+    gap: 0;
+    transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.table-action:hover,
+main table a[title]:hover,
+main table button[title]:hover {
+    background: #eef2f7 !important;
+    border-color: #cbd5e1 !important;
+}
+
+.table-btn {
+    min-height: 34px;
+    padding: 0 12px !important;
+    border-radius: 9px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.status-badge,
+.badge {
+    min-height: 26px;
+    padding: 5px 10px !important;
+    border-radius: 999px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
+@media (max-width: 1100px) {
+    body > main,
+    main.report-main {
+        padding: 22px 22px 36px !important;
+    }
+
+    .page-header,
+    .space-y-6 > .flex:has(h1),
+    .max-w-7xl > .flex:has(h1),
+    .max-w-6xl > .flex:has(h1),
+    .max-w-5xl > .flex:has(h1) {
+        padding: 22px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    body > main,
+    main.report-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 18px 16px 32px !important;
+    }
+
+    .page-header,
+    .space-y-6 > .flex:has(h1),
+    .max-w-7xl > .flex:has(h1),
+    .max-w-6xl > .flex:has(h1),
+    .max-w-5xl > .flex:has(h1) {
+        min-height: auto;
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 20px !important;
+    }
+
+    .page-header h1,
+    .page-title,
+    main h1.text-2xl,
+    main h1.text-3xl {
+        font-size: 23px !important;
+    }
+
+    .stat-card,
+    .delivery-stat-card,
+    .panel.stat-card {
+        padding: 18px !important;
+    }
+}

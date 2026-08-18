@@ -328,14 +328,18 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
                         <td class="px-4 py-3 text-center">
                             <div class="flex items-center justify-center gap-1.5">
                                 <button type="button" onclick="openViewModal(<?php echo htmlspecialchars(json_encode($product)); ?>)" class="p-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg transition text-sm" title="View details">
+                                    <i class="fa-solid fa-eye"></i>
                                 </button>
                                 <button type="button" onclick="openEditModal(<?php echo htmlspecialchars(json_encode($product)); ?>)" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg transition text-sm" title="Edit product">
+                                    <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
                                 <?php if (!empty($product['qr_code'])): ?>
                                     <a href="../../<?php echo htmlspecialchars($product['qr_code']); ?>" download class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition text-sm" title="Download QR">
+                                        <i class="fa-solid fa-qrcode"></i>
                                     </a>
                                 <?php endif; ?>
                                 <button type="button" onclick="confirmDeleteProduct(<?php echo $product['id']; ?>, '<?php echo htmlspecialchars($product['product_name'], ENT_QUOTES); ?>')" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition text-sm" title="Delete product">
+                                    <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
                         </td>
@@ -360,7 +364,9 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
             if ($page > 1): 
                 $queryParams['p'] = $page - 1;
         ?>
-            <a href="?<?php echo http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition"></a>
+            <a href="?<?php echo http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition" title="Previous">
+                <i class="fa-solid fa-chevron-left text-xs"></i>
+            </a>
         <?php endif; ?>
 
         <?php for ($i = 1; $i <= $totalPages; $i++): 
@@ -372,7 +378,9 @@ $autoProductCode = 'PROD-' . str_pad($nextId, 6, '0', STR_PAD_LEFT);
         <?php if ($page < $totalPages): 
             $queryParams['p'] = $page + 1;
         ?>
-            <a href="?<?php echo http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition"></a>
+            <a href="?<?php echo http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition" title="Next">
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+            </a>
         <?php endif; ?>
     </div>
     <?php endif; ?>

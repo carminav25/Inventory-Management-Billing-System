@@ -281,7 +281,6 @@ if ($result) {
                         <?php if(!empty($search)): ?><a href="inventory_indeliveries.php" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-medium transition" title="Reset Filters"><i class="fa-solid fa-arrows-rotate"></i></a><?php endif; ?>
                     </div>
                 </form>
-                </form>
             </div>
 
             <div class="overflow-x-auto">
@@ -335,10 +334,13 @@ if ($result) {
                                     <td class="px-6 py-4 text-center">
                                         <div class="flex items-center justify-center gap-2">
                                             <a href="delivery_view.php?id=<?= $del['id']; ?>" class="bg-blue-50 hover:bg-blue-100 text-blue-600 p-2 rounded-lg text-xs font-bold transition" title="View Details">
+                                                <i class="fa-solid fa-eye"></i>
                                             </a>
                                             <button type="button" onclick="window.open('delivery_print.php?id=<?= $del['id']; ?>', '_blank')" class="bg-slate-100 hover:bg-slate-200 text-slate-600 p-2 rounded-lg text-xs font-bold transition" title="Print Receipt">
+                                                <i class="fa-solid fa-print"></i>
                                             </button>
                                             <button type="button" onclick="confirmDeleteDelivery(<?= $del['id']; ?>, 'Delivery #<?= htmlspecialchars($del['delivery_no']); ?>')" class="bg-red-50 hover:bg-red-100 text-red-600 p-2 rounded-lg text-xs font-bold transition" title="Delete Delivery">
+                                                <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -357,7 +359,9 @@ if ($result) {
                     if ($page > 1): 
                         $queryParams['p'] = $page - 1;
                 ?>
-                    <a href="?<?= http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition"></a>
+                    <a href="?<?= http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition" title="Previous">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </a>
                 <?php endif; ?>
 
                 <?php for ($i = 1; $i <= $totalPages; $i++): $queryParams['p'] = $i; ?>
@@ -365,7 +369,9 @@ if ($result) {
                 <?php endfor; ?>
 
                 <?php if ($page < $totalPages): $queryParams['p'] = $page + 1; ?>
-                    <a href="?<?= http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition"></a>
+                    <a href="?<?= http_build_query($queryParams); ?>" class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50 shadow-sm transition" title="Next">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </a>
                 <?php endif; ?>
             </div>
             <?php endif; ?>
